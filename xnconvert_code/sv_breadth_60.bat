@@ -1,0 +1,1 @@
+nconvert -ratio -rtype lanczos -rflag orient -resize 60% 60%  
