@@ -33,6 +33,10 @@ with gui('Breadth Task', sticky='esw', stretch='column') as app:
 
     app.startPagedWindow("")
     app.startPage("nesw")
+    app.label("Breadth Task", bg='blue', fg='yellow', sticky='nesw', stretch='both', font={'size':20, 'family':'Helvetica'})
+    app.stopPage()
+
+    app.startPage("nesw")
     app.label("Item 1", bg='blue', fg='orange', row=0, column=1, colspan=2)
     app.label("tw goes here", row=1, column=1, colspan=2)
     app.addImageButton("Item 1: A", press, "b001_fp.gif", row=2, column=1)
