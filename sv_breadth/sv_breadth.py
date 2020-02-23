@@ -31,10 +31,14 @@ with gui('Breadth Login', sticky='esw', stretch='column') as app:
 
 with gui('Breadth Task', sticky='esw', stretch='column') as app:
 
+# blank page at the beginning
+
     app.startPagedWindow("")
     app.startPage("nesw")
     app.label("Breadth Task", bg='blue', fg='yellow', sticky='nesw', stretch='both', font={'size':20, 'family':'Helvetica'})
     app.stopPage()
+
+# actual task begins - Item 1
 
     app.startPage("nesw")
     app.label("Item 1", bg='blue', fg='orange', row=0, column=1, colspan=2)
