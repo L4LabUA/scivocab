@@ -1,18 +1,22 @@
 from appJar import gui
 
+# login window
 
 def press():
-    print("User:", app.entry("User"), "Part", app.entry("Participant"), "YY",
-            app.entry("YY"), "MM", app.entry("MM"), "DD", app.entry("DD"))
+    print("Breadth Task","User:", app.entry("User"), "Part:", app.entry("Participant"), app.getDatePicker("date"))
 
-with gui("Login Window", "400x200", bg='orange', font={'size': 18}) as app:
-    app.label("Welcome to appJar", bg='blue', fg='orange')
+with gui("Breadth Login", "300x350", bg='orange', font={'size': 18}) as app:
+    app.label("Breadth Task Login", bg='blue', fg='orange')
     app.entry("User", label=True, focus=True)
     app.entry("Participant", label=True, secret=False)
-    app.entry("YY", label=True)
-    app.entry("MM", label=True)
-    app.entry("DD", label=True)
-    app.buttons(["Submit", "Cancel"], [press, app.stop])
+    app.addDatePicker("date")
+    app.setDatePickerRange("date", 2020)
+    app.setDatePicker("date")
+    app.getDatePicker("date")
+    app.buttons(["Submit"], [press])
+    app.buttons(["Continue"], [app.stop])
+
+# breadth task
 
 def press(btn):
     print(btn)
