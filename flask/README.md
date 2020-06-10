@@ -1,4 +1,5 @@
-Install the app by running the following command:
+Install the app by running the following command (this assumes you have Python
+3.6 or higher installed already):
 
     ./tools/install
 
