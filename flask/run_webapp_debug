@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+. scivocab_venv/bin/activate
+FLASK_DEBUG=1 python run.py

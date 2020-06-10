@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # This script activates the virtual environment for the scivocab webapp,
-# creating it if it doesn't exist.
-# Usage: ./create_venv
+# creating it if it doesn't exist. After that, it installs the prerequisites
+# for the app.
+# Usage: ./install
 
 # Set the ROOT environment variable, assuming that the directory structure
 # mirrors that of the git repository.
@@ -14,5 +15,7 @@ if [[ ! -d "$venv_dir" ]]; then
     echo "We did not find the virtual environment directory ${venv_dir}."
     echo "Thus, we will create it now."
     python3 -m venv "$venv_dir"
-    . "$venv_dir"/bin/activate
 fi
+
+. "$venv_dir"/bin/activate
+pip install -r "$ROOT"/requirements.txt
