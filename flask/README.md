@@ -2,4 +2,8 @@ Install the app by running the following command:
 
     ./tools/install
 
-Run the webapp in debug mode by doing ./run_webapp_debug
+Run the webapp in debug mode by running the following command:
+   
+    ./tools/run_webapp_debug
+
+Then open http://127.0.0.1:5000/ in your web browser to go to the webapp.
