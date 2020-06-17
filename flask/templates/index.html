@@ -14,20 +14,25 @@
     }
 
 
+
     $(function() {
+        console.log("ready!");
         $.getJSON($SCRIPT_ROOT+'/selectImage',
             {},
             update
         );
-
-        $('a.image').bind('click', function() {
-            $.getJSON($SCRIPT_ROOT+'/selectImage',
-                {position: $(this).attr('id'), word_index : word_index},
-                update
-            );
-            return false;
-        });
+        return false;
     });
+
+    $(document).on('click', 'img', function() {
+        $.getJSON(
+            $SCRIPT_ROOT+'/selectImage',
+            {position: $(this).attr('id'), word_index : word_index},
+            update
+        );
+        return false;
+    });
+
 </script>
 <style>
     img {width: 100%; height: auto}
