@@ -14,15 +14,19 @@
     }
 
 
-
+    // When the page loads up for the first time (or is refreshed), the
+    // function registered in the callback below initializes the task with the
+    // first word in the sequence.
     $(function() {
-        console.log("ready!");
         $.getJSON($SCRIPT_ROOT+'/selectImage',
             {},
             update
         );
         return false;
     });
+
+    // The block of code below registers the 'update' function to be called
+    // every time an image is clicked.
 
     $(document).on('click', 'img', function() {
         $.getJSON(
