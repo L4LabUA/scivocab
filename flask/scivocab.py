@@ -17,11 +17,11 @@ from flask import (
 
 
 
-def grouper(iterable, n, fillvalue=None):
-    "Collect data into fixed-length chunks or blocks"
+#def grouper(iterable, n, fillvalue=None):
+    #"Collect data into fixed-length chunks or blocks"
     # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
-    args = [iter(iterable)] * n
-    return zip_longest(*args, fillvalue=fillvalue)
+    #args = [iter(iterable)] * n
+    #return zip_longest(*args, fillvalue=fillvalue)
 
 
 ALL_TARGETS_DF = read_excel(
@@ -32,6 +32,9 @@ ALL_TARGETS_DF = read_excel(
 
 bp = Blueprint("scivocab", __name__)
 
+# Flask thing- keeps web apps modular.
+
+# Saves image file-name. Splits file name to understand separate pieces.
 
 class Image(object):
     def __init__(self, filename):
@@ -39,6 +42,8 @@ class Image(object):
         self.type = str(Path(filename).stem).split("_")[-1]
         self.position = str(Path(filename).stem).split("_")[-2]
 
+
+#
 
 class Word(object):
     def __init__(self, n):
@@ -71,11 +76,16 @@ def main():
 @bp.route("/selectImage", methods=["GET", "POST"])
 def selectImage():
     clicked_image_position = request.args.get("position")
+    # Is position being used?
     word_index = int(request.args.get("word_index", 0))
-    current_word = WORDS[word_index]
+    current_word = WORDS[word_index].frame
+    # Define a dictionary- response. Debug purposes.
+    # New response format for constructing data
     response = {
         f"p{n}_filename": current_word.image_position_dict[f"p{n}"].filename
         for n in range(1, 5)
     }
     response["tw"] = current_word.tw
+    # Append response to result.
+    # Dataframe.append - works for dictionaries.
     return jsonify(response)

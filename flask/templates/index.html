@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <script type=text/javascript>
     var word_index = 0;
+    // Global- rephrase as capital
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     function update(data) {
         $("img#img_p1").attr('src' , $SCRIPT_ROOT+"/static/"+data.p1_filename) ;
