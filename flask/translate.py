@@ -30,7 +30,12 @@ def main(args):
 def toimage(word, id):
     if id == 'tw':
         return "bv1_" + word.id + "_p" + str(word.tw) + "_tw.jpg"
-
+    if id == 'fp':
+        return "bv1_" + word.id + "_p" + str(word.fp) + "_fp.jpg"
+    if id == 'fx':
+        return "bv1_" + word.id + "_p" + str(word.fx) + "_fx.jpg"
+    if id == 'fs':
+        return "bv1_" + word.id + "_p" + str(word.fs) + "_fs.jpg"
 
 # main("static/scivocab/sv_bv1_input.csv")
 
