@@ -4,6 +4,7 @@ from enum import Enum, auto
 from pathlib import Path
 from pandas import read_excel
 import random
+from flask import translate
 from flask import (
     Blueprint,
     Flask,
