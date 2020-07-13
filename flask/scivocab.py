@@ -5,7 +5,6 @@ from pathlib import Path
 from pandas import read_excel
 import random
 from flask import (
-    translate,
     Blueprint,
     Flask,
     render_template,

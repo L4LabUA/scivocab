@@ -1,5 +1,4 @@
 import pandas
-from flask import WordConstruct
 
 
 def main(args):
