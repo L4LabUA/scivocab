@@ -3,7 +3,9 @@ from itertools import zip_longest
 from enum import Enum, auto
 from pathlib import Path
 from pandas import read_excel
+import random
 from flask import (
+    translate,
     Blueprint,
     Flask,
     render_template,
@@ -12,7 +14,6 @@ from flask import (
     redirect,
     jsonify,
 )
-
 
 
 
@@ -45,27 +46,42 @@ class Image(object):
 
 #
 
-class Word(object):
-    def __init__(self, n):
-        self.padded_string = str(n).zfill(3)
-        self.image_list = [
-            Image(filename)
-            for filename in glob(
-                f"static/scivocab/sv_bv1/bv1_b{self.padded_string}*.jpg"
-            )
-        ]
-        self.image_type_dict = {img.type: img for img in self.image_list}
-        self.image_position_dict = {
-            img.position: img for img in self.image_list
-        }
-        self.tw = ALL_TARGETS_DF.loc[f"b{self.padded_string}"]["tw"]
+# class Word(object):
+    # def __init__(self, n):
+        # self.padded_string = str(n).zfill(3)
+        # self.image_list = [
+            # Image(filename)
+            # for filename in glob(
+                # f"static/scivocab/sv_bv1/bv1_b{self.padded_string}*.jpg"
+            # )
+        # ]
+        # self.image_type_dict = {img.type: img for img in self.image_list}
+        # self.image_position_dict = {
+            # img.position: img for img in self.image_list
+        # }
+        # self.tw = ALL_TARGETS_DF.loc[f"b{self.padded_string}"]["tw"]
 
 
 # Get all the words.
-ALL_IMAGES = glob("static/scivocab/sv_bv1/*.jpg")
-NUMBER_OF_WORDS = int(len(ALL_IMAGES) / 4)
-WORDS = [Word(n) for n in range(1, NUMBER_OF_WORDS + 1)]
-
+WORDS = translate.main("static/scivocab/sv_bv1_input.csv")
+# NUMBER_OF_WORDS = int(len(ALL_IMAGES) / 4)
+# WORDS = [Word(n) for n in range(1, NUMBER_OF_WORDS + 1)]
+strand1 = []
+strand2 = []
+strand3 = []
+strand4 = []
+for x in WORDS:
+    if WORDS[x].strand == 40:
+        strand1.append(x)
+    if WORDS[x].strand == 50:
+        strand2.append(x)
+    if WORDS[x].strand == 62:
+        strand3.append(x)
+    if WORDS[x].strand == 63:
+        strand4.append(x)
+randomlist = random.shuffle(strand1) + random.shuffle(strand2) + random.shuffle(strand3) + random.shuffle(strand4)
+for x in randomlist:
+    print(x)
 
 @bp.route("/")
 def main():
@@ -75,7 +91,7 @@ def main():
 
 @bp.route("/selectImage", methods=["GET", "POST"])
 def selectImage():
-    clicked_image_position = request.args.get("position")
+    # clicked_image_position = request.args.get("position")
     # Is position being used?
     word_index = int(request.args.get("word_index", 0))
     current_word = WORDS[word_index].frame

@@ -24,6 +24,7 @@ def main(args):
     # or x in allWords:
         # print(toimage(allWords[x], 'tw'))
         # print(x + ' has its true word in position ' + str(allWords[x].tw) + " and is part of strand " + str(allWords[x].strand))
+    return allWords
 
 
 # Translates a word to return
