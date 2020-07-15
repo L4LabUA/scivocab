@@ -84,12 +84,9 @@ random.shuffle(strand2)
 random.shuffle(strand3)
 random.shuffle(strand4)
 randomlist = strand1 + strand2 + strand3 + strand4
-for x in randomlist:
-    print(x)
 
 @bp.route("/")
 def main():
-    print(WORDS)
     current_word = randomlist[0]
     return render_template("index.html", current_word=current_word)
 
@@ -99,14 +96,15 @@ def selectImage():
     # clicked_image_position = request.args.get("position")
     # Is position being used?
     word_index = int(request.args.get("word_index", 0))
-    current_word = randomlist[word_index].frame
+    current_word = randomlist[word_index]
     # Define a dictionary- response. Debug purposes.
     # New response format for constructing data
     response = {
-        f"p{n}_filename": current_word.image_position_dict[f"p{n}"].filename
+        #f"p{n}_filename": current_word.image_position_dict[f"p{n}"].filename
+        f"p{n}_filename": str('p'+str(n))
         for n in range(1, 5)
     }
-    response["tw"] = current_word.tw
+    response["tw"] = current_word
     # Append response to result.
     # Dataframe.append - works for dictionaries.
     return jsonify(response)
