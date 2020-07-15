@@ -4,7 +4,7 @@ from enum import Enum, auto
 from pathlib import Path
 from pandas import read_excel
 import random
-from flask import translate
+import translate
 from flask import (
     Blueprint,
     Flask,
@@ -79,13 +79,18 @@ for x in WORDS:
         strand3.append(x)
     if WORDS[x].strand == 63:
         strand4.append(x)
-randomlist = random.shuffle(strand1) + random.shuffle(strand2) + random.shuffle(strand3) + random.shuffle(strand4)
+random.shuffle(strand1)
+random.shuffle(strand2)
+random.shuffle(strand3)
+random.shuffle(strand4)
+randomlist = strand1 + strand2 + strand3 + strand4
 for x in randomlist:
     print(x)
 
 @bp.route("/")
 def main():
-    current_word = WORDS[0]
+    print(WORDS)
+    current_word = randomlist[0]
     return render_template("index.html", current_word=current_word)
 
 
@@ -94,7 +99,7 @@ def selectImage():
     # clicked_image_position = request.args.get("position")
     # Is position being used?
     word_index = int(request.args.get("word_index", 0))
-    current_word = WORDS[word_index].frame
+    current_word = randomlist[word_index].frame
     # Define a dictionary- response. Debug purposes.
     # New response format for constructing data
     response = {

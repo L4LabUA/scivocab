@@ -1,5 +1,5 @@
 import pandas
-from flask import WordConstruct
+import WordConstruct
 
 def main(args):
     allWords = dict()
