@@ -84,6 +84,8 @@ random.shuffle(strand2)
 random.shuffle(strand3)
 random.shuffle(strand4)
 randomlist = strand1 + strand2 + strand3 + strand4
+# Before I forget what this is- we use this in selectImage to put the images in a random order.
+word_type_list = ['tw', 'fp', 'fx', 'fs']
 
 @bp.route("/")
 def main():
@@ -95,13 +97,14 @@ def main():
 def selectImage():
     # clicked_image_position = request.args.get("position")
     # Is position being used?
+    random.shuffle(word_type_list)
     word_index = int(request.args.get("word_index", 0))
     current_word = randomlist[word_index]
     # Define a dictionary- response. Debug purposes.
     # New response format for constructing data
     response = {
         #f"p{n}_filename": current_word.image_position_dict[f"p{n}"].filename
-        f"p{n}_filename": str('p'+str(n))
+        f"p{n}_filename": translate.toimage(WORDS[current_word], word_type_list[n-1])
         for n in range(1, 5)
     }
     response["tw"] = current_word

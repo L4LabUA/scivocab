@@ -29,13 +29,13 @@ def main(args):
 # Translates a word to return
 def toimage(word, id):
     if id == 'tw':
-        return "bv1_" + word.id + "_p" + str(word.tw) + "_tw.jpg"
+        return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.tw) + "_tw.jpg"
     if id == 'fp':
-        return "bv1_" + word.id + "_p" + str(word.fp) + "_fp.jpg"
+        return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.fp) + "_fp.jpg"
     if id == 'fx':
-        return "bv1_" + word.id + "_p" + str(word.fx) + "_fx.jpg"
+        return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.fx) + "_fx.jpg"
     if id == 'fs':
-        return "bv1_" + word.id + "_p" + str(word.fs) + "_fs.jpg"
+        return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.fs) + "_fs.jpg"
 
 # main("static/scivocab/sv_bv1_input.csv")
 
