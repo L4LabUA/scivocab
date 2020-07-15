@@ -1,43 +1,45 @@
 import pandas
-<<<<<<< HEAD
-from flask import WordConstruct
+import WordConstruct
 
-
-
-
-
-def main():
+def main(args):
     allWords = dict()
-    graphinput = pandas.read_csv("static/scivocab/sv_bv1_input.csv")
+    graphinput = pandas.read_csv(args)
     for index, row in graphinput.iterrows():
-        if row['target'] in allWords:
-            # The key already exists. That means we just need to input which it is.
-            print(allWords[row['target']].fw)
-        else:
+        if row['target'] not in allWords:
+            # The key doesn't exist. We need to define a new dictionary piece for it.
             allWords[row['target']] = WordConstruct.Word()
-            allWords[row['target']].fw = 1
+            allWords[row['target']].strand = row['strand']
+            allWords[row['target']].id = row['breadth_id']
+            allWords[row['target']].target = row['target']
+        # Now, we figure out which image we're looking at
+        if row['img_type'] == 'tw':
+            allWords[row['target']].tw = int(row['position'][1])
+        if row['img_type'] == 'fp':
+            allWords[row['target']].fp = int(row['position'][1])
+        if row['img_type'] == 'fx':
+            allWords[row['target']].fx = int(row['position'][1])
+        if row['img_type'] == 'fs':
+            allWords[row['target']].fs = int(row['position'][1])
+    # or x in allWords:
+        # print(toimage(allWords[x], 'tw'))
+        # print(x + ' has its true word in position ' + str(allWords[x].tw) + " and is part of strand " + str(allWords[x].strand))
+    return allWords
+
+
+# Translates a word to return
+def toimage(word, id):
+    if id == 'tw':
+        return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.tw) + "_tw.jpg"
+    if id == 'fp':
+        return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.fp) + "_fp.jpg"
+    if id == 'fx':
+        return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.fx) + "_fx.jpg"
+    if id == 'fs':
+        return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.fs) + "_fs.jpg"
+
+# main("static/scivocab/sv_bv1_input.csv")
 
 
 
-=======
 
 
-class Word:
-
-    def __init__(self):
-        self.tw = -1
-        self.fp = -1
-        self.fx = -1
-        self.fs = -1
-        self.strand = -1
-        self.target = ''
-        self.id = -1
-
-
-def main():
-    x = pandas.read_csv("static/scivocab/sv_bv1_input.csv")
->>>>>>> SamTest
-
-
-
-main()

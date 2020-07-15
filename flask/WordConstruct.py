@@ -7,6 +7,6 @@ class Word:
         self.fs = -1
         self.strand = -1
         self.target = ''
-        self.id = -1
+        self.id = ''
 
 
