@@ -16,27 +16,17 @@ from flask import (
 )
 
 
-
-
-#def grouper(iterable, n, fillvalue=None):
-    #"Collect data into fixed-length chunks or blocks"
-    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
-    #args = [iter(iterable)] * n
-    #return zip_longest(*args, fillvalue=fillvalue)
-
-
 ALL_TARGETS_DF = read_excel(
     "static/scivocab/sv_taskdev_imagelist.xlsx",
     sheet_name="all targets",
     index_col=0,
 )
 
+# Flask blueprints help keep webapps modular.
 bp = Blueprint("scivocab", __name__)
 
-# Flask thing- keeps web apps modular.
 
 # Saves image file-name. Splits file name to understand separate pieces.
-
 class Image(object):
     def __init__(self, filename):
         self.filename = "/".join(filename.split("/")[1:])

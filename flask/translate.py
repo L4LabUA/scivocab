@@ -1,13 +1,14 @@
 import pandas
-import WordConstruct
+from word import Word
 
-def main(args):
+def main(filename):
     allWords = dict()
-    graphinput = pandas.read_csv(args)
-    for index, row in graphinput.iterrows():
+    df = pandas.read_csv(filename)
+    for index, row in df.iterrows():
+        print(row)
         if row['target'] not in allWords:
             # The key doesn't exist. We need to define a new dictionary piece for it.
-            allWords[row['target']] = WordConstruct.Word()
+            allWords[row['target']] = Word()
             allWords[row['target']].strand = row['strand']
             allWords[row['target']].id = row['breadth_id']
             allWords[row['target']].target = row['target']
@@ -20,9 +21,6 @@ def main(args):
             allWords[row['target']].fx = int(row['position'][1])
         if row['img_type'] == 'fs':
             allWords[row['target']].fs = int(row['position'][1])
-    # or x in allWords:
-        # print(toimage(allWords[x], 'tw'))
-        # print(x + ' has its true word in position ' + str(allWords[x].tw) + " and is part of strand " + str(allWords[x].strand))
     return allWords
 
 
@@ -36,10 +34,3 @@ def toimage(word, id):
         return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.fx) + "_fx.jpg"
     if id == 'fs':
         return "scivocab/sv_bv1/bv1_" + word.id + "_p" + str(word.fs) + "_fs.jpg"
-
-# main("static/scivocab/sv_bv1_input.csv")
-
-
-
-
-
