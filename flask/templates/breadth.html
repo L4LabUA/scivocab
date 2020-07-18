@@ -19,7 +19,7 @@
     // function registered in the callback below initializes the task with the
     // first word in the sequence.
     $(function() {
-        $.getJSON($SCRIPT_ROOT+'/selectImage',
+        $.getJSON("{{ url_for('breadth.selectImage') }}",
             {},
             update
         );
@@ -31,7 +31,7 @@
 
     $(document).on('click', 'img', function() {
         $.getJSON(
-            $SCRIPT_ROOT+'/selectImage',
+            "{{ url_for('breadth.selectImage') }}",
             {position: $(this).attr('id'), word_index : word_index},
             update
         );
