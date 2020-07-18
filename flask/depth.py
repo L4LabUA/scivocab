@@ -43,8 +43,8 @@ def main():
     return render_template("depth.html", current_word=current_word)
 
 
-@bp.route("/selectImage", methods=["GET", "POST"])
-def selectImage():
+@bp.route("/nextWord", methods=["GET", "POST"])
+def nextWord():
     shuffle(word_type_list)
     word_index = int(request.args.get("word_index", 0))
     current_word = randomized_list[word_index]

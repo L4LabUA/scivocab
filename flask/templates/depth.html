@@ -1,8 +1,13 @@
 <!doctype html>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link 
+    rel="stylesheet" 
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+    crossorigin="anonymous">
 <script type=text/javascript>
     var WORD_INDEX = 0;
+    var DRAGGED;
     // Global- rephrase as capital
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     function update(data) {
@@ -18,8 +23,8 @@
     // When the page loads up for the first time (or is refreshed), the
     // function registered in the callback below initializes the task with the
     // first word in the sequence.
-    $(function() {
-        $.getJSON("{{ url_for('depth.selectImage') }}",
+    $(() => {
+        $.getJSON("{{ url_for('depth.nextWord') }}",
             {},
             update
         );
@@ -29,18 +34,22 @@
     // The block of code below registers the 'update' function to be called
     // every time an image is clicked.
 
-    $(document).on('click', 'img', function() {
+    $(document).on('click', '#nextWordButton', function() {
         $.getJSON(
-            "{{ url_for('depth.selectImage') }}",
-            {position: $(this).attr('id'), word_index : WORD_INDEX},
+            "{{ url_for('depth.nextWord') }}",
+            {word_index : WORD_INDEX},
             update
         );
+        const elements = document.getElementsByClassName("targetImg");
+        Array.from(elements).forEach(e =>  e.innerHTML = "");
+
         return false;
     });
 
     function dragstart_handler(ev) {
-        ev.dataTransfer.setData("text/plain", ev.target.src);
-        ev.dataTransfer.dropEffect = "copy";
+        ev.dataTransfer.setData("text/html", ev.target.src);
+        ev.dataTransfer.dropEffect = "move";
+        DRAGGED=ev.target;
     }
 
     
@@ -48,67 +57,77 @@
         ev.preventDefault();
         ev.dataTransfer.dropEffect = "move";
     }
-    
+
     function drop_handler(ev) {
         ev.preventDefault();
-        const data = ev.dataTransfer.getData("text/plain");
-        ev.target.getElementsByTagName("img")[0].src = data;
+        const data = ev.dataTransfer.getData("text/html");
+        console.log(DRAGGED.parentNode.classList);
+        if (DRAGGED.parentNode.classList.contains("targetImg")){ 
+            console.log("targetImg FOUND");
+            ev.target.appendChild(DRAGGED);
+        }
+        else {
+            console.log("targetImg NOT Found");
+            DRAGGED.parentNode.appendChild(DRAGGED.cloneNode());
+            ev.target.appendChild(DRAGGED);
+        }
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    $(() => {
         const elements = document.getElementsByClassName("draggableImage");
-        Array.from(elements).forEach(e => 
-            e.addEventListener("dragstart", dragstart_handler)
-        );
+        Array.from(elements).forEach(e => { 
+            e.addEventListener("dragstart", dragstart_handler, false);
+        });
+    });
+
+    $(() => {
+        const elements = document.getElementsByClassName("targetImg");
+        Array.from(elements).forEach(e => { 
+            e.addEventListener("dragover", dragover_handler, false);
+            e.addEventListener("drop", drop_handler, false);
+        });
     });
 
 </script>
 <style>
     img {width: 100%; height: auto}
     body {margin: auto}
+    .targetImg {
+        padding: auto;
+        height: 200px;
+    }
 </style>
-<title>L4 Depth</title>
+<title>L4 Depth Task</title>
 <div class="container-fluid" style="text-align: center">
     <h1>Scientific Vocabulary Depth Task</h1>
     <h1 id="header">{{ current_word.tw }}</h1>
-    <table>
-        <tr>
-            <td>
-                <img class="draggableImage" id = "img_p1" src="" />
-            </td>
-            <td>
-                <img class="draggableImage" id = "img_p2" src="" />
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <img class="draggableImage" id = "img_p3" src="" />
-            </td>
-            <td>
-                <img class="draggableImage" id = "img_p4" src="" />
-            </td>
-        </tr>
-    </table>
-    <div class="row border">
-        <div class="border col" style="padding:auto"
-                                ondrop="drop_handler(event)"
-                                ondragover="dragover_handler(event)">
-            <img class="draggableImage" id="image_p1" src="" />
+    <div class="row">
+        <div class="col" style="padding:auto">
+            <img class="draggableImage" id = "img_p1" src="" />
         </div>
-        <div class="border col" style="padding:auto"
-                                ondrop="drop_handler(event)"
-                                ondragover="dragover_handler(event)">
-            <img class="draggableImage" id="image_p2" src="" />
-        </div>
-        <div class="border col" style="padding:auto"
-                                ondrop="drop_handler(event)"
-                                ondragover="dragover_handler(event)">
-            <img class="draggableImage" id="image_p3" src="" />
-        </div>
-        <div class="border col" style="padding:auto"
-                                ondrop="drop_handler(event)"
-                                ondragover="dragover_handler(event)">
-            <img class="draggableImage" id="image_p4" src="" />
+        <div class="col" style="padding:auto">
+            <img class="draggableImage" id = "img_p2" src="" />
         </div>
     </div>
+    <div class="row">
+        <div class="col" style="padding:auto">
+            <img class="draggableImage" id = "img_p3" src="" />
+        </div>
+        <div class="col" style="padding:auto">
+            <img class="draggableImage" id = "img_p4" src="" />
+        </div>
+    </div>
+
+    <div class="row border">
+        <div class="border col targetImg">
+        </div>
+        <div class="border col targetImg">
+        </div>
+        <div class="border col targetImg">
+        </div>
+        <div class="border col targetImg">
+        </div>
+    </div>
+
+    <button type="button" id="nextWordButton" class="btn btn-primary">Next word</button>
 </div>
