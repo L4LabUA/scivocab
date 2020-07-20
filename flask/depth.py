@@ -18,7 +18,7 @@ from flask import (
 
 
 # Flask blueprints help keep webapps modular.
-bp = Blueprint("scivocab", __name__)
+bp = Blueprint("depth", __name__)
 
 
 # Get all the words.
@@ -40,11 +40,11 @@ word_type_list = ["tw", "fp", "fx", "fs"]
 @bp.route("/")
 def main():
     current_word = randomized_list[0]
-    return render_template("index.html", current_word=current_word)
+    return render_template("depth.html", current_word=current_word)
 
 
-@bp.route("/selectImage", methods=["GET", "POST"])
-def selectImage():
+@bp.route("/nextWord", methods=["GET", "POST"])
+def nextWord():
     shuffle(word_type_list)
     word_index = int(request.args.get("word_index", 0))
     current_word = randomized_list[word_index]
