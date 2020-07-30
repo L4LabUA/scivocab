@@ -37,6 +37,7 @@ ANSWERS = list()
 # Before I forget what this is- we use this in selectImage to put the images in
 # a random order.
 WORD_TYPE_LIST = ["tw", "fp", "fx", "fs"]
+shuffle(WORD_TYPE_LIST)
 
 
 @bp.route("/")
