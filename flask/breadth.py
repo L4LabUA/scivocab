@@ -24,50 +24,48 @@ bp = Blueprint("breadth", __name__)
 
 # Get all the words.
 WORDS = translate.construct_word_dict("static/scivocab/sv_bv1_input.csv")
-strands = [
+STRANDS = [
     [x for x in WORDS if WORDS[x].strand == n] for n in (40, 50, 62, 63)
 ]
 
-for strand in strands:
+for strand in STRANDS:
     shuffle(strand)
 
-randomized_list = list(chain(*strands))
-answers = list()
+RANDOMIZED_LIST = list(chain(*STRANDS))
+ANSWERS = list()
 
 # Before I forget what this is- we use this in selectImage to put the images in
 # a random order.
-word_type_list = ["tw", "fp", "fx", "fs"]
+WORD_TYPE_LIST = ["tw", "fp", "fx", "fs"]
 
 
 @bp.route("/")
 def main():
-    current_word = randomized_list[0]
+    current_word = RANDOMIZED_LIST[0]
     return render_template("breadth.html", current_word=current_word)
 
 
 @bp.route("/selectImage", methods=["GET", "POST"])
 def selectImage():
-    shuffle(word_type_list)
+    print("position: ", request.args.get("position"))
+    if request.args.get("position") != None:
+        print('Selected response: ' + WORD_TYPE_LIST[int(request.args.get("position")[5])-1])
+
     word_index = int(request.args.get("word_index", 0))
-    current_word = randomized_list[word_index]
-    for i in word_type_list:
-        print(i)
-    print(' ')
+    current_word = RANDOMIZED_LIST[word_index]
+
     # New response format for constructing data
+    shuffle(WORD_TYPE_LIST)
+    print("WORD_TYPE_LIST:", WORD_TYPE_LIST)
     response = {
         f"p{n}_filename": translate.get_filename(
-            WORDS[current_word], word_type_list[n - 1]
+            WORDS[current_word], WORD_TYPE_LIST[n - 1]
         )
         for n in range(1, 5)
     }
     response["tw"] = current_word
-    # answers.append = Answer(current_word, )
-    for i in word_type_list:
-        print(i)
-    print(request.args.get("position"))
-    if request.args.get("position") != None:
-        print('answer: ' + word_type_list[int(request.args.get("position")[5])-1])
+
+    # ANSWERS.append = Answer(current_word, )
     # Append response to result.
     # Dataframe.append - works for dictionaries.
-    # print(response)
     return jsonify(response)
