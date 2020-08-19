@@ -6,7 +6,6 @@ from pandas import read_excel
 from random import shuffle
 import translate
 import answer
-import after
 import postprocessing
 from itertools import chain
 from flask import (
