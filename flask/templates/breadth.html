@@ -6,6 +6,9 @@
     // Global- rephrase as capital
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     function update(data) {
+        if ("redirect" in data) {
+            window.location.href=data["redirect"];
+        }
         $("img#img_p1").attr('src' , $SCRIPT_ROOT+"/static/"+data.p1_filename) ;
         $("img#img_p2").attr('src' , $SCRIPT_ROOT+"/static/"+data.p2_filename) ;
         $("img#img_p3").attr('src' , $SCRIPT_ROOT+"/static/"+data.p3_filename) ;

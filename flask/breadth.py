@@ -64,9 +64,12 @@ def selectImage():
     # Return a new render template for endscreen (Potentially redirect?)
     # Ala: return render_template("breadth.html", current_word=current_word)
     # https://www.kite.com/python/examples/1212/flask-redirect-to-another-url - Render template might be better.
-    if word_index == 2: #
-        print("Ping")
-        return redirect(url_for("after.main"))
+
+    if word_index >= 3:
+        # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
+        # function here. This is our workaround.
+        return jsonify({"redirect": url_for("breadth.redirect_to_end")})
+
     current_word = RANDOMIZED_LIST[word_index] # Here's the break
     if current_word == "arachnid":
         postprocessing.toExcel(ANSWERS)
