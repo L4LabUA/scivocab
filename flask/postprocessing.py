@@ -1,5 +1,4 @@
 import pandas
-import openpyxl
 
 def toExcel(answerArray):
     processedfile = []
