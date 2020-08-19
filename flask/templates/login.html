@@ -1,0 +1,26 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - Flaskr</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<nav>
+  <h1>Start!</h1>
+  <ul>
+  </ul>
+</nav>
+<section class="content">
+  <header>
+    {% block header %}{% endblock %}
+  </header>
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+  {% block content %}
+  <form method="post">
+    <label for="subject">Subject Name</label>
+    <input name="subject" id="subject" required>
+    <label for="proctor">Proctors Name</label>
+    <input type="proctor" name="proctor" id="proctor" required>
+    <input type="submit" value="Submit">
+  </form>
+  {% endblock %}
+</section>
+

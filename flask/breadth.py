@@ -6,6 +6,8 @@ from pandas import read_excel
 from random import shuffle
 import translate
 import answer
+import after
+import postprocessing
 from itertools import chain
 from flask import (
     Blueprint,
@@ -33,7 +35,6 @@ for strand in STRANDS:
 
 RANDOMIZED_LIST = list(chain(*STRANDS))
 ANSWERS = list()
-
 # Before I forget what this is- we use this in selectImage to put the images in
 # a random order.
 WORD_TYPE_LIST = ["tw", "fp", "fx", "fs"]
@@ -45,19 +46,34 @@ def main():
     current_word = RANDOMIZED_LIST[0]
     return render_template("breadth.html", current_word=current_word)
 
+@bp.route("/redirect")
+def redirect_to_end():
+    return render_template("after.html")
 
 @bp.route("/selectImage", methods=["GET", "POST"])
 def selectImage():
+
     print("position: ", request.args.get("position"))
+    response_class = None
     if request.args.get("position") != None:
+        response_class = WORD_TYPE_LIST[int(request.args.get("position")[5])-1]
         print('Selected response: ' + WORD_TYPE_LIST[int(request.args.get("position")[5])-1])
 
     word_index = int(request.args.get("word_index", 0))
-    current_word = RANDOMIZED_LIST[word_index]
-
+    # if word_index is == length of RANDOMIZED_LIST-1
+    # Return a new render template for endscreen (Potentially redirect?)
+    # Ala: return render_template("breadth.html", current_word=current_word)
+    # https://www.kite.com/python/examples/1212/flask-redirect-to-another-url - Render template might be better.
+    if word_index == 2: #
+        print("Ping")
+        return redirect(url_for("after.main"))
+    current_word = RANDOMIZED_LIST[word_index] # Here's the break
+    if current_word == "arachnid":
+        postprocessing.toExcel(ANSWERS)
+    if response_class!=None:
+        ANSWERS.append(answer.Answer(current_word, response_class, WORDS[current_word].strand))
     # New response format for constructing data
     shuffle(WORD_TYPE_LIST)
-    print("WORD_TYPE_LIST:", WORD_TYPE_LIST)
     response = {
         f"p{n}_filename": translate.get_filename(
             WORDS[current_word], WORD_TYPE_LIST[n - 1]
