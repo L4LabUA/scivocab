@@ -51,7 +51,6 @@ def redirect_to_end():
 
 @bp.route("/selectImage", methods=["GET", "POST"])
 def selectImage():
-
     print("position: ", request.args.get("position"))
     response_class = None
     if request.args.get("position") != None:

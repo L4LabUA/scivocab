@@ -7,6 +7,6 @@ bp = Blueprint("login", __name__)
 def main():
     return render_template("login.html")
 
-def submit():
-    print("submitted!")
-    return
+@bp.route("/login",  methods=["GET", "POST"])
+def login():
+
