@@ -1,6 +1,10 @@
 from pandas import read_csv
 from word import Word
 
+# construct_word_dict takes in a filename for an excel sheet that is a list of words for input
+# (see excel file flask/status/scivocab/sv_bv1_input for the format.)
+# For each seperate name in target, it creates a word datatype.
+# Finally, it returns a dictionary of all created word datatypes.
 
 def construct_word_dict(filename):
     allWords = dict()
@@ -16,6 +20,6 @@ def construct_word_dict(filename):
     return allWords
 
 
-# Translates a word to return
+# get_filename takes a word and id to translate into the format in which the images are saved- see the file sv_bv1.
 def get_filename(word, id):
     return f"scivocab/sv_bv1/bv1_{word.id}_p{getattr(word, id)}_{id}.jpg"
