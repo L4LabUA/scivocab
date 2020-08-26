@@ -81,7 +81,7 @@ def selectImage():
         )
         for n in range(1, 5)
     }
-    response["tw"] = current_word
+    # response["tw"] = current_word (I think this is deprecated)
 
     # ANSWERS.append = Answer(current_word, )
     # Append response to result.

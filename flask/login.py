@@ -9,4 +9,4 @@ def main():
 
 @bp.route("/login",  methods=["GET", "POST"])
 def login():
-
+    return
