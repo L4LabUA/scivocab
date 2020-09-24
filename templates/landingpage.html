@@ -1,0 +1,25 @@
+<!doctype html>
+<title>{% block title %}{% endblock %} - Flaskr</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<nav>
+  <center style="color:black;font-size:40px;">Welcome</center>
+
+
+  <center>
+    {% block header %}{% endblock %}
+  </centerr>
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+  {% block content %}
+
+  
+    <input onclick=return  type="submit" value="Start Depth Task" style="font-size:40px;">
+    
+    <input onclick=return  type="submit" value="Start Breadth Task" style="font-size:40px;">
+ 
+  </form>
+  {% endblock %}
+</section>
+
