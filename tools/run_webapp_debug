@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
 
-. scivocab_venv/bin/activate
-FLASK_DEBUG=1 python run.py
+# Set the ROOT environment variable, assuming that the directory structure
+# mirrors that of the git repository.
+ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
+export ROOT
+
+pushd $ROOT
+    . scivocab_venv/bin/activate
+    FLASK_DEBUG=1 python run.py
+popd
