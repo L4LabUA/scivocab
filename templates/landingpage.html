@@ -15,9 +15,9 @@
   {% block content %}
 
   
-    <input onclick=return  type="submit" value="Start Depth Task" style="font-size:40px;">
+  <button onclick="location.href = {{ url_for('depth.main') }} type="button" style="font-size:40px;">Start Depth Tak</button>
     
-    <input onclick=return  type="submit" value="Start Breadth Task" style="font-size:40px;">
+  <button onclick="location.href = {{ url_for('depth.main') }} type="button" style="font-size:40px;">Start Breadth Tak</button>
  
   </form>
   {% endblock %}
