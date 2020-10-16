@@ -4,7 +4,7 @@ from login import bp as login_bp
 from landingpage import bp as landingpage_bp
 from flask import Flask
 from flask_login import LoginManager
-
+from config import Config 
 
 # Running run.py will launch the local flask server. It will run until manually shut down (or it crashes).
 # While it is running, you can access the website at http://127.0.0.1:5000/(page),
@@ -17,6 +17,7 @@ def create_app():
     app.register_blueprint(depth_bp, url_prefix="/depth")
     app.register_blueprint(landingpage_bp, url_prefix="/landingpage")
     login = LoginManager(app)
+    app.config.from_object(Config)
     return app
 
 if __name__ == "__main__":
