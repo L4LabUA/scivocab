@@ -12,6 +12,7 @@ def create_app():
     app = Flask(__name__)
     app.register_blueprint(login_bp, url_prefix="/")
     app.register_blueprint(breadth_bp, url_prefix="/breadth")
+    app.register_blueprint(depth_bp, url_prefix="/depth")
     return app
 
 app = create_app()
