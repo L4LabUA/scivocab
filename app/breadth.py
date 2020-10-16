@@ -57,7 +57,7 @@ def redirect_to_end():
 # In doing so, it slowly iterates through the list RANDOMIZED_LIST, and moves on to a new page when we
 # reach the last word. In the process of ending, it should call postprocessing(ANSWERS).
 @bp.route("/selectImage", methods=["GET", "POST"])
-def selectImage():
+def select_image():
     print("position: ", request.args.get("position"))
     response_class = None
     if request.args.get("position"):

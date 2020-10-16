@@ -22,7 +22,7 @@
     // function registered in the callback below initializes the task with the
     // first word in the sequence.
     $(function() {
-        $.getJSON("{{ url_for('breadth.selectImage') }}",
+        $.getJSON("{{ url_for('.select_image') }}",
             {},
             update
         );
@@ -34,7 +34,7 @@
 
     $(document).on('click', 'img', function() {
         $.getJSON(
-            "{{ url_for('breadth.selectImage') }}",
+            "{{ url_for('.select_image') }}",
             {position: $(this).attr('id'), word_index : word_index},
             update
         );
