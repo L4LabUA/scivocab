@@ -19,6 +19,7 @@ if [[ $OSTYPE == "darwin"* ]]; then
 
     # Install Python and pip
     PYTHON_VERSION=39
+    sudo port selfupdate
     sudo port install py$PYTHON_VERSION-pip
 
     echo "Activating Python installed by MacPorts"
