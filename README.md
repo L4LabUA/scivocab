@@ -24,6 +24,9 @@ Then open http://127.0.0.1:5000/ in your web browser to go to the webapp.
 
 ### Production mode
 
+The following assumes you have [Docker Compose
+installed](https://docs.docker.com/compose/install/).
+
 To run the app in production mode (e.g. when deploying it to a server), run
 
     docker-compose up --build -d
@@ -44,7 +47,7 @@ Contents
 - `requirements.txt`: The Python packages that the app depends upon.
 - `Dockerfile`: The recipe for building the Docker container for deploying this
   app on a server.
-- `docker-compose.yml`: A Docker-Compose configuration file to help deploy the
+- `docker-compose.yml`: A Docker Compose configuration file to help deploy the
   app on a server.
 - `app`: The code for the app, along with the static content and templates.
   `app/static` contains the images and the spreadsheets with the words and
