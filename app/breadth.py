@@ -18,8 +18,14 @@ from dataclasses import dataclass, asdict
 class Answer:
     """ A class that stores all the information needed by the researcher after
     the program is done."""
+
+    # The target word
     word: str
+
+    # The type of response the subject selected (tw, fp, fx, or fs)
     answer: str
+
+    # The strand the word belonged to.
     strand: int
 
 # Flask blueprints help keep webapps modular.
