@@ -1,6 +1,6 @@
+import os
 from random import shuffle
 import translate
-from answer import Answer
 import postprocessing
 from itertools import chain
 from flask import (
@@ -61,7 +61,7 @@ shuffle(WORD_TYPES)
 # purposes.
 if os.environ.get("FLASK_DEBUG") == "1":
     N_WORDS_TO_SHOW = 3
-else
+else:
     N_WORDS_TO_SHOW = len(RANDOMIZED_LIST) - 1
 
 # Starts the app and leads to a loop of selectImage().
@@ -101,7 +101,7 @@ def select_image():
 
     current_word = RANDOMIZED_LIST[word_index]  # Here's the break
     if response_class:
-        ANSWERS.append(answer.Answer(current_word, response_class, WORDS[current_word].strand))
+        ANSWERS.append(Answer(current_word, response_class, WORDS[current_word].strand))
     shuffle(WORD_TYPES)
     response = {
         f"p{n}_filename": translate.get_filename(
