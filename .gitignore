@@ -3,3 +3,7 @@ __pycache__
 ~$*
 *.xlsx
 scivocab_venv
+*.swp
+
+# PyCharm config
+.idea
