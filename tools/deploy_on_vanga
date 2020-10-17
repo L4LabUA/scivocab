@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# This is a helper script to deploy on vanga.sista.arizona.edu/scivocab
+# Usage: ./deploy_on_vanga
+
+set -euo pipefail
+
+# Set the ROOT environment variable, assuming that the directory structure
+# mirrors that of the git repository.
+ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
+export ROOT
+
+pushd $ROOT > /dev/null
+    # Copy the static files to a publicly accessible location
+    sudo cp -r app/static /var/www/html
+
+    # Build and run the Docker container
+    docker-compose up --build -d
+popd
