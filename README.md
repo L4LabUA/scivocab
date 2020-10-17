@@ -32,6 +32,10 @@ If you want to run the app in the foreground rather than as a background
 process (e.g. for development purposes), omit the `-d` flag (`-d` stands for
 'detached').
 
+To bring down the webapp safely, run
+
+    docker-compose down
+
 Contents
 --------
 
