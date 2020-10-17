@@ -28,9 +28,10 @@ To run the app in production mode (e.g. when deploying it to a server), run
 
     docker-compose up --build -d
 
-If you want to run the app in the foreground rather than as a background
-process (e.g. for development purposes), omit the `-d` flag (`-d` stands for
-'detached').
+You can then view the webpage at http://127.0.0.1:5001 (if you are running it on your
+local computer). If you want to run the app in the foreground rather than as a
+background process (e.g. for development purposes), omit the `-d` flag (`-d`
+stands for 'detached').
 
 To bring down the webapp safely, run
 
