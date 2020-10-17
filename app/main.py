@@ -2,7 +2,6 @@ import os
 from breadth import bp as breadth_bp
 from depth import bp as depth_bp
 from login import bp as login_bp
-from landingpage import bp as landingpage_bp
 from flask import Flask
 
 # Running main.py will launch the local flask server. It will run until

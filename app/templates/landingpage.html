@@ -1,24 +1,11 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} - Flaskr</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-<nav>
-  <center style="color:black;font-size:40px;">Welcome</center>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
+<title>Scivocab</title>
 
-  <center>
-    {% block header %}{% endblock %}
-  </centerr>
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}
-
-  
-  <button onclick="location.href = {{ url_for('depth.main') }}" type="button" style="font-size:40px;">Start Depth Task</button>
-  <button onclick="location.href = {{ url_for('breadth.main') }}" type="button" style="font-size:40px;">Start Breadth Tak</button>
- 
-  </form>
-  {% endblock %}
-</section>
-
+<div class="container-fluid" style="text-align: center">
+  <h1>Welcome!</h1>
+  <a href="{{ url_for('breadth.main') }}" class="btn btn-outline-primary btn-lg">Start Breadth Task</a>
+  <a href="{{ url_for('depth.main') }}" class="btn btn-outline-primary btn-lg">Start Depth Task</a>
+</div>
