@@ -11,6 +11,7 @@ from flask import (
     redirect,
     jsonify,
 )
+import pandas as pd
 from dataclasses import dataclass, asdict
 
 @dataclass
