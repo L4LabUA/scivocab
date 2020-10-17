@@ -22,4 +22,5 @@ def main():
         #if error is None:
         return render_template("landingpage.html")
 
-    return render_template('login.html')
+    else:
+        return render_template('login.html')
