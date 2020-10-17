@@ -20,6 +20,6 @@ def main():
         # The code above might be useful later when we want to store user names and passwords 
 
         #if error is None:
-        return redirect(url_for('landingpage.main'))
+        return render_template("landingpage.html")
 
     return render_template('login.html')

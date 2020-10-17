@@ -15,7 +15,6 @@ def create_app():
     app.register_blueprint(login_bp, url_prefix="/")
     app.register_blueprint(breadth_bp, url_prefix="/breadth")
     app.register_blueprint(depth_bp, url_prefix="/depth")
-    app.register_blueprint(landingpage_bp, url_prefix="/landingpage")
     return app
 
 app = create_app()
