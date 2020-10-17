@@ -12,21 +12,15 @@ from flask import (
     redirect,
     jsonify,
 )
+from dataclasses import dataclass, asdict
 
-
+@dataclass
 class Answer:
     """ A class that stores all the information needed by the researcher after
     the program is done."""
-
-    def __init__(self, word: str, answer: str, strand: int):
-        # The name of the word (target)
-        self.word = word
-
-        # tw, fp, fx, or fs, whichever the user selected.
-        self.answer = answer
-
-        # Which strand the word belonged to.
-        self.strand = strand
+    word: str
+    answer: str
+    strand: int
 
 # Flask blueprints help keep webapps modular.
 bp = Blueprint("breadth", __name__)
@@ -76,38 +70,49 @@ def redirect_to_end():
     return render_template("after.html")
 
 
-# Each call of selectImage loads a new word, waits for the user to select an image, and
-# adds the selected word to ANSWERS as an instance of the Answer class
-# In doing so, it slowly iterates through the list RANDOMIZED_LIST, and moves on to a new page when we
-# reach the last word. In the process of ending, it should call postprocessing(ANSWERS).
+# Each call of selectImage loads a new word, waits for the user to select an
+# image, and adds the selected word to ANSWERS as an instance of the Answer
+# class In doing so, it slowly iterates through the list RANDOMIZED_LIST, and
+# moves on to a new page when we reach the last word. In the process of ending,
+# it should call postprocessing(ANSWERS).
 @bp.route("/selectImage", methods=["GET", "POST"])
 def select_image():
-    print("position: ", request.args.get("position"))
     response_class = None
+
     if request.args.get("position"):
         response_class = WORD_TYPES[int(request.args.get("position")[5])-1]
         print('Selected response: ' + WORD_TYPES[int(request.args.get("position")[5])-1])
 
     word_index = int(request.args.get("word_index", 0))
-    # Return a new render template for endscreen (Potentially redirect?)
-    # Ala: return render_template("breadth.html", current_word=current_word)
-    # https://www.kite.com/python/examples/1212/flask-redirect-to-another-url - Render template might be better.
 
+    # If we've reached the last word, we stop and save the answers to Excel.
     if word_index == N_WORDS_TO_SHOW:
+
+        # Create a pandas DataFrame with the answer data.
+        df = pd.DataFrame([asdict(answer) for answer in ANSWERS])
+
+        # Save the dataframe as an Excel workbook with the filename
+        # 'answers.xlsx'. This will overwrite any existing file with that name.
+        df.to_excel("answers.xlsx")
+
         # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
         # function here. This is our workaround.
-        postprocessing.toExcel(ANSWERS)
         return jsonify({"redirect": "redirect"})
 
-    current_word = RANDOMIZED_LIST[word_index]  # Here's the break
-    if response_class:
-        ANSWERS.append(answer.Answer(current_word, response_class, WORDS[current_word].strand))
-    shuffle(WORD_TYPES)
-    response = {
-        f"p{n}_filename": translate.get_filename(
-            WORDS[current_word], WORD_TYPES[n - 1]
-        )
-        for n in range(1, 5)
-    }
-    response["tw"] = current_word
-    return jsonify(response)
+    # Otherwise, return a JSON object with data about the next word to show.
+    else:
+        current_word = RANDOMIZED_LIST[word_index]  # Here's the break
+        if response_class:
+            ANSWERS.append(Answer(current_word, response_class, WORDS[current_word].strand))
+
+        shuffle(WORD_TYPES)
+
+        response = {
+            f"p{n}_filename": translate.get_filename(
+                WORDS[current_word], WORD_TYPES[n - 1]
+            )
+            for n in range(1, 5)
+        }
+        response["tw"] = current_word
+
+        return jsonify(response)
