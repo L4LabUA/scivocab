@@ -73,7 +73,7 @@ def select_image():
         # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
         # function here. This is our workaround.
         postprocessing.toExcel(ANSWERS)
-        return jsonify({"redirect": url_for("breadth.redirect_to_end")})
+        return jsonify({"redirect": "redirect"})
 
     current_word = RANDOMIZED_LIST[word_index]  # Here's the break
     if response_class:
