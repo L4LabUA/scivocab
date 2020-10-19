@@ -1,5 +1,5 @@
 import functools
-
+from forms import LoginForm
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -23,4 +23,5 @@ def main():
         return render_template("landingpage.html")
 
     else:
+        form = LoginForm()
         return render_template('login.html')
