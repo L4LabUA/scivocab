@@ -7,5 +7,7 @@ export ROOT
 
 pushd $ROOT
     . scivocab_venv/bin/activate
-    FLASK_DEBUG=1 python run.py
+    pushd app
+        FLASK_DEBUG=1 python main.py
+    popd
 popd
