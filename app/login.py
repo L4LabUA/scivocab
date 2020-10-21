@@ -24,4 +24,4 @@ def main():
 
     else:
         form = LoginForm()
-        return render_template('login.html')
+        return render_template('login.html', title='Login', form=form)
