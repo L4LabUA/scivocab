@@ -11,17 +11,10 @@ bp = Blueprint("login", __name__)
 
 @bp.route("/", methods=["GET", "POST"])
 def main():
-    if request.method == 'POST':
-        #subject_name = request.form['Subject Name']
-        #proctor_name = request.form['Proctor Name']
-        #db = get_db() 
-        #error = None
-
-        # The code above might be useful later when we want to store user names and passwords 
-
-        #if error is None:
+        #return render_template("landingpage.html")
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash('Login requested for user {}, remember_me={}'.format(
+            form.child_id.data, form.remember_me.data))
         return render_template("landingpage.html")
-
-    else:
-        form = LoginForm()
-        return render_template('login.html', title='Login', form=form)
+    return render_template('login.html', title='Login', form=form)
