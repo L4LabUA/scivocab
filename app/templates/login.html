@@ -13,14 +13,13 @@
 	 	 <p>
 	  		{{ form.child_id.label }}<br>
 			{{ form.child_id(size=32) }}
-		</p>
-		<p>
+		 </p>
+		 <p>
 			{{ form.proctor.label }}<br>
 			{{ form.proctor(size=32) }}
-		</p>
-		<p>
-			{{ form.submit() }}
-		</p>
+		 </p>
+        	 <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+                 <p>{{ form.submit() }}</p>
   	</form>
 {% endblock %}
 </section>
