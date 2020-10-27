@@ -1,0 +1,28 @@
+
+<html>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <head>
+        {% if title %}
+        <title>{{ title }} Scivocab</title>
+        {% else %}
+        <title>Scivocab</title>
+        {% endif %}
+    </head>
+    <body>
+	    <div class="col-sm-3" style="display:inline-block"> <!-- The "col-sm-3" and "inline-block" centers the link in the navigation bar -->
+            Scivocab:
+            <a href="{{ url_for('login.main') }}">Home</a>
+        </div>
+        <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </body>
+</html>
