@@ -16,11 +16,18 @@
      		 {{ form.hidden_tag() }} 
 	 	 <p>
 	  		{{ form.child_id.label }}<br>
-			{{ form.child_id(size=32) }}
+			{{ form.child_id(size=32) }}<br>
+            		{% for error in form.child_id.errors %}
+            		<span style="color: red;">[{{ error }}]</span>
+            		{% endfor %}
 		 </p>
 		 <p>
 			{{ form.proctor.label }}<br>
-			{{ form.proctor(size=32) }}
+			{{ form.proctor(size=32) }}<br>
+            		{% for error in form.proctor.errors %}
+            		<span style="color: red;">[{{ error }}]</span>
+            		{% endfor %}
+
 		 </p>
         	 <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
                  <p>{{ form.submit() }}</p>
