@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 
-<title>{% block title %}{% endblock %}Login - Scientific Vocabulary Task</title>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
+
 {% block content %}
-	<div class="col-sm-3" style="display:inline-block">
+    
+    <title>{% block title %}{% endblock %}Login - Scientific Vocabulary Task</title>
+    <section class="content">
+    
+    <header>
+    {% block header %}{% endblock %}
+    </header>
+	
+    <div class="col-sm-3" style="display:inline-block">
 	<h1>Start!</h1>
  	<form action="" method="post" novalidate>
      		 {{ form.hidden_tag() }} 
