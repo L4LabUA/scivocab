@@ -2,3 +2,4 @@ xlrd
 pandas
 openpyxl
 Flask-WTF
+flask-sqlalchemy
