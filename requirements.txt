@@ -3,3 +3,4 @@ pandas
 openpyxl
 Flask-WTF
 flask-sqlalchemy
+flask-migrate
