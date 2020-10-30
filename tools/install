@@ -40,4 +40,6 @@ if [[ ! -d "$VENV_DIR" ]]; then
 fi
 
 . "$VENV_DIR"/bin/activate
+
+pip install wheel
 pip install -r "$ROOT"/requirements.txt
