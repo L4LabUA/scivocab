@@ -20,13 +20,9 @@ def create_app():
     app.config.from_object(Config)
     db = SQLAlchemy(app)
     migrate = Migrate(app, db)
-    from app import routes, models
     return app
 
 app = create_app()
 
 if __name__ == "__main__":
     app.run()
-
-
-
