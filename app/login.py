@@ -1,8 +1,8 @@
 import functools
-from forms import LoginForm
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
+from app.forms import LoginForm
 
 #this might be useful later when we want to store user names and passwords
 #from flaskr.db import get_db

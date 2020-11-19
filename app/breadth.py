@@ -1,6 +1,5 @@
 import os
 from random import shuffle
-import translate
 from itertools import chain
 from flask import (
     Blueprint,
@@ -13,6 +12,7 @@ from flask import (
 )
 import pandas as pd
 from dataclasses import dataclass, asdict
+from app.translate import construct_word_dict, get_filename
 
 @dataclass
 class Answer:
@@ -32,7 +32,7 @@ class Answer:
 bp = Blueprint("breadth", __name__)
 
 # Imports all words from the given filename and stores them in a dictionary WORDS.
-WORDS = translate.construct_word_dict("static/scivocab/sv_bv1_input.csv")
+WORDS = construct_word_dict("static/scivocab/sv_bv1_input.csv")
 
 # Splits the words in WORDS into four strands in STRANDS, where each strand
 # correlates to the strand types.
@@ -114,7 +114,7 @@ def select_image():
         shuffle(WORD_TYPES)
 
         response = {
-            f"p{n}_filename": translate.get_filename(
+            f"p{n}_filename": get_filename(
                 WORDS[current_word], WORD_TYPES[n - 1]
             )
             for n in range(1, 5)

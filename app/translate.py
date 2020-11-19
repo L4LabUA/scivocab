@@ -1,5 +1,5 @@
 from pandas import read_csv
-from word import Word
+from app.word import Word
 
 # construct_word_dict takes in a filename for an excel sheet that is a list of words for input
 # (see excel file flask/status/scivocab/sv_bv1_input for the format.)
