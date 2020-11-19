@@ -6,8 +6,11 @@ ROOT="$(cd "$( dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
 export ROOT
 
 
-# Create or activate the virtual environment.
-#"$ROOT"/tools/activate_virtualenv
+# Create the virtual environment if it doesn't exist
+"$ROOT"/tools/create_virtualenv
+
+
+. scivocab_venv/bin/activate
 
 pushd $ROOT/app
     FLASK_DEBUG=1 python main.py
