@@ -13,6 +13,7 @@ from flask import (
 import pandas as pd
 from dataclasses import dataclass, asdict
 from app.translate import construct_word_dict, get_filename
+from pathlib import Path
 
 @dataclass
 class Answer:
@@ -32,7 +33,7 @@ class Answer:
 bp = Blueprint("breadth", __name__)
 
 # Imports all words from the given filename and stores them in a dictionary WORDS.
-WORDS = construct_word_dict("static/scivocab/sv_bv1_input.csv")
+WORDS = construct_word_dict(Path(__file__).parents[0]/"static/scivocab/sv_bv1_input.csv")
 
 # Splits the words in WORDS into four strands in STRANDS, where each strand
 # correlates to the strand types.

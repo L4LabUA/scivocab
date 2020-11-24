@@ -4,7 +4,7 @@ from enum import Enum, auto
 from pathlib import Path
 from pandas import read_excel
 from random import shuffle
-import translate
+from app.translate import construct_word_dict
 from itertools import chain
 from flask import (
     Blueprint,
@@ -21,8 +21,9 @@ from flask import (
 bp = Blueprint("depth", __name__)
 
 
-# Get all the words.
-WORDS = translate.construct_word_dict("static/scivocab/sv_bv1_input.csv")
+# Imports all words from the given filename and stores them in a dictionary WORDS.
+WORDS = construct_word_dict(Path(__file__).parents[0]/"static/scivocab/sv_bv1_input.csv")
+
 strands = [
     [x for x in WORDS if WORDS[x].strand == n] for n in (40, 50, 62, 63)
 ]
