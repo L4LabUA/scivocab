@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from uuid import uuid4
 
 from config import Config
 
@@ -17,13 +18,9 @@ def create_app():
     scivocab_app.config.from_object(Config)
     
     db = SQLAlchemy(scivocab_app)
-
-    #db.init_app(scivocab_app)
-    #db.create_all(app = scivocab_app)
-    #migrate.init_app(scivocab_app, db)
-
-    migrate = Migrate(scivocab_app, db)
-
+    db.init_app(scivocab_app)
+    db.create_all(app = scivocab_app)
+    # migrate.init_app(scivocab_app, db)
     scivocab_app.register_blueprint(login_bp, url_prefix="/")
     scivocab_app.register_blueprint(breadth_bp, url_prefix="/breadth")
     scivocab_app.register_blueprint(depth_bp, url_prefix="/depth")
