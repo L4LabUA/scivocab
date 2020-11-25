@@ -22,9 +22,9 @@
             		{% endfor %}
 		 </p>
 		 <p>
-			{{ form.proctor.label }}<br>
-			{{ form.proctor(size=32) }}<br>
-            		{% for error in form.proctor.errors %}
+			{{ form.proctor_id.label }}<br>
+			{{ form.proctor_id(size=32) }}<br>
+            		{% for error in form.proctor_id.errors %}
             		<span style="color: red;">[{{ error }}]</span>
             		{% endfor %}
 
