@@ -30,8 +30,5 @@ if [[ $OSTYPE == "darwin"* ]]; then
 fi
 
 
-"$ROOT"/tools/activate_virtualenv
-
-. "$VENV_DIR"/bin/activate
 
 pip install -e .
