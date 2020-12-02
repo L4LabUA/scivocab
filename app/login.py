@@ -17,8 +17,11 @@ bp = Blueprint("login", __name__)
 
 @bp.route("/", methods=["GET", "POST"])
 def main():
-        #return render_template("landingpage.html")
+    #return render_template("landingpage.html")
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = LoginForm()
+               
     if form.validate_on_submit():
         flash('Login requested for user {}, remember_me={}'.format(
             form.child_id.data, form.remember_me.data))

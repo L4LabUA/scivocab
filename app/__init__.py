@@ -8,6 +8,7 @@ from flask_login import LoginManager
 
 db = SQLAlchemy()
 migrate = Migrate()
+login_manager = LoginManager()
 
 def create_app():
     from app.breadth import bp as breadth_bp
@@ -17,17 +18,15 @@ def create_app():
     scivocab_app = Flask(__name__)
     scivocab_app.config.from_object(Config)
     
-    db = SQLAlchemy(scivocab_app)
     db.init_app(scivocab_app)
     db.create_all(app = scivocab_app)
     # migrate.init_app(scivocab_app, db)
     scivocab_app.register_blueprint(login_bp, url_prefix="/")
     scivocab_app.register_blueprint(breadth_bp, url_prefix="/breadth")
     scivocab_app.register_blueprint(depth_bp, url_prefix="/depth")
-   
-   login = LoginManager(scivocab_app)
-   login.init_app(scivocab_app)
-
-   return scivocab_app
+    
+    login_manager.init_app(scivocab_app)
+    
+    return scivocab_app
 
 from app import models

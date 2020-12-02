@@ -29,6 +29,6 @@ if [[ $OSTYPE == "darwin"* ]]; then
     sudo port select pip3 pip$PYTHON_VERSION
 fi
 
-
+. scivocab_venv/bin/activate
 
 pip install -e .
