@@ -26,6 +26,7 @@ setup(
         "Flask-WTF",
         "Flask-SQLAlchemy",
         "flask-migrate",
+        "flask-login",
     ],
     python_requires=">=3.6",
 )

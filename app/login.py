@@ -7,6 +7,8 @@ from app import db
 from app.models import Child, Proctor, Session
 from datetime import datetime
 from uuid import uuid4
+from flask_login import current_user, login_user
+from app.models import Proctor, Child, Session
 
 #this might be useful later when we want to store user names and passwords
 #from flaskr.db import get_db

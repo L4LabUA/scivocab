@@ -3,8 +3,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from uuid import uuid4
-
 from config import Config
+from flask_login import LoginManager
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -24,6 +24,10 @@ def create_app():
     scivocab_app.register_blueprint(login_bp, url_prefix="/")
     scivocab_app.register_blueprint(breadth_bp, url_prefix="/breadth")
     scivocab_app.register_blueprint(depth_bp, url_prefix="/depth")
-    return scivocab_app
+   
+   login = LoginManager(scivocab_app)
+   login.init_app(scivocab_app)
+
+   return scivocab_app
 
 from app import models
