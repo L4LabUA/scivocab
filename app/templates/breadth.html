@@ -50,6 +50,9 @@
 <div class="container-fluid" style="text-align: center">
     <h1>Scientific Vocabulary Task</h1>
     <h1 id="header">{{ current_word.tw }}</h1>
+	<audio id="sound1" src={{url_for("static",filename="scivocab/audio/w001_ara.wav")}} preload="auto"></audio>
+	  <button onclick="document.getElementById('sound1').play();">Play
+	  it</button>
     <table>
         <tr>
             <td>
