@@ -14,6 +14,9 @@ import pandas as pd
 from dataclasses import dataclass, asdict
 from app.translate import construct_word_dict, get_filename
 from pathlib import Path
+from flask_login import current_user, login_user, logout_user
+from app.models import Proctor, Child, Session
+from app import db, login_manager
 
 @dataclass
 class Answer:
@@ -76,7 +79,10 @@ def main():
 def redirect_to_end():
     return render_template("after.html")
 
-
+@login_manager.user_loader
+def load_user(child_id):
+    return Child.query.filter_by(child_id=child_id).first()
+ 
 # Each call of selectImage loads a new word, waits for the user to select an
 # image, and adds the selected word to ANSWERS as an instance of the Answer
 # class In doing so, it slowly iterates through the list RANDOMIZED_LIST, and

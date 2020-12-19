@@ -11,7 +11,19 @@
     <body>
 	    <div class="col-sm-3" style="display:inline-block"> <!-- The "col-sm-3" and "inline-block" centers the link in the navigation bar -->
             Scivocab:
-            <a href="{{ url_for('login.main') }}">Home</a>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('routes.landingpage') }}">Home</a>
+            <a href="{{ url_for('routes.logout') }}">Logout</a>
+            {% endif %}
+            
+            {% if current_user.is_anonymous %}
+            user is anonymous
+            {% endif %}
+
+            {% if current_user.is_authenticated %}
+                User is Authenticated 
+            {% endif %}
+
         </div>
         {% block content %}{% endblock %}
     </body>
