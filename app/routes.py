@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, Blueprint
+from flask import render_template, flash, redirect, url_for, request, Blueprint, session
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app.forms import LoginForm
@@ -10,9 +10,13 @@ bp = Blueprint("routes", __name__)
 
 @bp.route("/")
 @bp.route("/index")
-@login_required
 def index():
-    return render_template("landingpage.html", title="Home")
+    if 'username' in session:
+        print('logged in as ', session['username'])
+        return render_template("landingpage.html", title="Home")
+    else:
+        return 'You are not logged in.'
+
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -45,8 +49,8 @@ def login():
             db.session.add(proctor)
             db.session.commit()
 
-        session = Session(session_id = str(uuid4()), child_id = child_id, proctor_id = proctor_id)
-        db.session.add(session)
+        session_db_entry = Session(session_id = str(uuid4()), child_id = child_id, proctor_id = proctor_id)
+        db.session.add(session_db_entry)
         db.session.commit()
 
         child = Child.query.filter_by(child_id=form.child_id.data).first()
@@ -55,6 +59,7 @@ def login():
             print("Invalid child_id or password")
             return redirect(url_for("routes.login"))
         login_user(child, remember=True)
+        session['username'] = child_id
         print('current user authenticated? test 2', current_user.is_authenticated)
         next_page = request.args.get('next')
         print('next page', next_page)
@@ -69,5 +74,6 @@ def login():
 
 @bp.route("/logout")
 def logout():
-    logout_user()
+    session.pop('username', None)
+    # logout_user()
     return redirect(url_for("routes.index"))

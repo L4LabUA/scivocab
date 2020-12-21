@@ -18,6 +18,7 @@ def create_app():
     """create_app is an an application factory function."""
     scivocab_app = Flask(__name__)
     scivocab_app.config.from_object(Config)
+    print(scivocab_app.secret_key)
     db.init_app(scivocab_app)
     db.create_all(app=scivocab_app)  # creates the tables and database
 
