@@ -14,13 +14,14 @@ import pandas as pd
 from dataclasses import dataclass, asdict
 from app.translate import construct_word_dict, get_filename
 from pathlib import Path
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Proctor, Child, Session
 from app import db, login_manager
 
+
 @dataclass
 class Answer:
-    """ A class that stores all the information needed by the researcher after
+    """A class that stores all the information needed by the researcher after
     the program is done."""
 
     # The target word
@@ -32,11 +33,14 @@ class Answer:
     # The strand the word belonged to.
     strand: int
 
+
 # Flask blueprints help keep webapps modular.
 bp = Blueprint("breadth", __name__)
 
 # Imports all words from the given filename and stores them in a dictionary WORDS.
-WORDS = construct_word_dict(Path(__file__).parents[0]/"static/scivocab/sv_bv1_input.csv")
+WORDS = construct_word_dict(
+    Path(__file__).parents[0] / "static/scivocab/sv_bv1_input.csv"
+)
 
 # Splits the words in WORDS into four strands in STRANDS, where each strand
 # correlates to the strand types.
@@ -70,6 +74,7 @@ else:
 
 # Starts the app and leads to a loop of selectImage().
 @bp.route("/")
+@login_required
 def main():
     current_word = RANDOMIZED_LIST[0]
     return render_template("breadth.html", current_word=current_word)
@@ -79,10 +84,12 @@ def main():
 def redirect_to_end():
     return render_template("after.html")
 
+
 @login_manager.user_loader
 def load_user(child_id):
     return Child.query.filter_by(child_id=child_id).first()
- 
+
+
 # Each call of selectImage loads a new word, waits for the user to select an
 # image, and adds the selected word to ANSWERS as an instance of the Answer
 # class In doing so, it slowly iterates through the list RANDOMIZED_LIST, and
@@ -93,8 +100,11 @@ def select_image():
     response_class = None
 
     if request.args.get("position"):
-        response_class = WORD_TYPES[int(request.args.get("position")[5])-1]
-        print('Selected response: ' + WORD_TYPES[int(request.args.get("position")[5])-1])
+        response_class = WORD_TYPES[int(request.args.get("position")[5]) - 1]
+        print(
+            "Selected response: "
+            + WORD_TYPES[int(request.args.get("position")[5]) - 1]
+        )
 
     word_index = int(request.args.get("word_index", 0))
 
@@ -116,7 +126,11 @@ def select_image():
     else:
         current_word = RANDOMIZED_LIST[word_index]  # Here's the break
         if response_class:
-            ANSWERS.append(Answer(current_word, response_class, WORDS[current_word].strand))
+            ANSWERS.append(
+                Answer(
+                    current_word, response_class, WORDS[current_word].strand
+                )
+            )
 
         shuffle(WORD_TYPES)
 

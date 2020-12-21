@@ -20,7 +20,5 @@ class Session(UserMixin, db.Model):
     proctor_id = db.Column(db.String(64), db.ForeignKey("proctor.id"))
 
 @login_manager.user_loader
-def load_user(child_id):
-    return Child.query.filter_by(child_id=child_id).first()
-
-
+def load_user(id):
+    return Child.query.get(int(id))
