@@ -14,9 +14,8 @@ import pandas as pd
 from dataclasses import dataclass, asdict
 from app.translate import construct_word_dict, get_filename
 from pathlib import Path
-from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Proctor, Child, Session
-from app import db, login_manager
+from app import db
 
 
 @dataclass
@@ -74,7 +73,6 @@ else:
 
 # Starts the app and leads to a loop of selectImage().
 @bp.route("/")
-@login_required
 def main():
     current_word = RANDOMIZED_LIST[0]
     return render_template("breadth.html", current_word=current_word)
@@ -83,11 +81,6 @@ def main():
 @bp.route("/redirect")
 def redirect_to_end():
     return render_template("after.html")
-
-
-@login_manager.user_loader
-def load_user(child_id):
-    return Child.query.filter_by(child_id=child_id).first()
 
 
 # Each call of selectImage loads a new word, waits for the user to select an

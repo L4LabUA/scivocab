@@ -12,16 +12,17 @@
         {% endif %}
     </head>
     <body>
-        <!-- The "col-sm-3" and "inline-block" centers the link in the navigation bar -->
+        <!-- The "col-sm-3" and "inline-block" centers the link in the 
+             navigation bar -->
 	    <div class="col-sm-3" style="display:inline-block"> 
             Scivocab:
             <a href="{{ url_for('routes.index') }}">Home</a>
 
-            {% if current_user.is_anonymous %}
+            {% if "username" not in session %}
                 User is anonymous
                 <a href="{{ url_for('routes.login') }}">Login</a>
             {% else %}
-                User is Authenticated 
+                Logged in as {{ session["username"] }}
                 <a href="{{ url_for('routes.logout') }}">Logout</a>
             {% endif %}
 
