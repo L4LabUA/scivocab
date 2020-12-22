@@ -60,6 +60,7 @@ def login():
             return redirect(url_for("routes.login"))
 
         session["child_id"] = child_id
+        session["proctor_id"] = proctor_id
         return redirect(url_for("routes.index"))
 
     return render_template("login.html", title="Sign In", form=form)
@@ -68,4 +69,5 @@ def login():
 @bp.route("/logout")
 def logout():
     session.pop("child_id", None)
+    session.pop("proctor_id", None)
     return redirect(url_for("routes.index"))
