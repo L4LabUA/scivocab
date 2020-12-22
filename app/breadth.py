@@ -16,6 +16,7 @@ from app.translate import construct_word_dict, get_filename
 from pathlib import Path
 from app.models import Proctor, Child, Session
 from app import db
+from flask_login import login_required
 
 
 @dataclass
@@ -73,6 +74,7 @@ else:
 
 # Starts the app and leads to a loop of selectImage().
 @bp.route("/")
+@login_required
 def main():
     current_word = RANDOMIZED_LIST[0]
     return render_template("breadth.html", current_word=current_word)

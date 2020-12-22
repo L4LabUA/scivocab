@@ -12,17 +12,16 @@ from app.forms import LoginForm
 from app.models import Child, Proctor, Session
 from uuid import uuid4
 from app import db
+from flask_login import login_required, login_user, logout_user
 
 bp = Blueprint("routes", __name__)
 
 
 @bp.route("/")
 @bp.route("/index")
+@login_required
 def index():
-    if "child_id" in session:
-        return render_template("landingpage.html", title="Home")
-    else:
-        return redirect(url_for("routes.login"))
+    return render_template("landingpage.html", title="Home")
 
 
 @bp.route("/login", methods=["GET", "POST"])
@@ -61,6 +60,7 @@ def login():
 
         session["child_id"] = child_id
         session["proctor_id"] = proctor_id
+        login_user(child)
         return redirect(url_for("routes.index"))
 
     return render_template("login.html", title="Sign In", form=form)
@@ -70,4 +70,5 @@ def login():
 def logout():
     session.pop("child_id", None)
     session.pop("proctor_id", None)
+    logout_user()
     return redirect(url_for("routes.index"))
