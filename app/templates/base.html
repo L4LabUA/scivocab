@@ -18,13 +18,12 @@
             Scivocab:
             <a href="{{ url_for('routes.index') }}">Home</a>
 
-            {% if "child_id" not in session %}
+            {% if current_user.is_authenticated %}
+                Child ID: {{ current_user.child_id }}
+                <a href="{{ url_for('routes.logout') }}">Logout</a>
+            {% else %}
                 User is anonymous
                 <a href="{{ url_for('routes.login') }}">Login</a>
-            {% else %}
-                Child ID: {{ session["child_id"] }}
-                Proctor ID: {{ session["proctor_id"] }}
-                <a href="{{ url_for('routes.logout') }}">Logout</a>
             {% endif %}
 
         </div>

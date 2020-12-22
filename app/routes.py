@@ -58,8 +58,6 @@ def login():
             print("Invalid child_id or password")
             return redirect(url_for("routes.login"))
 
-        session["child_id"] = child_id
-        session["proctor_id"] = proctor_id
         login_user(child)
         return redirect(url_for("routes.index"))
 
@@ -68,7 +66,5 @@ def login():
 
 @bp.route("/logout")
 def logout():
-    session.pop("child_id", None)
-    session.pop("proctor_id", None)
     logout_user()
     return redirect(url_for("routes.index"))
