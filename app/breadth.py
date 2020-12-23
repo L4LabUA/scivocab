@@ -10,6 +10,7 @@ from flask import (
     redirect,
     jsonify,
     session,
+    g
 )
 import pandas as pd
 from dataclasses import dataclass, asdict
@@ -17,26 +18,13 @@ from app.translate import construct_word_dict, get_filename
 from pathlib import Path
 from app.models import Proctor, Child, Session
 from app import db
-from flask_login import login_required
+from flask_login import login_required, current_user
+import logging
+from logging import info
 
 
-@dataclass
-class Answer:
-    """A class that stores all the information needed by the researcher after
-    the program is done."""
-
-    # The target word
-    word: str
-
-    # The type of response the subject selected (tw, fp, fx, or fs)
-    answer: str
-
-    # The strand the word belonged to.
-    strand: int
-
-
-# Flask blueprints help keep webapps modular.
-bp = Blueprint("breadth", __name__)
+# Set logging level to INFO for debugging purposes
+logging.basicConfig(level=logging.INFO)
 
 
 class BreadthTaskManager(object):
@@ -60,37 +48,51 @@ class BreadthTaskManager(object):
         # list self.randomized_list.  Then it creates a list where we store the
         # user inputs (which starts as an empty list, self.answers) and
         # self.word_types, which we will use later.
-        self.randomized_words = chain(*strands)
+        self.randomized_list = chain(*strands)
         self.answers = []
 
         # We use this in selectImage to put the images in a random order.
         self.word_types = ["tw", "fp", "fx", "fs"]
 
-        self.go_to_next_word()
+        self.current_word = next(self.randomized_list)
 
-    def go_to_next_word(self):
+    def go_to_next_word(self, g):
+        info("Going to next word")
         # Shuffle the word_types list.
         shuffle(self.word_types)
 
         # Set the current word
-        self.current_word = next(self.randomized_words)
+        self.current_word = next(self.randomized_list)
+
+        g.user.current_word = self.current_word
+
+
+# Flask blueprints help keep webapps modular.
+bp = Blueprint("breadth", __name__)
+
+@bp.before_request
+def before_request():
+    g.user = current_user
 
 
 manager = BreadthTaskManager()
-
-# If we are in debug mode, i.e., if the FLASK_DEBUG variable is set to 1, we
-# shorten the task to just a few words, for quick development and debugging
-# purposes.
-if os.environ.get("FLASK_DEBUG") == "1":
-    N_WORDS_TO_SHOW = 3
-else:
-    N_WORDS_TO_SHOW = len(manager.randomized_list) - 1
 
 # Starts the app and leads to a loop of selectImage().
 @bp.route("/")
 @login_required
 def main():
+    info(manager.current_word)
     return render_template("breadth.html", current_word=manager.current_word)
+
+
+@bp.route("/getImageData")
+def getImageData():
+    response = {
+        f"p{n}_filename": get_filename(
+            manager.words[manager.current_word], manager.word_types[n - 1]
+        )
+        for n in range(1, 5)
+    }
 
 
 @bp.route("/redirect")
@@ -115,16 +117,17 @@ def select_image():
     word_index = int(request.args.get("word_index", 0))
 
     try:
-        manager.go_to_next_word()
         if response_class:
-            manager.answers.append(
-                Answer(
+            answer = Answer(
                     manager.current_word,
                     response_class,
                     manager.words[manager.current_word].strand,
-                )
             )
 
+            info(answer)
+            manager.answers.append(answer)
+
+        manager.go_to_next_word(g)
         response = {
             f"p{n}_filename": get_filename(
                 manager.words[manager.current_word], manager.word_types[n - 1]

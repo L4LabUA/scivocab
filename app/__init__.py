@@ -1,4 +1,4 @@
-import os
+import sys
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -21,7 +21,7 @@ def create_app():
     db.create_all(app=scivocab_app)  # creates the tables and database
 
     login_manager.init_app(scivocab_app)
-    login_manager.login_view="routes.login"
+    login_manager.login_view = "routes.login"
 
     scivocab_app.register_blueprint(routes_bp, url_prefix="/")
     scivocab_app.register_blueprint(breadth_bp, url_prefix="/breadth")

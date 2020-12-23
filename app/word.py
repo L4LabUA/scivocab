@@ -1,7 +1,6 @@
-#  A class that stores all the information needed to make one set of images associated with a target.
-
-
 class Word:
+    """A class that stores all the information needed to make one set of images
+    associated with a target."""
 
     def __init__(self, strand, id, target):
         self.tw = -1
