@@ -3,6 +3,8 @@ from app import db, login_manager
 from flask_login import UserMixin
 import enum
 
+# TODO do all the strings need to be 64 characters long? Can we omit the
+# lengths?
 
 class Proctor(db.Model):
     id = db.Column(db.String(64), primary_key=True)
@@ -34,17 +36,17 @@ class Strand(enum.Enum):
     sixtythree = '63'
 
 
-
 def values_callable(x):
     return [e.value for e in x]
 
 
-# TODO do all the strings need to be 64 characters long? Can we omit the
-# lengths?
 class Concept(db.Model):
     id = db.Column(db.String(64), primary_key=True)
-    breadth_task_id = db.Column(db.String(64), primary_key=True)
-    depth_task_id = db.Column(db.String(64))
+    breadth_id = db.Column(db.String(64), unique=True)
+
+    # We will later add depth_id
+    depth_id = db.Column(db.String(64))
+
     strand = db.Column(db.Enum(Strand, values_callable=values_callable))
 
 

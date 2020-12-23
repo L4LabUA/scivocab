@@ -20,17 +20,16 @@ def create_or_update_tables():
     current_app.app_context().push()
     for row in df.itertuples():
         concept = Concept(
-            id=row.target, breadth_task_id=row.task_id, strand=str(row.strand)
+            id=row.target, breadth_id=row.breadth_id, strand=str(row.strand)
         )
         db.session.merge(concept)
-        db.session.commit()
         breadth_task_image = BreadthTaskImage(
             target=row.target,
             filename=row.file,
             image_type=row.img_type,
         )
         db.session.add(breadth_task_image)
-        db.session.commit()
+    db.session.commit()
 
 
 
