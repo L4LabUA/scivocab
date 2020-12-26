@@ -10,13 +10,13 @@ from flask import (
     redirect,
     jsonify,
     session,
-    g
+    g,
 )
 import pandas as pd
 from dataclasses import dataclass, asdict
 from app.translate import construct_word_dict, get_filename
 from pathlib import Path
-from app.models import Proctor, Child, Session
+from app.models import Proctor, Child, Session, Strand, BreadthTaskResponse
 from app import db
 from flask_login import login_required, current_user
 import logging
@@ -36,19 +36,21 @@ class BreadthTaskManager(object):
 
         # Splits the words in self.words into four strands in self.strands, where each strand
         # correlates to the strand types.
-        strands = [
+        strand_groups = [
             [x for x in self.words if self.words[x].strand == n]
-            for n in (40, 50, 62, 63)
+            for n in [
+                int(member.value) for n, member in Strand.__members__.items()
+            ]
         ]
 
-        for strand in strands:
-            shuffle(strand)
+        for strand_group in strand_groups:
+            shuffle(strand_group)
 
         # Shuffles the words in each strand, and concatenates each strand in a
         # list self.randomized_list.  Then it creates a list where we store the
         # user inputs (which starts as an empty list, self.answers) and
         # self.word_types, which we will use later.
-        self.randomized_list = chain(*strands)
+        self.randomized_list = chain(*strand_groups)
         self.answers = []
 
         # We use this in selectImage to put the images in a random order.
@@ -69,6 +71,7 @@ class BreadthTaskManager(object):
 
 # Flask blueprints help keep webapps modular.
 bp = Blueprint("breadth", __name__)
+
 
 @bp.before_request
 def before_request():
@@ -101,10 +104,8 @@ def redirect_to_end():
 
 
 # Each call of selectImage loads a new word, waits for the user to select an
-# image, and adds the selected word to manager.answers as an instance of the Answer
-# class In doing so, it slowly iterates through the list RANDOMIZED_LIST, and
-# moves on to a new page when we reach the last word. In the process of ending,
-# it should call postprocessing(manager.answers).
+# image, and adds the selected word to manager.answers as an instance of the
+# BreadthTaskResponse class.
 @bp.route("/selectImage", methods=["GET", "POST"])
 def select_image():
     response_class = None
@@ -118,14 +119,13 @@ def select_image():
 
     try:
         if response_class:
-            answer = Answer(
-                    manager.current_word,
-                    response_class,
-                    manager.words[manager.current_word].strand,
+            breadth_task_response = BreadthTaskResponse(
+                target_word = manager.current_word,
+                response_type = response_class,
+                child_id = current_user.id
             )
-
-            info(answer)
-            manager.answers.append(answer)
+            db.session.add(breadth_task_response)
+            db.session.commit()
 
         manager.go_to_next_word(g)
         response = {
@@ -138,13 +138,6 @@ def select_image():
 
         return jsonify(response)
     except StopIteration:
-        # Create a pandas DataFrame with the answer data.
-        df = pd.DataFrame([asdict(answer) for answer in manager.answers])
-
-        # Save the dataframe as an Excel workbook with the filename
-        # 'answers.xlsx'. This will overwrite any existing file with that name.
-        df.to_excel("answers.xlsx")
-
         # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
         # function here. This is our workaround.
         return jsonify({"redirect": "redirect"})

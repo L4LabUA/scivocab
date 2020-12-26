@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+
 import os
-from app.models import Concept, BreadthTaskImage
+from app.models import Word, BreadthTaskImage
 from flask_sqlalchemy import SQLAlchemy
 from app import create_app
 from sqlalchemy import create_engine
@@ -19,10 +21,10 @@ def create_or_update_tables():
     current_app.config.from_object(Config)
     current_app.app_context().push()
     for row in df.itertuples():
-        concept = Concept(
+        word = Word(
             id=row.target, breadth_id=row.breadth_id, strand=str(row.strand)
         )
-        db.session.merge(concept)
+        db.session.merge(word)
         breadth_task_image = BreadthTaskImage(
             target=row.target,
             filename=row.file,

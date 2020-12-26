@@ -40,7 +40,7 @@ def values_callable(x):
     return [e.value for e in x]
 
 
-class Concept(db.Model):
+class Word(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     breadth_id = db.Column(db.String(64), unique=True)
 
@@ -54,7 +54,7 @@ class BreadthTaskImage(db.Model):
     """A class that stores all the information needed to make one set of images
     associated with a target."""
 
-    target = db.Column(db.String(64), db.ForeignKey("concept.id"))
+    target = db.Column(db.String(64), db.ForeignKey("word.id"))
     filename = db.Column(db.String(64), primary_key=True)
     image_type = db.Column(
         db.Enum(BreadthTaskImageType, values_callable=values_callable)
@@ -66,15 +66,12 @@ class BreadthTaskResponse(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    target_concept = db.Column(db.String(64), db.ForeignKey("concept.id"))
+    target_word = db.Column(db.String(64), db.ForeignKey("word.id"))
 
     # The type of response the subject selected
     response_type = db.Column(
         db.Enum(BreadthTaskImageType, values_callable=values_callable)
     )
-
-    # The strand the word belonged to.
-    strand = db.Column(db.Enum(Strand))
 
     child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
 
