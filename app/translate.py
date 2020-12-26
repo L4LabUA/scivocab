@@ -20,6 +20,6 @@ def construct_word_dict(filename):
     return allWords
 
 
-# get_filename takes a word and id to translate into the format in which the images are saved- see the file sv_bv1.
-def get_filename(word, id):
-    return f"scivocab/sv_bv1/bv1_{word.id}_p{getattr(word, id)}_{id}.jpg"
+# get_filename takes a word and img_type to translate into the format in which the images are saved- see the file sv_bv1.
+def get_filename(word, img_type):
+    return f"scivocab/sv_bv1/bv1_{word.id}_p{getattr(word, img_type)}_{img_type}.jpg"

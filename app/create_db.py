@@ -12,14 +12,14 @@ db = SQLAlchemy()
 
 # Run this script to create app.db with the scivocab words in it.
 
-
-def create_or_update_tables():
+def create_word_tables():
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, echo=False)
     basedir = os.path.abspath(os.path.dirname(__file__))
     df = pd.read_csv(f"{basedir}/static/scivocab/sv_bv1_input.csv")
     current_app = create_app()
     current_app.config.from_object(Config)
     current_app.app_context().push()
+    db.create_all()
     for row in df.itertuples():
         word = Word(
             id=row.target, breadth_id=row.breadth_id, strand=str(row.strand)
@@ -34,6 +34,5 @@ def create_or_update_tables():
     db.session.commit()
 
 
-
 if __name__ == "__main__":
-    create_or_update_tables()
+    create_word_tables()

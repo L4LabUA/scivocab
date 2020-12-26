@@ -11,12 +11,22 @@ from flask import (
     jsonify,
     session,
     g,
+    current_app
 )
 import pandas as pd
 from dataclasses import dataclass, asdict
 from app.translate import construct_word_dict, get_filename
 from pathlib import Path
-from app.models import Proctor, Child, Session, Strand, BreadthTaskResponse
+from app.models import (
+    Proctor,
+    Child,
+    Session,
+    Strand,
+    BreadthTaskResponse,
+    BreadthTaskImage,
+    BreadthTaskImageType,
+    Word
+)
 from app import db
 from flask_login import login_required, current_user
 import logging
@@ -27,20 +37,19 @@ from logging import info
 logging.basicConfig(level=logging.INFO)
 
 
+def get_enum_values(enumClass):
+    return [member.value for n, member in enumClass.__members__.items()]
+
 class BreadthTaskManager(object):
-    def __init__(self):
+    def initialize(self):
         # Imports all words from the given filename and stores them in a dictionary
-        self.words = construct_word_dict(
-            Path(__file__).parents[0] / "static/scivocab/sv_bv1_input.csv"
-        )
+        self.words = Word.query.all()
 
         # Splits the words in self.words into four strands in self.strands, where each strand
         # correlates to the strand types.
         strand_groups = [
-            [x for x in self.words if self.words[x].strand == n]
-            for n in [
-                int(member.value) for n, member in Strand.__members__.items()
-            ]
+            [word for word in self.words if word.strand.value == n]
+            for n in get_enum_values(Strand)
         ]
 
         for strand_group in strand_groups:
@@ -54,7 +63,7 @@ class BreadthTaskManager(object):
         self.answers = []
 
         # We use this in selectImage to put the images in a random order.
-        self.word_types = ["tw", "fp", "fx", "fs"]
+        self.word_types = get_enum_values(BreadthTaskImageType)
 
         self.current_word = next(self.randomized_list)
 
@@ -66,7 +75,7 @@ class BreadthTaskManager(object):
         # Set the current word
         self.current_word = next(self.randomized_list)
 
-        g.user.current_word = self.current_word
+        g.user.set_current_word(self.current_word)
 
 
 # Flask blueprints help keep webapps modular.
@@ -78,14 +87,23 @@ def before_request():
     g.user = current_user
 
 
+# Create a 'bare' instance of BreadthTaskManager
 manager = BreadthTaskManager()
+
+@bp.before_app_first_request
+def before_app_first_request():
+    """Initialize the global BreathTaskManager instance. We have deferred this
+    to this function in order for Flask-SQLAlchemy to work."""
+    with current_app.app_context():
+        manager.initialize()
 
 # Starts the app and leads to a loop of selectImage().
 @bp.route("/")
 @login_required
 def main():
-    info(manager.current_word)
-    return render_template("breadth.html", current_word=manager.current_word)
+    return render_template(
+        "breadth.html", current_word=current_user.get_current_word
+    )
 
 
 @bp.route("/getImageData")
@@ -108,33 +126,36 @@ def redirect_to_end():
 # BreadthTaskResponse class.
 @bp.route("/selectImage", methods=["GET", "POST"])
 def select_image():
-    response_class = None
 
+    # If the request contains position information, it is from an image click
+    # rather than a page load/reload.
     if request.args.get("position"):
         response_class = manager.word_types[
             int(request.args.get("position")[5]) - 1
         ]
+    else:
+        response_class = None
 
     word_index = int(request.args.get("word_index", 0))
 
     try:
-        if response_class:
+        if response_class is not None:
             breadth_task_response = BreadthTaskResponse(
-                target_word = manager.current_word,
-                response_type = response_class,
-                child_id = current_user.id
+                target_word=manager.current_word,
+                response_type=response_class,
+                child_id=current_user.id,
             )
             db.session.add(breadth_task_response)
             db.session.commit()
 
-        manager.go_to_next_word(g)
+            manager.go_to_next_word(g)
+
+        filenames = [img.filename for img in
+                BreadthTaskImage.query.filter_by(target=manager.current_word.id).all()]
         response = {
-            f"p{n}_filename": get_filename(
-                manager.words[manager.current_word], manager.word_types[n - 1]
-            )
-            for n in range(1, 5)
+            f"p{n}_filename": filenames[n] for n in range(4)
         }
-        response["tw"] = manager.current_word
+        response["tw"] = manager.current_word.id
 
         return jsonify(response)
     except StopIteration:

@@ -6,12 +6,25 @@ import enum
 # TODO do all the strings need to be 64 characters long? Can we omit the
 # lengths?
 
+
 class Proctor(db.Model):
     id = db.Column(db.String(64), primary_key=True)
 
 
 class Child(UserMixin, db.Model):
     id = db.Column(db.String(64), primary_key=True)
+
+    def __init__(self):
+        """Initialize the object, set the __current_word property to None"""
+        self.__current_word = None
+
+    def set_current_word(self, word: str):
+        """Set the current word that the user is on."""
+        self.__current_word = word
+
+    def get_current_word(self):
+        """Get the current word that the user is on."""
+        return self.__current_word
 
 
 class Session(db.Model):
@@ -23,17 +36,22 @@ class Session(db.Model):
 
 class BreadthTaskImageType(enum.Enum):
     # TODO would be nice to have more informative variable names :(
-    tw = 'tw'  # target word
-    fp = 'fp'  # phonological foil
-    fx = 'fx'  # What is fx???
-    fs = 'fs'  # semantic foil
+    tw = "tw"  # target word
+    fp = "fp"  # phonological foil
+    fx = "fx"  # What is fx???
+    fs = "fs"  # semantic foil
 
+class BreadthTaskImagePosition(enum.Enum):
+    one = 1
+    two = 2
+    three = 3
+    four = 4
 
 class Strand(enum.Enum):
-    forty = '40'
-    fifty = '50'
-    sixtytwo = '62'
-    sixtythree = '63'
+    forty = "40"
+    fifty = "50"
+    sixtytwo = "62"
+    sixtythree = "63"
 
 
 def values_callable(x):
