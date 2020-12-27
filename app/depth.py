@@ -11,3 +11,7 @@ from flask import (
 
 # Flask blueprints help keep webapps modular.
 bp = Blueprint("depth", __name__)
+
+@bp.route("/")
+def main():
+    return "The depth task has not been implemented yet."

@@ -8,6 +8,7 @@ from flask import (
     current_app,
 )
 from app.models import (
+    Word,
     Strand,
     BreadthTaskResponse,
     BreadthTaskImage,
@@ -19,50 +20,70 @@ import logging
 from logging import info
 
 
-# Set logging level to INFO for debugging purposes
-logging.basicConfig(level=logging.INFO)
-
-
 class BreadthTaskManager(object):
     def initialize(self):
+        """The code in this method would normally be in the class's __init__
+        method. However, we put the logic in this function instead because we
+        need a top-level instance of this class to persist across requests in
+        order to keep track of which item (word) a user has reached in the
+        task, in order to prevent page refreshes/logouts from resetting
+        progress.
 
-        randomized_word_list = []
+        The normal method of persisting data across requests with Flask is to
+        use Flask's 'session' object. However, this persistence is implemented
+        by storing data on the user's computer as a cookie, which means that
+        any data that is put into the Flask 'session' object must be
+        JSON-serializable. Unfortunately, SQLAlchemy classes are not trivially
+        serializable. In principle, we could implement custom serialization and
+        deserialization logic, but for expediency's sake, we opt instead to
+        keep the instance of the manager in memory rather than reconstructing
+        it for every request."""
 
+        # Create an empty list to hold Word objects
+        randomized_word_list: list[Word] = []
+
+        # Get the strands from the database
         strands = Strand.query.all()
 
         # Currently, we randomize the order of the strands.
-        # Jessie says that in the future, the order may not be random.
+        # NOTE: Jessie says that in the future, the order may not be random.
         shuffle(strands)
 
+        # For each strand, we shuffle the words in the strand, and add those
+        # words to randomized_word_list.
         for strand in strands:
             shuffle(strand.words)
             randomized_word_list.extend(strand.words)
 
-        # We use this in selectImage to put the images in a random order.
+        # Create a list of image types. We will shuffle this list every time we
+        # move to a new word in the task, in order to randomize the positions
+        # of the four images for a given word.
         self.image_types = [x.id for x in BreadthTaskImageType.query.all()]
 
+        # We create an iterator out of the list in order to have the Python
+        # runtime keep track of our iteration and as an additional safeguard to
+        # prevent going backwards in the sequence.
+        # (https://docs.python.org/3/glossary.html#term-iterator)
         self.randomized_word_iterator = iter(randomized_word_list)
 
+        # We set the 'current_word' property of this instance of the
+        # BreadthTaskManager class to the next Word object.
         self.current_word = next(self.randomized_word_iterator)
 
-    def go_to_next_word(self, g):
-        info("Going to next word")
+    def go_to_next_word(self):
         # Shuffle the image_types list.
         shuffle(self.image_types)
 
-        # Set the current word
+        # Set the current_word attribute of the class instance to the next Word
+        # in the iterator.
         self.current_word = next(self.randomized_word_iterator)
 
-        g.user.set_current_word(self.current_word)
+        current_user.set_current_word(self.current_word)
 
 
-# Flask blueprints help keep webapps modular.
+# We create a Flask blueprint object. Flask blueprints help keep apps modular.
+# So in principle, the same blueprint could be used for multiple apps.
 bp = Blueprint("breadth", __name__)
-
-
-@bp.before_request
-def before_request():
-    g.user = current_user
 
 
 # Create a 'bare' instance of BreadthTaskManager
@@ -113,7 +134,7 @@ def select_image():
             db.session.add(breadth_task_response)
             db.session.commit()
 
-            manager.go_to_next_word(g)
+            manager.go_to_next_word()
 
         filenames = [
             img.filename
