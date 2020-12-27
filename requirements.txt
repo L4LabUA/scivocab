@@ -1,8 +1,0 @@
-flask
-xlrd
-numpy==1.18.0
-pandas
-openpyxl
-Flask-WTF
-flask-sqlalchemy
-flask-migrate

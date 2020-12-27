@@ -1,10 +1,96 @@
-from app import db
+from datetime import datetime
+from app import db, login_manager
+from flask_login import UserMixin
 
-class User(db.Model):
+# TODO do all the strings need to be 64 characters long? Can we omit the
+# lengths?
+
+class Proctor(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
+
+
+class Child(UserMixin, db.Model):
+    id = db.Column(db.String(64), primary_key=True)
+    breadth_task_responses = db.relationship(
+        "BreadthTaskResponse", backref="child"
+    )
+
+    def set_current_word(self, word: str):
+        """Set the current word that the user is on."""
+        self.__current_word = word
+
+    def get_current_word(self):
+        """Get the current word that the user is on."""
+        return self.__current_word
+
+
+class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    child_id  = db.Column(db.String(64), index=True, unique=True)
-    proctor = db.Column(db.String(64), index=True, unique=True)
+    start_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
+    proctor_id = db.Column(db.String(64), db.ForeignKey("proctor.id"))
 
-    def __repr__(self):
-        return '<User {}>'.format(self.child_id)   
 
+class BreadthTaskImageType(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
+
+
+class BreadthTaskImagePosition(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+
+class Strand(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+
+class Word(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
+    breadth_id = db.Column(db.String(64), unique=True)
+
+    # We will later add depth_id
+    depth_id = db.Column(db.String(64))
+    strand_id = db.Column(
+        db.Integer, db.ForeignKey("strand.id"), nullable=False
+    )
+    strand = db.relationship("Strand", backref=db.backref("words"), lazy=True)
+
+
+class BreadthTaskImage(db.Model):
+    """A class that stores all the information needed to make one set of images
+    associated with a target."""
+
+    target = db.Column(db.String(64), db.ForeignKey("word.id"))
+    filename = db.Column(db.String(64), primary_key=True)
+    image_type_id = db.Column(
+        db.String(64),
+        db.ForeignKey("breadth_task_image_type.id"),
+        nullable=False,
+    )
+    image_type = db.relationship(
+        "BreadthTaskImageType", backref=db.backref("images"), lazy=True
+    )
+    position = db.Column(
+        db.Integer, db.ForeignKey("breadth_task_image_position.id")
+    )
+
+
+class BreadthTaskResponse(db.Model):
+    """A class that represents a single response in the breadth task."""
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    target_word = db.Column(db.String(64), db.ForeignKey("word.id"))
+
+    # The type of response the subject selected
+    response_type = db.Column(
+        db.String(64), db.ForeignKey("breadth_task_image_type.id")
+    )
+
+    child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    position = db.Column(db.String(64))
+
+
+@login_manager.user_loader
+def load_user(id):
+    return Child.query.get(id)
