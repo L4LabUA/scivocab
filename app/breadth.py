@@ -69,6 +69,12 @@ class BreadthTaskManager(object):
         # We set the 'current_word' property of this instance of the
         # BreadthTaskManager class to the next Word object.
         self.current_word = next(self.randomized_word_iterator)
+        self.position_labels = {
+            0: "top_left",
+            1: "top_right",
+            2: "bottom_left",
+            3: "bottom_right",
+        }
 
     def go_to_next_word(self):
         # Shuffle the image_types list.
@@ -86,14 +92,16 @@ class BreadthTaskManager(object):
 bp = Blueprint("breadth", __name__)
 
 
-# Create a 'bare' instance of BreadthTaskManager
+# Create a module-level instance of BreadthTaskManager, which will be
+# initialized immediately before the first request to the app (see the
+# 'initialize_breadth_task_manager' function below.
 manager = BreadthTaskManager()
 
 
 @bp.before_app_first_request
-def before_app_first_request():
-    """Initialize the global BreathTaskManager instance. We have deferred this
-    to this function in order for Flask-SQLAlchemy to work."""
+@login_required
+def initialize_breadth_task_manager():
+    """Initialize the global BreadthTaskManager instance."""
     with current_app.app_context():
         manager.initialize()
 
@@ -101,10 +109,12 @@ def before_app_first_request():
 @bp.route("/")
 @login_required
 def main():
+    """The main view function for the breadth task."""
     return render_template("breadth.html")
 
 
 @bp.route("/redirect")
+@login_required
 def redirect_to_end():
     return render_template("after.html")
 
@@ -113,23 +123,23 @@ def redirect_to_end():
 # image, and adds the selected word to manager.answers as an instance of the
 # BreadthTaskResponse class.
 @bp.route("/selectImage", methods=["GET", "POST"])
-def select_image():
-
+@login_required
+def selectImage():
     # If the request contains position information, it is from an image click
-    # rather than a page load/reload.
-    if request.args.get("position"):
-        response_class = manager.image_types[
-            int(request.args.get("position")[5])
-        ]
+    # rather than a page load/reload, and so we extract the position of the
+    # image that was clicked.
+    if request.args.get("position") is not None:
+        position = int(request.args.get("position").split("_")[1])
     else:
-        response_class = None
+        position = None
 
     try:
-        if response_class is not None:
+        if position is not None:
             breadth_task_response = BreadthTaskResponse(
                 target_word=manager.current_word.id,
-                response_type=response_class,
+                response_type=manager.image_types[position],
                 child_id=current_user.id,
+                position=manager.position_labels[position],
             )
             db.session.add(breadth_task_response)
             db.session.commit()

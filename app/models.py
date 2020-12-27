@@ -89,6 +89,7 @@ class BreadthTaskResponse(db.Model):
 
     child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    position = db.Column(db.String(64))
 
 
 @login_manager.user_loader

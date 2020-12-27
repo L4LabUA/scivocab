@@ -11,10 +11,10 @@
         if ("redirect" in data) {
             window.location.href=data["redirect"];
         }
-        $("img#img_p0").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[0]) ;
-        $("img#img_p1").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[1]) ;
-        $("img#img_p2").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[2]) ;
-        $("img#img_p3").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[3]) ;
+        $("img#position_0").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[0]) ;
+        $("img#position_1").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[1]) ;
+        $("img#position_2").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[2]) ;
+        $("img#position_3").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[3]) ;
         $("h1#header").text(data.tw) ;
     }
 
@@ -53,12 +53,12 @@
     <h1 id="header"></h1>
     <table>
         <tr>
-            <td><img id = "img_p0" src="" /></td>
-            <td><img id = "img_p1" src="" /></td>
+            <td><a href="#"><img id = "position_0" src="" /></a></td>
+            <td><a href="#"><img id = "position_1" src="" /></a></td>
         </tr>
         <tr>
-            <td><img id = "img_p2" src="" /></td>
-            <td><img id = "img_p3" src="" /></td>
+            <td><a href="#"><img id = "position_2" src="" /></a></td>
+            <td><a href="#"><img id = "position_3" src="" /></a></td>
         </tr>
 
     </table>
