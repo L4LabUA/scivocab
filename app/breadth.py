@@ -11,7 +11,7 @@ from flask import (
     jsonify,
     session,
     g,
-    current_app
+    current_app,
 )
 import pandas as pd
 from dataclasses import dataclass, asdict
@@ -25,7 +25,7 @@ from app.models import (
     BreadthTaskResponse,
     BreadthTaskImage,
     BreadthTaskImageType,
-    Word
+    Word,
 )
 from app import db
 from flask_login import login_required, current_user
@@ -37,19 +37,14 @@ from logging import info
 logging.basicConfig(level=logging.INFO)
 
 
-def get_enum_values(enumClass):
-    return [member.value for n, member in enumClass.__members__.items()]
-
 class BreadthTaskManager(object):
     def initialize(self):
-        # Imports all words from the given filename and stores them in a dictionary
-        self.words = Word.query.all()
 
         # Splits the words in self.words into four strands in self.strands, where each strand
         # correlates to the strand types.
         strand_groups = [
-            [word for word in self.words if word.strand.value == n]
-            for n in get_enum_values(Strand)
+            [word for word in self.words if word.strand == strand]
+            for strand in Strand.query.all()
         ]
 
         for strand_group in strand_groups:
@@ -63,7 +58,7 @@ class BreadthTaskManager(object):
         self.answers = []
 
         # We use this in selectImage to put the images in a random order.
-        self.word_types = get_enum_values(BreadthTaskImageType)
+        self.word_types = [x.id for x in BreadthTaskImageType.query.all()]
 
         self.current_word = next(self.randomized_list)
 
@@ -90,12 +85,14 @@ def before_request():
 # Create a 'bare' instance of BreadthTaskManager
 manager = BreadthTaskManager()
 
+
 @bp.before_app_first_request
 def before_app_first_request():
     """Initialize the global BreathTaskManager instance. We have deferred this
     to this function in order for Flask-SQLAlchemy to work."""
     with current_app.app_context():
         manager.initialize()
+
 
 # Starts the app and leads to a loop of selectImage().
 @bp.route("/")
@@ -141,7 +138,7 @@ def select_image():
     try:
         if response_class is not None:
             breadth_task_response = BreadthTaskResponse(
-                target_word=manager.current_word,
+                target_word=manager.current_word.id,
                 response_type=response_class,
                 child_id=current_user.id,
             )
@@ -150,10 +147,16 @@ def select_image():
 
             manager.go_to_next_word(g)
 
-        filenames = [img.filename for img in
-                BreadthTaskImage.query.filter_by(target=manager.current_word.id).all()]
+        filenames = [
+            img.filename
+            for img in BreadthTaskImage.query.filter_by(
+                target=manager.current_word.id
+            ).all()
+        ]
+
         response = {
-            f"p{n}_filename": filenames[n] for n in range(4)
+            "filenames": ["scivocab/sv_bv1/" + filenames[n]
+            for n in range(4)]
         }
         response["tw"] = manager.current_word.id
 

@@ -1,7 +1,6 @@
 from datetime import datetime
 from app import db, login_manager
 from flask_login import UserMixin
-import enum
 
 # TODO do all the strings need to be 64 characters long? Can we omit the
 # lengths?
@@ -13,10 +12,9 @@ class Proctor(db.Model):
 
 class Child(UserMixin, db.Model):
     id = db.Column(db.String(64), primary_key=True)
-
-    def __init__(self):
-        """Initialize the object, set the __current_word property to None"""
-        self.__current_word = None
+    breadth_task_responses = db.relationship(
+        "BreadthTaskResponse", backref="child"
+    )
 
     def set_current_word(self, word: str):
         """Set the current word that the user is on."""
@@ -29,33 +27,21 @@ class Child(UserMixin, db.Model):
 
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    datetime = db.Column(db.DateTime, default=datetime.now())
+    start_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
     proctor_id = db.Column(db.String(64), db.ForeignKey("proctor.id"))
 
 
-class BreadthTaskImageType(enum.Enum):
-    # TODO would be nice to have more informative variable names :(
-    tw = "tw"  # target word
-    fp = "fp"  # phonological foil
-    fx = "fx"  # What is fx???
-    fs = "fs"  # semantic foil
-
-class BreadthTaskImagePosition(enum.Enum):
-    one = 1
-    two = 2
-    three = 3
-    four = 4
-
-class Strand(enum.Enum):
-    forty = "40"
-    fifty = "50"
-    sixtytwo = "62"
-    sixtythree = "63"
+class BreadthTaskImageType(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
 
 
-def values_callable(x):
-    return [e.value for e in x]
+class BreadthTaskImagePosition(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+
+class Strand(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
 
 
 class Word(db.Model):
@@ -64,8 +50,8 @@ class Word(db.Model):
 
     # We will later add depth_id
     depth_id = db.Column(db.String(64))
-
-    strand = db.Column(db.Enum(Strand, values_callable=values_callable))
+    strand_id = db.Column(db.Integer, db.ForeignKey("strand.id"), nullable=False)
+    strand = db.relationship("Strand", backref=db.backref("words"), lazy=True)
 
 
 class BreadthTaskImage(db.Model):
@@ -75,7 +61,10 @@ class BreadthTaskImage(db.Model):
     target = db.Column(db.String(64), db.ForeignKey("word.id"))
     filename = db.Column(db.String(64), primary_key=True)
     image_type = db.Column(
-        db.Enum(BreadthTaskImageType, values_callable=values_callable)
+        db.String(64), db.ForeignKey("breadth_task_image_type.id")
+    )
+    position = db.Column(
+        db.Integer, db.ForeignKey("breadth_task_image_position.id")
     )
 
 
@@ -88,10 +77,11 @@ class BreadthTaskResponse(db.Model):
 
     # The type of response the subject selected
     response_type = db.Column(
-        db.Enum(BreadthTaskImageType, values_callable=values_callable)
+        db.String(64), db.ForeignKey("breadth_task_image_type.id")
     )
 
     child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 @login_manager.user_loader

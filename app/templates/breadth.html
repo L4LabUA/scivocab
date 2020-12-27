@@ -11,10 +11,10 @@
         if ("redirect" in data) {
             window.location.href=data["redirect"];
         }
-        $("img#img_p1").attr('src' , $SCRIPT_ROOT+"/static/"+data.p1_filename) ;
-        $("img#img_p2").attr('src' , $SCRIPT_ROOT+"/static/"+data.p2_filename) ;
-        $("img#img_p3").attr('src' , $SCRIPT_ROOT+"/static/"+data.p3_filename) ;
-        $("img#img_p4").attr('src' , $SCRIPT_ROOT+"/static/"+data.p4_filename) ;
+        $("img#img_p1").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[0]) ;
+        $("img#img_p2").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[1]) ;
+        $("img#img_p3").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[2]) ;
+        $("img#img_p4").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[3]) ;
         $("h1#header").text(data.tw) ;
         word_index++;
     }

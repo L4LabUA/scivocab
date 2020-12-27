@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-from app.models import Word, BreadthTaskImage
+from app.models import *
 from flask_sqlalchemy import SQLAlchemy
 from app import create_app
 from sqlalchemy import create_engine
@@ -22,13 +22,14 @@ def create_word_tables():
     db.create_all()
     for row in df.itertuples():
         word = Word(
-            id=row.target, breadth_id=row.breadth_id, strand=str(row.strand)
+            id=row.target, breadth_id=row.breadth_id, strand=Strand(id = row.strand)
         )
         db.session.merge(word)
         breadth_task_image = BreadthTaskImage(
             target=row.target,
             filename=row.file,
             image_type=row.img_type,
+            position = int(row.file.split("_")[2][1])
         )
         db.session.add(breadth_task_image)
     db.session.commit()
