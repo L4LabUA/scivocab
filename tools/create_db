@@ -17,8 +17,6 @@ from pathlib import Path
 
 def create_word_tables():
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, echo=False)
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    df = pd.read_csv(f"{basedir}/static/scivocab/sv_bv1_input.csv")
     current_app = create_app()
     current_app.config.from_object(Config)
     current_app.app_context().push()
@@ -39,6 +37,9 @@ def create_word_tables():
 
     db.drop_all()
     db.create_all()
+
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    df = pd.read_csv(f"{basedir}/../app/static/scivocab/sv_bv1_input.csv")
     for row in df.itertuples():
         word = Word(
             id=row.target,
