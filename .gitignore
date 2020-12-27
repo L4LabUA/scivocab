@@ -13,3 +13,5 @@ app.db
 
 #.egg-info files created when we install the package in editable mode.
 *.egg-info
+
+Icon*
