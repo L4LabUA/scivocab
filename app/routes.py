@@ -1,13 +1,9 @@
 from flask import (
     render_template,
-    flash,
     redirect,
     url_for,
-    request,
     Blueprint,
-    session,
 )
-from werkzeug.urls import url_parse
 from app.forms import LoginForm
 from app.models import Child, Proctor, Session
 from app import db

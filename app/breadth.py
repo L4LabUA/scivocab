@@ -1,28 +1,17 @@
 from random import shuffle
-from itertools import chain
 from flask import (
     Blueprint,
-    Flask,
     render_template,
-    url_for,
     request,
-    redirect,
     jsonify,
-    session,
     g,
     current_app,
 )
-import pandas as pd
-from app.translate import construct_word_dict, get_filename
 from app.models import (
-    Proctor,
-    Child,
-    Session,
     Strand,
     BreadthTaskResponse,
     BreadthTaskImage,
     BreadthTaskImageType,
-    Word,
 )
 from app import db
 from flask_login import login_required, current_user

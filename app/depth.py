@@ -1,16 +1,11 @@
-from itertools import zip_longest
 from pathlib import Path
-from pandas import read_excel
 from random import shuffle
 from app.translate import construct_word_dict
 from itertools import chain
 from flask import (
     Blueprint,
-    Flask,
     render_template,
-    url_for,
     request,
-    redirect,
     jsonify,
 )
 
