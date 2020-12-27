@@ -125,6 +125,8 @@ def redirect_to_end():
 @bp.route("/selectImage", methods=["GET", "POST"])
 @login_required
 def selectImage():
+    """This endpoint is queried from the frontend to obtain the filenames of
+    the images to display for the breadth task."""
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
