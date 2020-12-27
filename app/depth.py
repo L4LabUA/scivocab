@@ -1,6 +1,4 @@
-from glob import glob
 from itertools import zip_longest
-from enum import Enum, auto
 from pathlib import Path
 from pandas import read_excel
 from random import shuffle

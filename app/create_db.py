@@ -19,6 +19,7 @@ def create_word_tables():
     current_app = create_app()
     current_app.config.from_object(Config)
     current_app.app_context().push()
+    db.drop_all()
     db.create_all()
     for row in df.itertuples():
         word = Word(

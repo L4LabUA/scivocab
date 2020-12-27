@@ -1,4 +1,3 @@
-import os
 from random import shuffle
 from itertools import chain
 from flask import (
@@ -14,9 +13,7 @@ from flask import (
     current_app,
 )
 import pandas as pd
-from dataclasses import dataclass, asdict
 from app.translate import construct_word_dict, get_filename
-from pathlib import Path
 from app.models import (
     Proctor,
     Child,

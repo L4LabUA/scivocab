@@ -10,7 +10,6 @@ from flask import (
 from werkzeug.urls import url_parse
 from app.forms import LoginForm
 from app.models import Child, Proctor, Session
-from uuid import uuid4
 from app import db
 from flask_login import login_required, login_user, logout_user
 
