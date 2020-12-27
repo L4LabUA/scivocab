@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 
+"""The create_db script creates an SQLite3 database that contains the tables
+and data required for the app."""
+
 import os
-from app.models import Word, BreadthTaskImage, BreadthTaskImageType, Strand
+import sys
+from app.models import Word, Strand, BreadthTaskImage, BreadthTaskImageType
 from flask_sqlalchemy import SQLAlchemy
-from app import create_app
+from app import create_app, db
 from sqlalchemy import create_engine
 import pandas as pd
 from app.config import Config
 import click
-
-db = SQLAlchemy()
-
-# Run this script to create app.db with the scivocab words in it.
+from pathlib import Path
 
 
 def create_word_tables():
@@ -21,10 +22,22 @@ def create_word_tables():
     current_app = create_app()
     current_app.config.from_object(Config)
     current_app.app_context().push()
-    if click.confirm("Do you want to continue?", default=False):
-        db.drop_all()
-    else:
-        sys.exit(0)
+    db.init_app(current_app)
+    db_filepath = current_app.config["SQLITE3_DB_PATH"]
+
+    if Path(db_filepath).exists():
+        # Warn the user about the consequences of running the script and ask
+        # them 
+        if not click.confirm(
+            "This script will delete the existing database "
+            f"({db_filepath}) and create a fresh one. "
+            "Are you sure you want to continue?",
+            default=False,
+        ):
+            print("Database creation canceled. Exiting now.")
+            sys.exit(0)
+
+    db.drop_all()
     db.create_all()
     for row in df.itertuples():
         word = Word(

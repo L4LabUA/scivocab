@@ -8,7 +8,6 @@ class Config(object):
     # we will need to set the SECRET_KEY for the enviroment later?
     SECRET_KEY = os.environ.get("SECRET_KEY") or "you will never guess"
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL"
-    ) or "sqlite:///" + os.path.join(basedir, "app.db")
+    SQLITE3_DB_PATH = os.path.join(basedir, "app.db")
+    SQLALCHEMY_DATABASE_URI = "sqlite:///" + SQLITE3_DB_PATH
     SQLALCHEMY_TRACK_MODIFICATIONS = False
