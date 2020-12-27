@@ -1,22 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js">
+</script>
 
 <script type=text/javascript>
-    var word_index = 0;
     // Global- rephrase as capital
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     function update(data) {
         if ("redirect" in data) {
             window.location.href=data["redirect"];
         }
-        $("img#img_p1").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[0]) ;
-        $("img#img_p2").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[1]) ;
-        $("img#img_p3").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[2]) ;
-        $("img#img_p4").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[3]) ;
+        $("img#img_p0").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[0]) ;
+        $("img#img_p1").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[1]) ;
+        $("img#img_p2").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[2]) ;
+        $("img#img_p3").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[3]) ;
         $("h1#header").text(data.tw) ;
-        word_index++;
     }
 
 
@@ -37,7 +36,7 @@
     $(document).on('click', 'img', function() {
         $.getJSON(
             "selectImage",
-            {position: $(this).attr('id'), word_index : word_index},
+            {position: $(this).attr('id')},
             update
         );
         return false;
@@ -51,31 +50,15 @@
 <title>L4 Breadth-First</title>
 <div class="container-fluid" style="text-align: center">
     <h1>Scientific Vocabulary Task</h1>
-    <h1 id="header">{{ current_word.tw }}</h1>
+    <h1 id="header"></h1>
     <table>
         <tr>
-            <td>
-                <a href= "#" id="p1">
-                    <img id = "img_p1" src="" />
-                </a>
-            </td>
-            <td>
-                <a href= "#" id="p2">
-                    <img id = "img_p2" src="" />
-                </a>
-            </td>
+            <td><img id = "img_p0" src="" /></td>
+            <td><img id = "img_p1" src="" /></td>
         </tr>
         <tr>
-            <td>
-                <a href= "#" id="p3">
-                    <img id = "img_p3" src="" />
-                </a>
-            </td>
-            <td>
-                <a href= "#" id="p4">
-                    <img id = "img_p4" src="" />
-                </a>
-            </td>
+            <td><img id = "img_p2" src="" /></td>
+            <td><img id = "img_p3" src="" /></td>
         </tr>
 
     </table>

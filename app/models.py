@@ -50,7 +50,9 @@ class Word(db.Model):
 
     # We will later add depth_id
     depth_id = db.Column(db.String(64))
-    strand_id = db.Column(db.Integer, db.ForeignKey("strand.id"), nullable=False)
+    strand_id = db.Column(
+        db.Integer, db.ForeignKey("strand.id"), nullable=False
+    )
     strand = db.relationship("Strand", backref=db.backref("words"), lazy=True)
 
 
@@ -60,8 +62,13 @@ class BreadthTaskImage(db.Model):
 
     target = db.Column(db.String(64), db.ForeignKey("word.id"))
     filename = db.Column(db.String(64), primary_key=True)
-    image_type = db.Column(
-        db.String(64), db.ForeignKey("breadth_task_image_type.id")
+    image_type_id = db.Column(
+        db.String(64),
+        db.ForeignKey("breadth_task_image_type.id"),
+        nullable=False,
+    )
+    image_type = db.relationship(
+        "BreadthTaskImageType", backref=db.backref("images"), lazy=True
     )
     position = db.Column(
         db.Integer, db.ForeignKey("breadth_task_image_position.id")

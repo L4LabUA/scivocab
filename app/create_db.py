@@ -28,10 +28,10 @@ def create_word_tables():
         breadth_task_image = BreadthTaskImage(
             target=row.target,
             filename=row.file,
-            image_type=row.img_type,
+            image_type=BreadthTaskImageType(id = row.img_type),
             position = int(row.file.split("_")[2][1])
         )
-        db.session.add(breadth_task_image)
+        db.session.merge(breadth_task_image)
     db.session.commit()
 
 

@@ -40,35 +40,32 @@ logging.basicConfig(level=logging.INFO)
 class BreadthTaskManager(object):
     def initialize(self):
 
-        # Splits the words in self.words into four strands in self.strands, where each strand
-        # correlates to the strand types.
-        strand_groups = [
-            [word for word in self.words if word.strand == strand]
-            for strand in Strand.query.all()
-        ]
+        randomized_word_list = []
 
-        for strand_group in strand_groups:
-            shuffle(strand_group)
+        strands = Strand.query.all()
 
-        # Shuffles the words in each strand, and concatenates each strand in a
-        # list self.randomized_list.  Then it creates a list where we store the
-        # user inputs (which starts as an empty list, self.answers) and
-        # self.word_types, which we will use later.
-        self.randomized_list = chain(*strand_groups)
-        self.answers = []
+        # Currently, we randomize the order of the strands.
+        # Jessie says that in the future, the order may not be random.
+        shuffle(strands)
+
+        for strand in strands:
+            shuffle(strand.words)
+            randomized_word_list.extend(strand.words)
 
         # We use this in selectImage to put the images in a random order.
-        self.word_types = [x.id for x in BreadthTaskImageType.query.all()]
+        self.image_types = [x.id for x in BreadthTaskImageType.query.all()]
 
-        self.current_word = next(self.randomized_list)
+        self.randomized_word_iterator = iter(randomized_word_list)
+
+        self.current_word = next(self.randomized_word_iterator)
 
     def go_to_next_word(self, g):
         info("Going to next word")
-        # Shuffle the word_types list.
-        shuffle(self.word_types)
+        # Shuffle the image_types list.
+        shuffle(self.image_types)
 
         # Set the current word
-        self.current_word = next(self.randomized_list)
+        self.current_word = next(self.randomized_word_iterator)
 
         g.user.set_current_word(self.current_word)
 
@@ -94,23 +91,10 @@ def before_app_first_request():
         manager.initialize()
 
 
-# Starts the app and leads to a loop of selectImage().
 @bp.route("/")
 @login_required
 def main():
-    return render_template(
-        "breadth.html", current_word=current_user.get_current_word
-    )
-
-
-@bp.route("/getImageData")
-def getImageData():
-    response = {
-        f"p{n}_filename": get_filename(
-            manager.words[manager.current_word], manager.word_types[n - 1]
-        )
-        for n in range(1, 5)
-    }
+    return render_template("breadth.html")
 
 
 @bp.route("/redirect")
@@ -127,13 +111,11 @@ def select_image():
     # If the request contains position information, it is from an image click
     # rather than a page load/reload.
     if request.args.get("position"):
-        response_class = manager.word_types[
-            int(request.args.get("position")[5]) - 1
+        response_class = manager.image_types[
+            int(request.args.get("position")[5])
         ]
     else:
         response_class = None
-
-    word_index = int(request.args.get("word_index", 0))
 
     try:
         if response_class is not None:
@@ -155,8 +137,7 @@ def select_image():
         ]
 
         response = {
-            "filenames": ["scivocab/sv_bv1/" + filenames[n]
-            for n in range(4)]
+            "filenames": ["scivocab/sv_bv1/" + filenames[n] for n in range(4)]
         }
         response["tw"] = manager.current_word.id
 
