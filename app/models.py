@@ -5,7 +5,6 @@ from flask_login import UserMixin
 # TODO do all the strings need to be 64 characters long? Can we omit the
 # lengths?
 
-
 class Proctor(db.Model):
     id = db.Column(db.String(64), primary_key=True)
 
