@@ -6,6 +6,7 @@ from .config import Config
 db = SQLAlchemy()
 login_manager = LoginManager()
 
+
 def create_app():
     from app.breadth import bp as breadth_bp
     from app.depth import bp as depth_bp

@@ -42,9 +42,7 @@ def login():
             db.session.add(proctor)
             db.session.commit()
 
-        session_db_entry = Session(
-            child_id=child_id, proctor_id=proctor_id
-        )
+        session_db_entry = Session(child_id=child_id, proctor_id=proctor_id)
         db.session.add(session_db_entry)
         db.session.commit()
 

@@ -15,7 +15,9 @@ bp = Blueprint("depth", __name__)
 
 
 # Imports all words from the given filename and stores them in a dictionary WORDS.
-WORDS = construct_word_dict(Path(__file__).parents[0]/"static/scivocab/sv_bv1_input.csv")
+WORDS = construct_word_dict(
+    Path(__file__).parents[0] / "static/scivocab/sv_bv1_input.csv"
+)
 
 strands = [
     [x for x in WORDS if WORDS[x].strand == n] for n in (40, 50, 62, 63)

@@ -12,6 +12,7 @@ db = SQLAlchemy()
 
 # Run this script to create app.db with the scivocab words in it.
 
+
 def create_word_tables():
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, echo=False)
     basedir = os.path.abspath(os.path.dirname(__file__))
@@ -23,14 +24,16 @@ def create_word_tables():
     db.create_all()
     for row in df.itertuples():
         word = Word(
-            id=row.target, breadth_id=row.breadth_id, strand=Strand(id = row.strand)
+            id=row.target,
+            breadth_id=row.breadth_id,
+            strand=Strand(id=row.strand),
         )
         db.session.merge(word)
         breadth_task_image = BreadthTaskImage(
             target=row.target,
             filename=row.file,
-            image_type=BreadthTaskImageType(id = row.img_type),
-            position = int(row.file.split("_")[2][1])
+            image_type=BreadthTaskImageType(id=row.img_type),
+            position=int(row.file.split("_")[2][1]),
         )
         db.session.merge(breadth_task_image)
     db.session.commit()
