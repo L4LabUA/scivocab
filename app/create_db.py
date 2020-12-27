@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 import os
-from app.models import *
+from app.models import Word, BreadthTaskImage, BreadthTaskImageType, Strand
 from flask_sqlalchemy import SQLAlchemy
 from app import create_app
 from sqlalchemy import create_engine
 import pandas as pd
 from app.config import Config
+import click
 
 db = SQLAlchemy()
 
@@ -20,7 +21,10 @@ def create_word_tables():
     current_app = create_app()
     current_app.config.from_object(Config)
     current_app.app_context().push()
-    db.drop_all()
+    if click.confirm("Do you want to continue?", default=False):
+        db.drop_all()
+    else:
+        sys.exit(0)
     db.create_all()
     for row in df.itertuples():
         word = Word(
