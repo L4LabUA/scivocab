@@ -130,36 +130,45 @@ def selectImage():
     # image that was clicked.
     if request.args.get("position") is not None:
         position = int(request.args.get("position").split("_")[1])
-    else:
-        position = None
+        breadth_task_response = BreadthTaskResponse(
+            target_word=manager.current_word.id,
+            response_type=manager.image_types[position],
+            child_id=current_user.id,
+            position=manager.position_labels[position],
+        )
+        db.session.add(breadth_task_response)
+        db.session.commit()
 
+    # We attempt to go to the next word. If a StopIteration exception is
+    # raised, that means we are at the end of the list, and so we redirect the
+    # user to the post-breadth-task page.
     try:
-        if position is not None:
-            breadth_task_response = BreadthTaskResponse(
-                target_word=manager.current_word.id,
-                response_type=manager.image_types[position],
-                child_id=current_user.id,
-                position=manager.position_labels[position],
-            )
-            db.session.add(breadth_task_response)
-            db.session.commit()
+        manager.go_to_next_word()
 
-            manager.go_to_next_word()
-
-        filenames = [
-            img.filename
-            for img in BreadthTaskImage.query.filter_by(
-                target=manager.current_word.id
-            ).all()
-        ]
-
-        response = {
-            "filenames": ["scivocab/sv_bv1/" + filenames[n] for n in range(4)]
-        }
-        response["tw"] = manager.current_word.id
-
-        return jsonify(response)
     except StopIteration:
         # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
         # function here. This is our workaround.
         return jsonify({"redirect": "redirect"})
+
+    # If the StopIteration exception was not raised, we continue on, telling
+    # the browser which images to display, via a JSON message.
+
+    # We gather the filenames for the browser.
+    filenames = [
+        img.filename
+        for img in BreadthTaskImage.query.filter_by(
+            target=manager.current_word.id
+        ).all()
+    ]
+
+    # We construct a JSON-serializable dictionary with the filenames and the
+    # target word.
+    response = {
+        "filenames": ["scivocab/sv_bv1/" + filenames[n] for n in range(4)],
+        "current_target_word": manager.current_word.id
+    }
+
+    # We convert the dictionary into a JSON message using Flask's 'jsonify'
+    # function and return that as a response, which will trigger the webpage to
+    # change the images displayed with new ones based on this message.
+    return jsonify(response)
