@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js">
-</script>
 
 <script type=text/javascript>
     // Global- rephrase as capital
@@ -23,7 +21,7 @@
     // function registered in the callback below initializes the task with the
     // first word in the sequence.
     $(function() {
-        $.getJSON("selectImage",
+        $.getJSON("nextWord",
             {},
             update
         );
@@ -35,7 +33,7 @@
 
     $(document).on('click', 'img', function() {
         $.getJSON(
-            "selectImage",
+            "nextWord",
             {position: $(this).attr('id')},
             update
         );
@@ -47,7 +45,6 @@
     img {width: 100%; height: auto}
     body {margin: auto}
 </style>
-<title>L4 Breadth-First</title>
 <div class="container-fluid" style="text-align: center">
     <h1>Scientific Vocabulary Task</h1>
     <h1 id="header"></h1>

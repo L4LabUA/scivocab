@@ -1,20 +1,19 @@
-<!doctype html>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<link 
-    rel="stylesheet" 
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-    crossorigin="anonymous">
+{% extends "base.html" %}
+
+{% block content %}
+
 <script type=text/javascript>
-    var WORD_INDEX = 0;
     var DRAGGED;
     // Global- rephrase as capital
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     function update(data) {
-        $("img#img_p1").attr('src' , $SCRIPT_ROOT+"/static/"+data.p1_filename) ;
-        $("img#img_p2").attr('src' , $SCRIPT_ROOT+"/static/"+data.p2_filename) ;
-        $("img#img_p3").attr('src' , $SCRIPT_ROOT+"/static/"+data.p3_filename) ;
-        $("img#img_p4").attr('src' , $SCRIPT_ROOT+"/static/"+data.p4_filename) ;
+        if ("redirect" in data) {
+            window.location.href=data["redirect"];
+        }
+        $("img#position_0").attr('src' , $SCRIPT_ROOT+"/static/"+data.p1_filename) ;
+        $("img#position_1").attr('src' , $SCRIPT_ROOT+"/static/"+data.p2_filename) ;
+        $("img#position_2").attr('src' , $SCRIPT_ROOT+"/static/"+data.p3_filename) ;
+        $("img#position_3").attr('src' , $SCRIPT_ROOT+"/static/"+data.p4_filename) ;
         $("h1#header").text(data.tw) ;
         WORD_INDEX++;
     }
@@ -97,24 +96,23 @@
         height: 200px;
     }
 </style>
-<title>L4 Depth Task</title>
 <div class="container-fluid" style="text-align: center">
     <h1>Scientific Vocabulary Depth Task</h1>
     <h1 id="header">{{ current_word.tw }}</h1>
     <div class="row">
         <div class="col" style="padding:auto">
-            <img class="draggableImage" id = "img_p1" src="" />
+            <img class="draggableImage" id = "position_0" src="" />
         </div>
         <div class="col" style="padding:auto">
-            <img class="draggableImage" id = "img_p2" src="" />
+            <img class="draggableImage" id = "position_1" src="" />
         </div>
     </div>
     <div class="row">
         <div class="col" style="padding:auto">
-            <img class="draggableImage" id = "img_p3" src="" />
+            <img class="draggableImage" id = "position_2" src="" />
         </div>
         <div class="col" style="padding:auto">
-            <img class="draggableImage" id = "img_p4" src="" />
+            <img class="draggableImage" id = "position_3" src="" />
         </div>
     </div>
 
@@ -131,3 +129,4 @@
 
     <button type="button" id="nextWordButton" class="btn btn-primary">Next word</button>
 </div>
+{% endblock %}
