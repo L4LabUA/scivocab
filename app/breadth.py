@@ -6,6 +6,7 @@ from flask import (
     jsonify,
     g,
     current_app,
+    url_for,
 )
 from app.models import (
     Word,
@@ -156,7 +157,7 @@ def nextWord():
 
     # We gather the filenames for the browser.
     filenames = [
-        img.filename
+        "static/scivocab/sv_bv1/" + img.filename
         for img in BreadthTaskImage.query.filter_by(
             target=manager.current_word.id
         ).all()
@@ -165,8 +166,8 @@ def nextWord():
     # We construct a JSON-serializable dictionary with the filenames and the
     # target word.
     response = {
-        "filenames": ["scivocab/sv_bv1/" + filenames[n] for n in range(4)],
-        "current_target_word": manager.current_word.id
+        "filenames": filenames,
+        "current_target_word": manager.current_word.id,
     }
 
     # We convert the dictionary into a JSON message using Flask's 'jsonify'

@@ -10,12 +10,10 @@
         if ("redirect" in data) {
             window.location.href=data["redirect"];
         }
-        $("img#position_0").attr('src' , $SCRIPT_ROOT+"/static/"+data.p1_filename) ;
-        $("img#position_1").attr('src' , $SCRIPT_ROOT+"/static/"+data.p2_filename) ;
-        $("img#position_2").attr('src' , $SCRIPT_ROOT+"/static/"+data.p3_filename) ;
-        $("img#position_3").attr('src' , $SCRIPT_ROOT+"/static/"+data.p4_filename) ;
-        $("h1#header").text(data.tw) ;
-        WORD_INDEX++;
+        for (i = 0; i < 4; i++) {
+            $("img#position_"+ i.toString()).attr('src' , $SCRIPT_ROOT+"/"+data.filenames[i]) ;
+        }
+        $("h1#header").text(data.current_target_word) ;
     }
 
 
@@ -97,8 +95,7 @@
     }
 </style>
 <div class="container-fluid" style="text-align: center">
-    <h1>Scientific Vocabulary Depth Task</h1>
-    <h1 id="header">{{ current_word.tw }}</h1>
+    <h1 id="header"></h1>
     <div class="row">
         <div class="col" style="padding:auto">
             <img class="draggableImage" id = "position_0" src="" />

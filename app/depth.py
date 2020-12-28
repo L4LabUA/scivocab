@@ -10,9 +10,9 @@ from flask import (
 from app.models import (
     Word,
     Strand,
-    BreadthTaskResponse,
-    BreadthTaskImage,
-    BreadthTaskImageType,
+    DepthTaskResponse,
+    DepthTaskImage,
+    DepthTaskImageType,
 )
 from app import db
 from flask_login import login_required, current_user
@@ -58,7 +58,7 @@ class DepthTaskManager(object):
         # Create a list of image types. We will shuffle this list every time we
         # move to a new word in the task, in order to randomize the positions
         # of the four images for a given word.
-        self.image_types = [x.id for x in BreadthTaskImageType.query.all()]
+        self.image_types = [x.id for x in DepthTaskImageType.query.all()]
 
         # We create an iterator out of the list in order to have the Python
         # runtime keep track of our iteration and as an additional safeguard to
@@ -109,7 +109,7 @@ def initialize_depth_task_manager():
 @login_required
 def main():
     """The main view function for the depth task."""
-    return render_template("depth.html")
+    return render_template("depth.html", title="Depth Task")
 
 
 @bp.route("/redirect")
@@ -118,12 +118,12 @@ def redirect_to_end():
     return render_template("after.html")
 
 
-# Each call of selectImage loads a new word, waits for the user to select an
+# Each call of nextWord loads a new word, waits for the user to select an
 # image, and adds the selected word to manager.answers as an instance of the
-# BreadthTaskResponse class.
-@bp.route("/selectImage", methods=["GET", "POST"])
+# DepthTaskResponse class.
+@bp.route("/nextWord", methods=["GET", "POST"])
 @login_required
-def selectImage():
+def nextWord():
     """This endpoint is queried from the frontend to obtain the filenames of
     the images to display for the depth task."""
     # If the request contains position information, it is from an image click
@@ -131,7 +131,7 @@ def selectImage():
     # image that was clicked.
     if request.args.get("position") is not None:
         position = int(request.args.get("position").split("_")[1])
-        depth_task_response = BreadthTaskResponse(
+        depth_task_response = DepthTaskResponse(
             target_word=manager.current_word.id,
             response_type=manager.image_types[position],
             child_id=current_user.id,
@@ -156,8 +156,8 @@ def selectImage():
 
     # We gather the filenames for the browser.
     filenames = [
-        img.filename
-        for img in BreadthTaskImage.query.filter_by(
+        "static/scivocab/sv_dv1/" + img.filename
+        for img in DepthTaskImage.query.filter_by(
             target=manager.current_word.id
         ).all()
     ]
@@ -165,7 +165,7 @@ def selectImage():
     # We construct a JSON-serializable dictionary with the filenames and the
     # target word.
     response = {
-        "filenames": ["scivocab/sv_bv1/" + filenames[n] for n in range(4)],
+        "filenames": filenames,
         "current_target_word": manager.current_word.id
     }
 

@@ -3,16 +3,14 @@
 {% block content %}
 
 <script type=text/javascript>
-    // Global- rephrase as capital
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     function update(data) {
         if ("redirect" in data) {
             window.location.href=data["redirect"];
         }
-        $("img#position_0").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[0]) ;
-        $("img#position_1").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[1]) ;
-        $("img#position_2").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[2]) ;
-        $("img#position_3").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[3]) ;
+        for (i = 0; i < 4; i++) {
+            $("img#position_"+ i.toString()).attr('src' , $SCRIPT_ROOT+"/"+data.filenames[i]) ;
+        }
         $("h1#header").text(data.current_target_word) ;
     }
 
@@ -20,7 +18,7 @@
     // When the page loads up for the first time (or is refreshed), the
     // function registered in the callback below initializes the task with the
     // first word in the sequence.
-    $(function() {
+    $(() => {
         $.getJSON("nextWord",
             {},
             update
@@ -41,12 +39,8 @@
     });
 
 </script>
-<style>
-    img {width: 100%; height: auto}
-    body {margin: auto}
-</style>
+
 <div class="container-fluid" style="text-align: center">
-    <h1>Scientific Vocabulary Task</h1>
     <h1 id="header"></h1>
     <table>
         <tr>
