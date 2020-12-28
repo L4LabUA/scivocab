@@ -26,7 +26,7 @@ class Child(UserMixin, db.Model):
 
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    start_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    start_timestamp = db.Column(db.DateTime, default=datetime.now)
     child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
     proctor_id = db.Column(db.String(64), db.ForeignKey("proctor.id"))
 
@@ -87,7 +87,7 @@ class BreadthTaskResponse(db.Model):
     )
 
     child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=datetime.now)
     position = db.Column(db.String(64))
 
 

@@ -99,7 +99,6 @@ manager = BreadthTaskManager()
 
 
 @bp.before_app_first_request
-@login_required
 def initialize_breadth_task_manager():
     """Initialize the global BreadthTaskManager instance."""
     with current_app.app_context():
