@@ -109,7 +109,7 @@ def initialize_breadth_task_manager():
 @login_required
 def main():
     """The main view function for the breadth task."""
-    return render_template("breadth.html")
+    return render_template("breadth.html", title="Breadth Task")
 
 
 @bp.route("/redirect")
@@ -118,12 +118,12 @@ def redirect_to_end():
     return render_template("after.html")
 
 
-# Each call of selectImage loads a new word, waits for the user to select an
+# Each call of nextWord loads a new word, waits for the user to select an
 # image, and adds the selected word to manager.answers as an instance of the
 # BreadthTaskResponse class.
-@bp.route("/selectImage", methods=["GET", "POST"])
+@bp.route("/nextWord", methods=["GET", "POST"])
 @login_required
-def selectImage():
+def nextWord():
     """This endpoint is queried from the frontend to obtain the filenames of
     the images to display for the breadth task."""
     # If the request contains position information, it is from an image click
