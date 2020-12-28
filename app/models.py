@@ -45,14 +45,16 @@ class Strand(db.Model):
 
 class Word(db.Model):
     id = db.Column(db.String(64), primary_key=True)
+    word_id = db.Column(db.String)
     breadth_id = db.Column(db.String(64), unique=True)
 
     # We will later add depth_id
-    depth_id = db.Column(db.String(64))
+    depth_id = db.Column(db.String(64), unique=True)
     strand_id = db.Column(
-        db.Integer, db.ForeignKey("strand.id"), nullable=False
+        db.Integer, db.ForeignKey("strand.id")
     )
     strand = db.relationship("Strand", backref=db.backref("words"), lazy=True)
+    audio_file = db.Column(db.String(64), unique=True)
 
 
 class BreadthTaskImage(db.Model):

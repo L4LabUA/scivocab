@@ -13,6 +13,7 @@ import pandas as pd
 from app.config import Config
 import click
 from pathlib import Path
+from tqdm import tqdm
 
 
 def create_word_tables():
@@ -39,8 +40,9 @@ def create_word_tables():
     db.create_all()
 
     basedir = os.path.abspath(os.path.dirname(__file__))
-    df = pd.read_csv(f"{basedir}/../app/static/scivocab/sv_bv1_input.csv")
-    for row in df.itertuples():
+    breadth_df = pd.read_csv(f"{basedir}/../app/static/scivocab/sv_bv1_input.csv")
+
+    for row in breadth_df.itertuples():
         word = Word(
             id=row.target,
             breadth_id=row.breadth_id,
@@ -54,6 +56,20 @@ def create_word_tables():
             position=int(row.file.split("_")[2][1]),
         )
         db.session.merge(breadth_task_image)
+
+
+    # Insert the depth ids and audio filenames
+    audio_df = pd.read_csv(f"{basedir}/../app/static/scivocab/audio.csv")
+
+    for row in audio_df.itertuples():
+        word = Word.query.filter_by(breadth_id=row.breadth_id).first()
+        print(row.word_id)
+        word.word_id = row.word_id
+        if isinstance(row.depth_id, str):
+            word.depth_id = row.depth_id
+        word.audio_file = row.file
+        db.session.merge(word)
+
     db.session.commit()
 
 
