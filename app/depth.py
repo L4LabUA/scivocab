@@ -52,8 +52,11 @@ class DepthTaskManager(object):
         # For each strand, we shuffle the words in the strand, and add those
         # words to randomized_word_list.
         for strand in strands:
-            shuffle(strand.words)
-            randomized_word_list.extend(strand.words)
+            words = [
+                word for word in strand.words if word.depth_id is not None
+            ]
+            shuffle(words)
+            randomized_word_list.extend(words)
 
         # Create a list of image types. We will shuffle this list every time we
         # move to a new word in the task, in order to randomize the positions
@@ -156,7 +159,7 @@ def nextWord():
 
     # We gather the filenames for the browser.
     filenames = [
-        "static/scivocab/sv_dv1/" + img.filename
+        request.script_root + "/static/scivocab/sv_dv1/" + img.filename
         for img in DepthTaskImage.query.filter_by(
             target=manager.current_word.id
         ).all()
@@ -166,7 +169,7 @@ def nextWord():
     # target word.
     response = {
         "filenames": filenames,
-        "current_target_word": manager.current_word.id
+        "current_target_word": manager.current_word.id,
     }
 
     # We convert the dictionary into a JSON message using Flask's 'jsonify'
