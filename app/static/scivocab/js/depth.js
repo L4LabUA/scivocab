@@ -1,10 +1,3 @@
-// The following function is taken from https://stackoverflow.com/a/56094764
-// It returns true if the given array has duplicates and false otherwise.
-function hasDuplicates(arr) {
-    return arr.some(function(
-        item) { return arr.indexOf(item) !== arr.lastIndexOf(item); });
-}
-
 function update(data) {
     if ("redirect" in data) {
         window.location.href = data["redirect"];
@@ -27,11 +20,11 @@ $(() => {
 // every time the 'Next word' button is clicked.
 $(document).on('click', '#nextWordButton', function() {
     const elements = document.getElementsByClassName("targetImage");
-    let srcs = Array.from(elements).map((e) => e.src);
+    let srcs = Array.from(elements).map((e) => e.src.split("/").slice(-1)[0]);
 
     // Check if there are duplicates
-    if (hasDuplicates(srcs)) {
-        alert("Duplicates detected!");
+    if (srcs.includes("dv_placeholder.gif")) {
+        alert("All the target image slots must be filled to proceed.");
     }
     else {
         $.getJSON("nextWord", {response : JSON.stringify(srcs)}, update);
