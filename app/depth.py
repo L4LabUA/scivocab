@@ -7,6 +7,7 @@ from flask import (
     g,
     current_app,
 )
+import json
 from app.models import (
     Word,
     Strand,
@@ -132,13 +133,16 @@ def nextWord():
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
-    if request.args.get("position") is not None:
-        position = int(request.args.get("position").split("_")[1])
+    if request.args.get("response") is not None:
+        images = [src.split("/")[-1] for src in json.loads(request.args["response"])]
+        print(images)
         depth_task_response = DepthTaskResponse(
             target_word=manager.current_word.id,
-            response_type=manager.image_types[position],
             child_id=current_user.id,
-            position=manager.position_labels[position],
+            image_0=images[0],
+            image_1=images[1],
+            image_2=images[2],
+            image_3=images[3]
         )
         db.session.add(depth_task_response)
         db.session.commit()

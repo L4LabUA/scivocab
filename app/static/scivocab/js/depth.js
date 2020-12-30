@@ -25,13 +25,18 @@ $(() => {
 // The block of code below registers the 'update' function to be called
 // every time the 'Next word' button is clicked.
 $(document).on('click', '#nextWordButton', function() {
+    const elements = document.getElementsByClassName("targetImage");
+    let srcs = Array.from(elements).map((e) => e.src);
     $.getJSON(
         "nextWord",
-        {},
+        {response: JSON.stringify(srcs)},
         update
     );
-    const elements = document.getElementsByClassName("targetImg");
-    Array.from(elements).forEach(e =>  e.innerHTML = "");
+
+    // Clear the target image containers.
+    Array.from(elements).forEach(e => { 
+        e.src="";
+    });
 
     return false;
 });
@@ -39,30 +44,36 @@ $(document).on('click', '#nextWordButton', function() {
 // Define an event handler for dragstart events.
 function dragstart_handler(ev) {
     ev.dataTransfer.setData("text/plain", ev.target.src);
-    ev.dataTransfer.dropEffect = "copy";
+    ev.dataTransfer.dropEffect = "move";
 }
 
 
 function dragover_handler(ev) {
     ev.preventDefault();
-    ev.dataTransfer.dropEffect = "copy";
+    ev.dataTransfer.dropEffect = "move";
 }
 
 function drop_handler(ev) {
     ev.preventDefault();
     const data = ev.dataTransfer.getData("text/plain");
-    ev.target.firstElementChild.src = data;
+    if (ev.target.tagName == "IMG") {
+        ev.target.src = data;
+    }
+    else {
+        ev.target.firstElementChild.src = data;
+    }
 }
 
+
 $(() => {
-    const elements = document.getElementsByClassName("draggableImage");
+    const elements = document.getElementsByClassName("sourceImageContainer");
     Array.from(elements).forEach(e => { 
         e.addEventListener("dragstart", dragstart_handler, false);
     });
 });
 
 $(() => {
-    const elements = document.getElementsByClassName("targetImg");
+    const elements = document.getElementsByClassName("targetImageContainer");
     Array.from(elements).forEach(e => { 
         e.addEventListener("dragover", dragover_handler, false);
         e.addEventListener("drop", drop_handler, false);

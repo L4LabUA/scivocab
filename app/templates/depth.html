@@ -12,29 +12,28 @@
         <div class="col border w-50 p-3 sourceImageContainer ">
             <img class="sourceImage img-fluid" id = "position_0" 
                  src="" draggable="true" 
-                 ondragstart="dragstart_handler(event)"/>
+                 >
         </div>
         <div class="col border w-50 p-3 sourceImageContainer ">
             <img class="sourceImage img-fluid" id = "position_1" src="" draggable="true"
-            ondragstart="dragstart_handler(event)"/>
+            >
         </div>
         <div class="w-100"></div>
         <div class="col border w-50 p-3 sourceImageContainer ">
             <img class="sourceImage img-fluid" id = "position_2" src="" draggable="true"
-            ondragstart="dragstart_handler(event)"/>
+            >
         </div>
         <div class="col border w-50 p-3 sourceImageContainer ">
             <img class="sourceImage img-fluid" id = "position_3" src="" draggable="true"
-            ondragstart="dragstart_handler(event)"/>
+            >
         </div>
     </div>
 
     <div class="row border">
         {% for i in range(4) %}
-            <div class="border col w-25 p-3 targetImageContainer " 
+            <div class="border col w-25 p-3 targetImageContainer" 
                  id = "target_position_{{ i }}"
-                 ondrop="drop_handler(event)"
-                 ondragover="dragover_handler(event)">
+                 >
                 <img class="targetImage img-fluid" id = "target_image_{{ i }}" src=""/>
             </div>
         {% endfor %}

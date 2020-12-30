@@ -121,14 +121,16 @@ class DepthTaskResponse(db.Model):
 
     target_word = db.Column(db.String(64), db.ForeignKey("word.id"))
 
-    # The type of response the subject selected
-    response_type = db.Column(
-        db.String(64), db.ForeignKey("breadth_task_image_type.id")
-    )
-
     child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
     timestamp = db.Column(db.DateTime, default=datetime.now)
-    position = db.Column(db.String(64))
+    image_0 = db.Column(db.String(64),
+            db.ForeignKey("depth_task_image.filename"), nullable=False)
+    image_1 = db.Column(db.String(64),
+            db.ForeignKey("depth_task_image.filename"), nullable=False)
+    image_2 = db.Column(db.String(64),
+            db.ForeignKey("depth_task_image.filename"), nullable=False)
+    image_3 = db.Column(db.String(64),
+            db.ForeignKey("depth_task_image.filename"), nullable=False)
 
 @login_manager.user_loader
 def load_user(id):
