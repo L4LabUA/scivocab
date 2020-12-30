@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 
+{% macro sourceImageContainer(i) -%}
+    <div class="col border w-50 p-3 sourceImageContainer ">
+        <img id = "position_{{ i }}"
+             class="sourceImage img-fluid" 
+             src={{ url_for("static", filename="scivocab/dv_placeholder.gif") }} 
+             draggable="true">
+    </div>
+{%- endmacro %}
+
 {% block content %}
 
 <script script src={{ url_for("static", filename="scivocab/js/depth.js") }}></script>
@@ -9,38 +18,29 @@
         </div>
     </div>
     <div class="row border">
-        <div class="col border w-50 p-3 sourceImageContainer ">
-            <img class="sourceImage img-fluid" id = "position_0" 
-                 src="" draggable="true" 
-                 >
-        </div>
-        <div class="col border w-50 p-3 sourceImageContainer ">
-            <img class="sourceImage img-fluid" id = "position_1" src="" draggable="true"
-            >
-        </div>
+        {{ sourceImageContainer(0) }}
+        {{ sourceImageContainer(1) }}
         <div class="w-100"></div>
-        <div class="col border w-50 p-3 sourceImageContainer ">
-            <img class="sourceImage img-fluid" id = "position_2" src="" draggable="true"
-            >
-        </div>
-        <div class="col border w-50 p-3 sourceImageContainer ">
-            <img class="sourceImage img-fluid" id = "position_3" src="" draggable="true"
-            >
-        </div>
+        {{ sourceImageContainer(2) }}
+        {{ sourceImageContainer(3) }}
     </div>
 
     <div class="row border">
         {% for i in range(4) %}
             <div class="border col w-25 p-3 targetImageContainer" 
-                 id = "target_position_{{ i }}"
-                 >
-                <img class="targetImage img-fluid" id = "target_image_{{ i }}" src=""/>
+                 id = "target_position_{{ i }}">
+                 <img class="targetImage img-fluid" 
+                      id = "target_image_{{ i }}"
+                      src={{ url_for("static", filename="scivocab/dv_placeholder.gif") }} />
             </div>
         {% endfor %}
     </div>
     <div class="row justify-content-md-center p-3">
         <div class="col">
-        <button type="button" id="nextWordButton" class="btn btn-primary">Next word</button>
+            <button type="button" id="nextWordButton"
+                                  class="btn btn-primary">
+                Next
+            </button>
         </div>
     </div>
 
