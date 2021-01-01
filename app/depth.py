@@ -73,12 +73,6 @@ class DepthTaskManager(object):
         # We set the 'current_word' property of this instance of the
         # DepthTaskManager class to the next Word object.
         self.current_word = next(self.randomized_word_iterator)
-        self.position_labels = {
-            0: "top_left",
-            1: "top_right",
-            2: "bottom_left",
-            3: "bottom_right",
-        }
 
     def go_to_next_word(self):
         # Shuffle the image_types list.
