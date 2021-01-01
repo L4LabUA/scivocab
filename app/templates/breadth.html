@@ -1,57 +1,35 @@
 {% extends "base.html" %}
 
+{% macro imageContainer(i) -%}
+    <td>
+        <a href="#">
+            <img id = "position_{{ i }}" 
+                 class = "sourceImage img-fluid"
+                 src="" />
+        </a>
+    </td>
+{%- endmacro %}
+
 {% block content %}
 
-<script type=text/javascript>
-    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    function update(data) {
-        if ("redirect" in data) {
-            window.location.href=data["redirect"];
-        }
-        for (i = 0; i < 4; i++) {
-            $("img#position_"+ i.toString()).attr('src' , $SCRIPT_ROOT+"/"+data.filenames[i]) ;
-        }
-        $("h1#header").text(data.current_target_word) ;
-    }
-
-
-    // When the page loads up for the first time (or is refreshed), the
-    // function registered in the callback below initializes the task with the
-    // first word in the sequence.
-    $(() => {
-        $.getJSON("nextWord",
-            {},
-            update
-        );
-        return false;
-    });
-
-    // The block of code below registers the 'update' function to be called
-    // every time an image is clicked.
-
-    $(document).on('click', 'img', function() {
-        $.getJSON(
-            "nextWord",
-            {position: $(this).attr('id')},
-            update
-        );
-        return false;
-    });
-
-</script>
-
-<div class="container-fluid" style="text-align: center">
-    <h1 id="header"></h1>
-    <table>
-        <tr>
-            <td><a href="#"><img id = "position_0" src="" /></a></td>
-            <td><a href="#"><img id = "position_1" src="" /></a></td>
-        </tr>
-        <tr>
-            <td><a href="#"><img id = "position_2" src="" /></a></td>
-            <td><a href="#"><img id = "position_3" src="" /></a></td>
-        </tr>
-
-    </table>
+<script script src={{ url_for("static", filename="scivocab/js/breadth.js") }}></script>
+<div class="row">
+    <div class="col">
+        <h1 id="header"></h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <table>
+            <tr>
+                {{ imageContainer(0) }}
+                {{ imageContainer(1) }}
+            </tr>
+            <tr>
+                {{ imageContainer(2) }}
+                {{ imageContainer(3) }}
+            </tr>
+        </table>
+    </div>
 </div>
 {% endblock %}

@@ -11,6 +11,7 @@ from app.models import (
     BreadthTaskImage,
     BreadthTaskImageType,
     DepthTaskImage,
+    DepthTaskImageType,
 )
 from flask_sqlalchemy import SQLAlchemy
 from app import create_app, db
@@ -65,7 +66,7 @@ def create_word_tables():
         breadth_task_image = BreadthTaskImage(
             target=row.target,
             filename=row.file,
-            image_type_id=row.img_type,
+            image_type=BreadthTaskImageType(id = row.img_type),
             position=int(row.file.split("_")[2][1]),
         )
         db.session.merge(breadth_task_image)
@@ -87,19 +88,15 @@ def create_word_tables():
     for f in glob(f"{basedir}/../app/static/scivocab/sv_dv1/*.jpg"):
         path = Path(f)
         filename = path.name
-        stem = path.stem
-        stem_parts = stem.split("_")
-        depth_id = stem_parts[1]
-        image_type = stem_parts[-1]
-        position = int(stem_parts[2][1])
+        stem_parts = path.stem.split("_")
 
         depth_task_image = DepthTaskImage(
-            target=Word.query.filter_by(depth_id = depth_id).first().id,
+            target=Word.query.filter_by(depth_id = stem_parts[1]).first().id,
             filename=filename,
-            position=position,
-            image_type_id=image_type,
+            position=int(stem_parts[2][1]),
+            image_type=DepthTaskImageType(id = stem_parts[-1])
         )
-        db.session.add(depth_task_image)
+        db.session.merge(depth_task_image)
 
     db.session.commit()
 

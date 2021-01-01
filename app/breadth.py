@@ -157,7 +157,7 @@ def nextWord():
 
     # We gather the filenames for the browser.
     filenames = [
-        "static/scivocab/sv_bv1/" + img.filename
+        request.script_root + "/static/scivocab/sv_bv1/" + img.filename
         for img in BreadthTaskImage.query.filter_by(
             target=manager.current_word.id
         ).all()
