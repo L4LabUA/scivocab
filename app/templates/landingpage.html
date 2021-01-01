@@ -2,12 +2,14 @@
 
 {% block content %}
 
-<title>Scivocab</title>
+    <div class="container-fluid" style="text-align: center">
+        <h1>Welcome!</h1>
+        <a href="{{ url_for('breadth.main') }}" class="btn btn-outline-primary btn-lg">
+            Breadth Task
+        </a>
+        <a href="{{ url_for('depth.main') }}" class="btn btn-outline-primary btn-lg">
+            Depth Task
+        </a>
+    </div>
 
-<div class="container-fluid" style="text-align: center">
-  <h1>Welcome!</h1>
-  <a href="{{ url_for('breadth.main') }}" class="btn btn-outline-primary btn-lg">Start Breadth Task</a>
-  <a href="{{ url_for('depth.main') }}" class="btn btn-outline-primary btn-lg">Start Depth Task</a>
-</div>
-
-{% endblock  %}
+{% endblock %}

@@ -5,13 +5,24 @@ and data required for the app."""
 
 import os
 import sys
-from app.models import Word, Strand, BreadthTaskImage, BreadthTaskImageType
+from app.models import (
+    Word,
+    Strand,
+    BreadthTaskImage,
+    BreadthTaskImageType,
+    DepthTaskImage,
+    DepthTaskImageType,
+)
 from flask_sqlalchemy import SQLAlchemy
 from app import create_app, db
 from sqlalchemy import create_engine
 import pandas as pd
 from app.config import Config
 import click
+from pathlib import Path
+from glob import glob
+import logging
+from logging import info
 from pathlib import Path
 
 
@@ -25,22 +36,27 @@ def create_word_tables():
 
     if Path(db_filepath).exists():
         # Warn the user about the consequences of running the script and ask
-        # them 
+        # them
         if not click.confirm(
             "This script will delete the existing database "
             f"({db_filepath}) and create a fresh one. "
             "Are you sure you want to continue?",
             default=False,
         ):
-            print("Database creation canceled. Exiting now.")
+            info("Database creation canceled. Exiting now.")
             sys.exit(0)
 
     db.drop_all()
     db.create_all()
 
     basedir = os.path.abspath(os.path.dirname(__file__))
-    df = pd.read_csv(f"{basedir}/../app/static/scivocab/sv_bv1_input.csv")
-    for row in df.itertuples():
+    static_dir = "static/scivocab"
+    breadth_df = pd.read_csv(
+        f"{basedir}/../app/static/scivocab/sv_bv1_input.csv"
+    )
+
+    info("Adding breadth ids, target words, and strand information")
+    for row in breadth_df.itertuples():
         word = Word(
             id=row.target,
             breadth_id=row.breadth_id,
@@ -50,12 +66,41 @@ def create_word_tables():
         breadth_task_image = BreadthTaskImage(
             target=row.target,
             filename=row.file,
-            image_type=BreadthTaskImageType(id=row.img_type),
+            image_type=BreadthTaskImageType(id = row.img_type),
             position=int(row.file.split("_")[2][1]),
         )
         db.session.merge(breadth_task_image)
+
+    info("Inserting depth ids and audio filenames.")
+    audio_df = pd.read_csv(f"{basedir}/../app/static/scivocab/audio.csv")
+
+    for row in audio_df.itertuples():
+        word = Word.query.filter_by(breadth_id=row.breadth_id).first()
+        word.word_id = row.word_id
+        if isinstance(row.depth_id, str):
+            word.depth_id = row.depth_id
+        word.audio_file = row.file
+        db.session.merge(word)
+
+    db.session.commit()
+
+    info("Inserting depth task image filenames.")
+    for f in glob(f"{basedir}/../app/static/scivocab/sv_dv1/*.jpg"):
+        path = Path(f)
+        filename = path.name
+        stem_parts = path.stem.split("_")
+
+        depth_task_image = DepthTaskImage(
+            target=Word.query.filter_by(depth_id = stem_parts[1]).first().id,
+            filename=filename,
+            position=int(stem_parts[2][1]),
+            image_type=DepthTaskImageType(id = stem_parts[-1])
+        )
+        db.session.merge(depth_task_image)
+
     db.session.commit()
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     create_word_tables()

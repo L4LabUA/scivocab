@@ -34,6 +34,11 @@ class Session(db.Model):
 class BreadthTaskImageType(db.Model):
     id = db.Column(db.String(64), primary_key=True)
 
+class DepthTaskImageType(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
+
+class DepthTaskImagePosition(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
 
 class BreadthTaskImagePosition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -45,19 +50,21 @@ class Strand(db.Model):
 
 class Word(db.Model):
     id = db.Column(db.String(64), primary_key=True)
+    word_id = db.Column(db.String)
     breadth_id = db.Column(db.String(64), unique=True)
 
     # We will later add depth_id
-    depth_id = db.Column(db.String(64))
+    depth_id = db.Column(db.String(64), unique=True)
     strand_id = db.Column(
-        db.Integer, db.ForeignKey("strand.id"), nullable=False
+        db.Integer, db.ForeignKey("strand.id")
     )
     strand = db.relationship("Strand", backref=db.backref("words"), lazy=True)
+    audio_file = db.Column(db.String(64), unique=True)
 
 
 class BreadthTaskImage(db.Model):
     """A class that stores all the information needed to make one set of images
-    associated with a target."""
+    associated with a target for the breadth task."""
 
     target = db.Column(db.String(64), db.ForeignKey("word.id"))
     filename = db.Column(db.String(64), primary_key=True)
@@ -73,6 +80,23 @@ class BreadthTaskImage(db.Model):
         db.Integer, db.ForeignKey("breadth_task_image_position.id")
     )
 
+class DepthTaskImage(db.Model):
+    """A class that stores all the information needed to make one set of images
+    associated with a target for the depth task."""
+
+    target = db.Column(db.String(64), db.ForeignKey("word.id"))
+    filename = db.Column(db.String(64), primary_key=True)
+    image_type_id = db.Column(
+        db.String(64),
+        db.ForeignKey("depth_task_image_type.id"),
+        nullable=False,
+    )
+    image_type = db.relationship(
+        "DepthTaskImageType", backref=db.backref("images"), lazy=True
+    )
+    position = db.Column(
+        db.Integer, db.ForeignKey("depth_task_image_position.id")
+    )
 
 class BreadthTaskResponse(db.Model):
     """A class that represents a single response in the breadth task."""
@@ -90,6 +114,23 @@ class BreadthTaskResponse(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now)
     position = db.Column(db.String(64))
 
+class DepthTaskResponse(db.Model):
+    """A class that represents a single response in the depth task."""
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    target_word = db.Column(db.String(64), db.ForeignKey("word.id"))
+
+    child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
+    timestamp = db.Column(db.DateTime, default=datetime.now)
+    image_0 = db.Column(db.String(64),
+            db.ForeignKey("depth_task_image.filename"), nullable=False)
+    image_1 = db.Column(db.String(64),
+            db.ForeignKey("depth_task_image.filename"), nullable=False)
+    image_2 = db.Column(db.String(64),
+            db.ForeignKey("depth_task_image.filename"), nullable=False)
+    image_3 = db.Column(db.String(64),
+            db.ForeignKey("depth_task_image.filename"), nullable=False)
 
 @login_manager.user_loader
 def load_user(id):

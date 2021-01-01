@@ -1,66 +1,35 @@
 {% extends "base.html" %}
 
+{% macro imageContainer(i) -%}
+    <td>
+        <a href="#">
+            <img id = "position_{{ i }}" 
+                 class = "sourceImage img-fluid"
+                 src="" />
+        </a>
+    </td>
+{%- endmacro %}
+
 {% block content %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js">
-</script>
 
-<script type=text/javascript>
-    // Global- rephrase as capital
-    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    function update(data) {
-        if ("redirect" in data) {
-            window.location.href=data["redirect"];
-        }
-        $("img#position_0").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[0]) ;
-        $("img#position_1").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[1]) ;
-        $("img#position_2").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[2]) ;
-        $("img#position_3").attr('src' , $SCRIPT_ROOT+"/static/"+data.filenames[3]) ;
-        $("h1#header").text(data.current_target_word) ;
-    }
-
-
-    // When the page loads up for the first time (or is refreshed), the
-    // function registered in the callback below initializes the task with the
-    // first word in the sequence.
-    $(function() {
-        $.getJSON("selectImage",
-            {},
-            update
-        );
-        return false;
-    });
-
-    // The block of code below registers the 'update' function to be called
-    // every time an image is clicked.
-
-    $(document).on('click', 'img', function() {
-        $.getJSON(
-            "selectImage",
-            {position: $(this).attr('id')},
-            update
-        );
-        return false;
-    });
-
-</script>
-<style>
-    img {width: 100%; height: auto}
-    body {margin: auto}
-</style>
-<title>L4 Breadth-First</title>
-<div class="container-fluid" style="text-align: center">
-    <h1>Scientific Vocabulary Task</h1>
-    <h1 id="header"></h1>
-    <table>
-        <tr>
-            <td><a href="#"><img id = "position_0" src="" /></a></td>
-            <td><a href="#"><img id = "position_1" src="" /></a></td>
-        </tr>
-        <tr>
-            <td><a href="#"><img id = "position_2" src="" /></a></td>
-            <td><a href="#"><img id = "position_3" src="" /></a></td>
-        </tr>
-
-    </table>
+<script script src={{ url_for("static", filename="scivocab/js/breadth.js") }}></script>
+<div class="row">
+    <div class="col">
+        <h1 id="header"></h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <table>
+            <tr>
+                {{ imageContainer(0) }}
+                {{ imageContainer(1) }}
+            </tr>
+            <tr>
+                {{ imageContainer(2) }}
+                {{ imageContainer(3) }}
+            </tr>
+        </table>
+    </div>
 </div>
 {% endblock %}

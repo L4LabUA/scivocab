@@ -1,0 +1,20 @@
+<head>
+    <!-- Load jQuery from a CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js">
+    </script>
+
+    <!-- Import Bootstrap stylesheet from a CDN -->
+    <link rel="stylesheet" 
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+        crossorigin="anonymous">
+
+    <!-- Import custom stylesheet -->
+    <link rel="stylesheet"  href={{ url_for('static', filename='style.css') }}>
+
+    {% if title %}
+        <title>Scivocab | {{ title }} </title>
+    {% else %}
+        <title>Scivocab</title>
+    {% endif %}
+</head>
