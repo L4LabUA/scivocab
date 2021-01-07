@@ -11,6 +11,14 @@ Install the app by running the following command (this assumes you have Python
 
     ./tools/install
 
+Creating the database
+---------------------
+
+To create the database or overwrite the existing database, run the following
+(while in the virtual environment):
+
+    ./tools/create_db
+
 Running the app
 ---------------
 

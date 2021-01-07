@@ -10,27 +10,27 @@
     {% block header %}{% endblock %}
     </header>
 	
+    
     <div class="col-sm-3" style="display:inline-block">
-	<h1>Start!</h1>
- 	<form action="" method="post" novalidate>
-     		 {{ form.hidden_tag() }} 
-	 	 <p>
-	  		{{ form.child_id.label }}<br>
-			{{ form.child_id(size=32) }}<br>
-            		{% for error in form.child_id.errors %}
-            		<span style="color: red;">[{{ error }}]</span>
-            		{% endfor %}
-		 </p>
-		 <p>
-			{{ form.proctor_id.label }}<br>
-			{{ form.proctor_id(size=32) }}<br>
-            		{% for error in form.proctor_id.errors %}
-            		<span style="color: red;">[{{ error }}]</span>
-            		{% endfor %}
+    <h1>Start!</h1>
+    <form action="" method="post" novalidate>
+         {{ form.hidden_tag() }} 
+         <p>
+            {{ form.child_id.label }}<br>
+            {{ form.child_id(size=32) }}<br>
+            {% for error in form.child_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+         </p>
+         <p>
+            {{ form.proctor_id.label }}<br>
+            {{ form.proctor_id(size=32) }}<br>
+            {% for error in form.proctor_id.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
 
-		 </p>
-                 <p>{{ form.submit() }}</p>
-  	</form>
+         </p>
+         <p>{{ form.submit() }}</p>
+    </form>
+    </section>
 {% endblock %}
-</section>
-

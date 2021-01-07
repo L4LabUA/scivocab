@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+
+import os
+# Create a placeholder image to prevent broken images in HTML
+from PIL import Image
+img = Image.new("RGB", (720, 576))
+basedir = os.path.abspath(os.path.dirname(__file__))
+img.save(f"{basedir}/../app/static/scivocab/dv_placeholder.gif",transparency=0)

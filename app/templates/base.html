@@ -1,30 +1,9 @@
-
 <html>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <head>
-        {% if title %}
-        <title>{{ title }} Scivocab</title>
-        {% else %}
-        <title>Scivocab</title>
-        {% endif %}
-    </head>
+    {% include "head.html" %}
     <body>
-	    <div class="col-sm-3" style="display:inline-block"> <!-- The "col-sm-3" and "inline-block" centers the link in the navigation bar -->
-            Scivocab:
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('routes.landingpage') }}">Home</a>
-            <a href="{{ url_for('routes.logout') }}">Logout</a>
-            {% endif %}
-            
-            {% if current_user.is_anonymous %}
-            user is anonymous
-            {% endif %}
-
-            {% if current_user.is_authenticated %}
-                User is Authenticated 
-            {% endif %}
-
+        {% include "navbar.html" %}
+        <div class="container" style="text-align: center;">
+            {% block content %}{% endblock %}
         </div>
-        {% block content %}{% endblock %}
     </body>
 </html>
