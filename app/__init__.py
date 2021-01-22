@@ -18,6 +18,7 @@ def create_app():
     # Import the blueprints
     from app.breadth import bp as breadth_bp
     from app.depth import bp as depth_bp
+    from app.definition import bp as definition_bp
     from app.routes import bp as routes_bp
 
     # Create the app instance
@@ -41,5 +42,6 @@ def create_app():
     scivocab_app.register_blueprint(routes_bp, url_prefix="/")
     scivocab_app.register_blueprint(breadth_bp, url_prefix="/breadth")
     scivocab_app.register_blueprint(depth_bp, url_prefix="/depth")
+    scivocab_app.register_blueprint(definition_bp, url_prefix="/definition")
 
     return scivocab_app
