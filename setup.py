@@ -18,6 +18,7 @@ setup(
     keywords="speech analysis",
     zip_safe=False,
     install_requires=[
+        "wheel",
         "flask",
         "xlrd",
         "numpy==1.18.0",
