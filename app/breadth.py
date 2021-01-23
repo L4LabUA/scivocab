@@ -8,6 +8,7 @@ from flask import (
     current_app,
     url_for,
 )
+from app.models import (
     Strand,
     BreadthTaskResponse,
     BreadthTaskImage,
@@ -45,7 +46,6 @@ class BreadthTaskManager(object):
         strands = Strand.query.all()
 
         # Currently, we randomize the order of the strands.
-        # NOTE: Jessie says that in the future, the order may not be random.
         shuffle(strands)
 
         # For each strand, we shuffle the words in the strand, and add those
