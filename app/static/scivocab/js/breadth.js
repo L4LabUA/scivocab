@@ -5,6 +5,9 @@ function update(data) {
     for (i = 0; i < 4; i++) {
         $("img#position_"+ i.toString()).attr('src' , data.filenames[i]) ;
     }
+    document.getElementById("playButton").onclick = function() {
+        new Audio(data.audio_file).play();
+    }
     $("h1#header").text(data.current_target_word) ;
 }
 
