@@ -141,16 +141,16 @@ def nextWord():
         db.session.add(depth_task_response)
         db.session.commit()
 
-    # We attempt to go to the next word. If a StopIteration exception is
-    # raised, that means we are at the end of the list, and so we redirect the
-    # user to the post-depth-task page.
-    try:
-        manager.go_to_next_word()
+        # We attempt to go to the next word. If a StopIteration exception is
+        # raised, that means we are at the end of the list, and so we redirect the
+        # user to the post-depth-task page.
+        try:
+            manager.go_to_next_word()
 
-    except StopIteration:
-        # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
-        # function here. This is our workaround.
-        return jsonify({"redirect": "redirect"})
+        except StopIteration:
+            # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
+            # function here. This is our workaround.
+            return jsonify({"redirect": "redirect"})
 
     # If the StopIteration exception was not raised, we continue on, telling
     # the browser which images to display, via a JSON message.

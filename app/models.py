@@ -98,6 +98,7 @@ class DepthTaskImage(db.Model):
         db.Integer, db.ForeignKey("depth_task_image_position.id")
     )
 
+
 class BreadthTaskResponse(db.Model):
     """A class that represents a single response in the breadth task."""
 
@@ -131,6 +132,19 @@ class DepthTaskResponse(db.Model):
             db.ForeignKey("depth_task_image.filename"), nullable=False)
     image_3 = db.Column(db.String(64),
             db.ForeignKey("depth_task_image.filename"), nullable=False)
+
+class DefinitionTaskResponse(db.Model):
+    """A class that represents a single response in the definition task."""
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    target_word = db.Column(db.String(64), db.ForeignKey("word.id"))
+
+    child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
+    timestamp = db.Column(db.DateTime, default=datetime.now)
+
+    # The text of the child's response
+    text = db.Column(db.String(300), nullable=False)
 
 @login_manager.user_loader
 def load_user(id):

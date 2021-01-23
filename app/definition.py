@@ -6,13 +6,12 @@ from flask import (
     jsonify,
     g,
     current_app,
-    url_for,
 )
+import json
 from app.models import (
+    Word,
     Strand,
-    BreadthTaskResponse,
-    BreadthTaskImage,
-    BreadthTaskImageType,
+    DefinitionTaskResponse,
 )
 from app import db
 from flask_login import login_required, current_user
@@ -20,7 +19,7 @@ import logging
 from logging import info
 
 
-class BreadthTaskManager(object):
+class DefinitionTaskManager(object):
     def initialize(self):
         """The code in this method would normally be in the class's __init__
         method. However, we put the logic in this function instead because we
@@ -46,18 +45,17 @@ class BreadthTaskManager(object):
         strands = Strand.query.all()
 
         # Currently, we randomize the order of the strands.
+        # NOTE: Jessie says that in the future, the order may not be random.
         shuffle(strands)
 
         # For each strand, we shuffle the words in the strand, and add those
         # words to randomized_word_list.
         for strand in strands:
-            shuffle(strand.words)
-            randomized_word_list.extend(strand.words)
-
-        # Create a list of image types. We will shuffle this list every time we
-        # move to a new word in the task, in order to randomize the positions
-        # of the four images for a given word.
-        self.image_types = [x.id for x in BreadthTaskImageType.query.all()]
+            words = [
+                word for word in strand.words if word.depth_id is not None
+            ]
+            shuffle(words)
+            randomized_word_list.extend(words)
 
         # We create an iterator out of the list in order to have the Python
         # runtime keep track of our iteration and as an additional safeguard to
@@ -66,19 +64,10 @@ class BreadthTaskManager(object):
         self.randomized_word_iterator = iter(randomized_word_list)
 
         # We set the 'current_word' property of this instance of the
-        # BreadthTaskManager class to the next Word object.
+        # DefinitionTaskManager class to the next Word object.
         self.current_word = next(self.randomized_word_iterator)
-        self.position_labels = {
-            0: "top_left",
-            1: "top_right",
-            2: "bottom_left",
-            3: "bottom_right",
-        }
 
     def go_to_next_word(self):
-        # Shuffle the image_types list.
-        shuffle(self.image_types)
-
         # Set the current_word attribute of the class instance to the next Word
         # in the iterator.
         self.current_word = next(self.randomized_word_iterator)
@@ -88,18 +77,18 @@ class BreadthTaskManager(object):
 
 # We create a Flask blueprint object. Flask blueprints help keep apps modular.
 # So in principle, the same blueprint could be used for multiple apps.
-bp = Blueprint("breadth", __name__)
+bp = Blueprint("definition", __name__)
 
 
-# Create a module-level instance of BreadthTaskManager, which will be
+# Create a module-level instance of DefinitionTaskManager, which will be
 # initialized immediately before the first request to the app (see the
-# 'initialize_breadth_task_manager' function below.
-manager = BreadthTaskManager()
+# 'initialize_definition_task_manager' function below.
+manager = DefinitionTaskManager()
 
 
 @bp.before_app_first_request
-def initialize_breadth_task_manager():
-    """Initialize the global BreadthTaskManager instance."""
+def initialize_definition_task_manager():
+    """Initialize the global DefinitionTaskManager instance."""
     with current_app.app_context():
         manager.initialize()
 
@@ -107,8 +96,8 @@ def initialize_breadth_task_manager():
 @bp.route("/")
 @login_required
 def main():
-    """The main view function for the breadth task."""
-    return render_template("breadth.html", title="Breadth Task")
+    """The main view function for the definition task."""
+    return render_template("definition.html", title="Definition Task")
 
 
 @bp.route("/redirect")
@@ -119,52 +108,41 @@ def redirect_to_end():
 
 # Each call of nextWord loads a new word, waits for the user to select an
 # image, and adds the selected word to manager.answers as an instance of the
-# BreadthTaskResponse class.
+# DefinitionTaskResponse class.
 @bp.route("/nextWord", methods=["GET", "POST"])
 @login_required
 def nextWord():
     """This endpoint is queried from the frontend to obtain the filenames of
-    the images to display for the breadth task."""
+    the images to display for the definition task."""
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
-    if request.args.get("position") is not None:
-        position = int(request.args.get("position").split("_")[1])
-        breadth_task_response = BreadthTaskResponse(
+    if request.args.get("response") is not None:
+        definition_task_response = DefinitionTaskResponse(
             target_word=manager.current_word.id,
-            response_type=manager.image_types[position],
             child_id=current_user.id,
-            position=manager.position_labels[position],
+            text=request.args["response"]
         )
-        db.session.add(breadth_task_response)
+        db.session.add(definition_task_response)
         db.session.commit()
 
-        # We attempt to go to the next word. If a StopIteration exception is
-        # raised, that means we are at the end of the list, and so we redirect the
-        # user to the post-breadth-task page.
-        try:
-            manager.go_to_next_word()
+    # We attempt to go to the next word. If a StopIteration exception is
+    # raised, that means we are at the end of the list, and so we redirect the
+    # user to the post-definition-task page.
+    try:
+        manager.go_to_next_word()
 
-        except StopIteration:
-            # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
-            # function here. This is our workaround.
-            return jsonify({"redirect": "redirect"})
+    except StopIteration:
+        # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
+        # function here. This is our workaround.
+        return jsonify({"redirect": "redirect"})
 
     # If the StopIteration exception was not raised, we continue on, telling
     # the browser which images to display, via a JSON message.
 
-    # We gather the filenames for the browser.
-    filenames = [
-        request.script_root + "/static/scivocab/sv_bv1/" + img.filename
-        for img in BreadthTaskImage.query.filter_by(
-            target=manager.current_word.id
-        ).all()
-    ]
-
     # We construct a JSON-serializable dictionary with the filenames and the
     # target word.
     response = {
-        "filenames": filenames,
         "current_target_word": manager.current_word.id,
     }
 
