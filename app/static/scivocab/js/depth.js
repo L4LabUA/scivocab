@@ -2,11 +2,9 @@ function update(data) {
     if ("redirect" in data) {
         window.location.href = data["redirect"];
     }
+
     for (i = 0; i < 4; i++) {
         $("img#position_" + i.toString()).attr('src', data.filenames[i]);
-    }
-    for (i = 0; i < 4; i++) {
-        $("img#target_image_" + i.toString()).attr('src', "/static/scivocab/dv_placeholder.gif");
     }
 
     $("h1#header").text(data.current_target_word);
@@ -34,7 +32,7 @@ $(document).on('click', '#nextWordButton', function() {
         $.getJSON("nextWord", {response : JSON.stringify(srcs)}, update);
 
         // Clear the target image containers.
-        Array.from(elements).forEach(e => { e.src = ""; });
+        Array.from(elements).forEach(e => { e.src = "/static/scivocab/dv_placeholder.gif"; });
     }
 
     return false;
