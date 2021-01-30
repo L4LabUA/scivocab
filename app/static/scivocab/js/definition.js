@@ -2,6 +2,11 @@ function update(data) {
     if ("redirect" in data) {
         window.location.href=data["redirect"];
     }
+
+    document.getElementById("playButton").onclick = function() {
+        new Audio(data.audio_file).play();
+    }
+ 
     $("h1#header").text(data.current_target_word) ;
 }
 
