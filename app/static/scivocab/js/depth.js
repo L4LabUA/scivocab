@@ -5,6 +5,10 @@ function update(data) {
     for (i = 0; i < 4; i++) {
         $("img#position_" + i.toString()).attr('src', data.filenames[i]);
     }
+    for (i = 0; i < 4; i++) {
+        $("img#target_image_" + i.toString()).attr('src', "/static/scivocab/dv_placeholder.gif");
+    }
+
     $("h1#header").text(data.current_target_word);
 }
 
