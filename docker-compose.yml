@@ -1,6 +1,10 @@
 version: '3'
 services:
-    web:
+    scivocab:
+        container_name: scivocab
         build: ./
         ports:
           - 5001:5000
+        volumes:
+            - ./app/app.db:/scivocab/app/app.db
+        restart: always
