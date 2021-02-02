@@ -1,0 +1,10 @@
+gunicorn
+flask
+xlrd
+numpy==1.18.0
+pandas
+openpyxl
+Flask-WTF
+Flask-SQLAlchemy
+flask-migrate
+flask-login

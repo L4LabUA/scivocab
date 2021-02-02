@@ -11,10 +11,11 @@
 
 {% block content %}
 
-<script script src={{ url_for("static", filename="scivocab/js/depth.js") }}></script>
+<script src={{ url_for("static", filename="scivocab/js/depth.js") }}></script>
     <div class="row p-3">
         <div class="col">
-            <h1 id="header"></h1>
+            <h1 id="header" style="display:inline;"></h1>
+            {% include "playButton.html" %}
         </div>
     </div>
     <div class="row border">

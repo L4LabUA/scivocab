@@ -1,3 +1,6 @@
 __pycache__
+app/app.db
 scivocab_venv
+Dockerfile
+docker-compose.yml
 .git

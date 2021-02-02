@@ -166,6 +166,7 @@ def nextWord():
     response = {
         "filenames": filenames,
         "current_target_word": manager.current_word.id,
+        "audio_file": url_for("static", filename= "scivocab/audio/" + manager.current_word.audio_file),
     }
 
     # We convert the dictionary into a JSON message using Flask's 'jsonify'
