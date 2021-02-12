@@ -1,0 +1,5 @@
+task_id,breadth_id,target,position,img_type,file
+bv1_train,bt001,cat,p1,fp,bv1_train1_p1_fp.jpg
+bv1_train,bt001,cat,p2,fs,bv1_train1_p4_fs.jpg
+bv1_train,bt001,cat,p3,fx,bv1_train1_p3_fx.jpg
+bv1_train,bt001,cat,p4,tw,bv1_train1_p2_tw.jpg

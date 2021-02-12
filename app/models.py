@@ -52,8 +52,8 @@ class Word(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     word_id = db.Column(db.String)
     breadth_id = db.Column(db.String(64), unique=True)
+    training_item = db.Column(db.String)
 
-    # We will later add depth_id
     depth_id = db.Column(db.String(64), unique=True)
     strand_id = db.Column(
         db.Integer, db.ForeignKey("strand.id")

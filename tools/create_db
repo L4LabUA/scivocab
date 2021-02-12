@@ -71,6 +71,28 @@ def create_word_tables():
         )
         db.session.merge(breadth_task_image)
 
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    static_dir = "static/scivocab"
+    breadth_training_df = pd.read_csv(
+        f"{basedir}/../app/static/scivocab/training/breadth/sv_bv1_training.csv"
+    )
+
+    info("Adding breadth ids, training words")
+    for row in breadth_training_df.itertuples():
+        word = Word(
+            id=row.target,
+            breadth_id=row.breadth_id,
+            audio_file = ""
+        )
+        db.session.merge(word)
+        breadth_training_image = BreadthTaskImage(
+            target=row.target,
+            filename=row.file,
+            image_type=BreadthTaskImageType(id = row.img_type),
+            position=int(row.file.split("_")[2][1]),)
+        db.session.merge(breadth_training_image)
+
+
     info("Inserting depth ids and audio filenames.")
     audio_df = pd.read_csv(f"{basedir}/../app/static/scivocab/audio.csv")
 

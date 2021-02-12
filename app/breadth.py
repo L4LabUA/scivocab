@@ -9,6 +9,7 @@ from flask import (
     url_for,
 )
 from app.models import (
+    Word,
     Strand,
     BreadthTaskResponse,
     BreadthTaskImage,
@@ -44,6 +45,10 @@ class BreadthTaskManager(object):
 
         # Get the strands from the database
         strands = Strand.query.all()
+        
+        #training items
+        breadth_training_items = Word.query.filter(Word.breadth_id.startswith('bt')).all()
+        randomized_word_list.extend(breadth_training_items)
 
         # Currently, we randomize the order of the strands.
         shuffle(strands)
@@ -163,10 +168,11 @@ def nextWord():
 
     # We construct a JSON-serializable dictionary with the filenames and the
     # target word.
+
     response = {
         "filenames": filenames,
         "current_target_word": manager.current_word.id,
-        "audio_file": url_for("static", filename= "scivocab/audio/" + manager.current_word.audio_file),
+        "audio_file": url_for("static", filename= "scivocab/audio/" + manager.current_word.audio_file)
     }
 
     # We convert the dictionary into a JSON message using Flask's 'jsonify'
