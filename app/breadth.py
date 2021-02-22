@@ -168,11 +168,14 @@ def nextWord():
 
     # We construct a JSON-serializable dictionary with the filenames and the
     # target word.
-
+    if manager.current_word.audio_file is None:
+        audio_file = ""
+    else:
+        audio_file = manager.current_word.audio_file
     response = {
         "filenames": filenames,
         "current_target_word": manager.current_word.id,
-        "audio_file": url_for("static", filename= "scivocab/audio/" + manager.current_word.audio_file)
+        "audio_file": url_for("static", filename= "scivocab/audio/" + audio_file)
     }
 
     # We convert the dictionary into a JSON message using Flask's 'jsonify'

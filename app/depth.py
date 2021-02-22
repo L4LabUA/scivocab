@@ -46,6 +46,10 @@ class DepthTaskManager(object):
 
         # Get the strands from the database
         strands = Strand.query.all()
+        
+        #training items
+        depth_training_items = Word.query.filter(Word.depth_id.startswith('dt')).all()
+        randomized_word_list.extend(depth_training_items)
 
         # Currently, we randomize the order of the strands.
         # NOTE: Jessie says that in the future, the order may not be random.

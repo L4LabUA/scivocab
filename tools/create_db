@@ -82,7 +82,6 @@ def create_word_tables():
         word = Word(
             id=row.target,
             breadth_id=row.breadth_id,
-            audio_file = ""
         )
         db.session.merge(word)
         breadth_training_image = BreadthTaskImage(
@@ -119,6 +118,30 @@ def create_word_tables():
             image_type=DepthTaskImageType(id = stem_parts[-1])
         )
         db.session.merge(depth_task_image)
+
+    info("Inserting depth training ids and audio filenames.")
+    audio_df = pd.read_csv(f"{basedir}/../app/static/scivocab/training/depth/audio_training.csv")
+
+    for row in audio_df.itertuples():
+        word = Word(id=row.target, breadth_id=row.breadth_id,
+        depth_id=row.depth_id, audio_file=row.file)
+        db.session.merge(word)
+
+    db.session.commit()
+
+    info("Inserting depth task training image filenames.")
+    for f in glob(f"{basedir}/../app/static/scivocab/sv_dv1/training/*.jpg"):
+        path = Path(f)
+        filename = "training/" + path.name
+        stem_parts = path.stem.split("_")
+        depth_training_image = DepthTaskImage(
+            target=Word.query.filter_by(depth_id = stem_parts[1]).first().id,
+            filename=filename,
+            position=int(stem_parts[2][1]),
+            image_type=DepthTaskImageType(id = stem_parts[-1])
+        )
+        db.session.merge(depth_training_image)
+
 
     db.session.commit()
 

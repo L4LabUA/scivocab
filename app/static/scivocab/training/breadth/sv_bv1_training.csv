@@ -3,3 +3,9 @@ bv1_train,bt001,cat,p1,fp,bv1_train1_p1_fp.jpg
 bv1_train,bt001,cat,p2,fs,bv1_train1_p4_fs.jpg
 bv1_train,bt001,cat,p3,fx,bv1_train1_p3_fx.jpg
 bv1_train,bt001,cat,p4,tw,bv1_train1_p2_tw.jpg
+
+bv1_train,bt002,chair,p1,fp,bv1_train2_p1_fp.jpg
+bv1_train,bt002,chair,p2,tw,bv1_train2_p2_tw.jpg
+bv1_train,bt002,chair,p3,fx,bv1_train2_p3_fx.jpg
+bv1_train,bt002,chair,p4,fs,bv1_train2_p4_fs.jpg
+
