@@ -4,7 +4,8 @@ __pycache__
 *.xlsx
 scivocab_venv
 *.swp
-
+*.swo
+*.swn
 # PyCharm config
 .idea
 

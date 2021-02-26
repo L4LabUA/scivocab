@@ -1,0 +1,8 @@
+child_id,strand_id,breadth_id,response_type,position,timestamp
+1,,bt001,fp,top_right,"2021-02-26 09:37:48.513472"
+1,,bt002,fs,top_right,"2021-02-26 09:37:49.678210"
+1,62,b076,tw,top_right,"2021-02-26 09:37:50.704908"
+1,62,b073,fp,top_right,"2021-02-26 09:37:51.503069"
+1,62,b061,fp,bottom_right,"2021-02-26 09:52:08.787969"
+1,62,b077,fx,bottom_right,"2021-02-26 09:52:11.682806"
+1,62,b060,fp,bottom_right,"2021-02-26 09:52:14.049471"

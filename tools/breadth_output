@@ -1,0 +1,14 @@
+sqlite3 -header -csv app/app.db 'select 
+    child_id, 
+    strand_id, 
+    breadth_id, 
+    response_type, 
+    position, 
+    timestamp 
+    
+    from breadth_task_response 
+    
+    inner join word on breadth_task_response.target_word=word.id;'
+
+
+
