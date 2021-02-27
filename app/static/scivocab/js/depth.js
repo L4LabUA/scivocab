@@ -30,7 +30,7 @@ $(document).on('click', '#nextWordButton', function() {
 
     // Check if there are duplicates
     if (srcs.includes("dv_placeholder.gif")) {
-        alert("All the target image slots must be filled to proceed.");
+        alert("All the boxes must have images to continue.");
     }
     else {
         $.getJSON("nextWord", {response : JSON.stringify(srcs)}, update);
