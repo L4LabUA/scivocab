@@ -23,14 +23,31 @@ $(() => {
     return false;
 });
 
-// The block of code below registers the 'update' function to be called
-// every time an image is clicked.
+//declares the varible so it can be used in multiple functions
 
+var clicked_image_id=""; 
+
+
+// sets clicked image id to varible
 $(document).on('click', 'img', function() {
-    $.getJSON(
-        "nextWord",
-        {position: $(this).attr('id')},
-        update
-    );
+    clicked_image_id = $(this).attr('id');
+    return false;
+});
+
+
+// The block of code below registers the 'update' function to be called when
+// the next button is clicked; getJSON sends the data
+$(document).on('click', '#nextWordButton', function() {
+    if (clicked_image_id == "") {
+        alert("Select an image to proceed");
+    }
+    else {
+        $.getJSON("nextWord",
+            {position : clicked_image_id},
+            update
+        );
+    //empty string to reset imgage id
+        clicked_image_id = "";
+    }   
     return false;
 });
