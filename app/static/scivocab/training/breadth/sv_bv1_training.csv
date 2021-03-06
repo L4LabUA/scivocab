@@ -1,9 +1,0 @@
-task_id,breadth_id,target,img_type,file
-bv1_train,bt001,car,fp,bv1_train1_fp.jpg
-bv1_train,bt001,car,fs,bv1_train1_fs.jpg
-bv1_train,bt001,car,fx,bv1_train1_fx.jpg
-bv1_train,bt001,car,tw,bv1_train1_tw.jpg
-bv1_train,bt002,chips,fp,bv1_train2_fp.jpg
-bv1_train,bt002,chips,tw,bv1_train2_tw.jpg
-bv1_train,bt002,chips,fx,bv1_train2_fx.jpg
-bv1_train,bt002,chips,fs,bv1_train2_fs.jpg

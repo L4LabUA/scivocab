@@ -1,5 +1,0 @@
-audio_pk,word_id,target,breadth_id,depth_id,file
-1,wt001,car,bt001,,wt001.wav
-2,wt002,chips,bt002,,wt002.wav
-3,wt003,bag,,dt001,wt003.wav
-4,wt004,toothbrush,,dt002,wt004.wav
