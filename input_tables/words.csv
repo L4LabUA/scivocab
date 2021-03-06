@@ -1,0 +1,113 @@
+id,target,breadth_id,depth_id,strand_id,audio_file
+w001,arachnid,b001,,40,w001_ara.wav
+w002,camouflage,b002,,40,w002_cam.wav
+w003,carnivore,b003,,40,w003_car.wav
+w004,endangered,b004,,40,w004_end.wav
+w005,exoskeleton,b005,d001,40,w005_exo.wav
+w006,extinct,b006,,40,w006_ext.wav
+w007,habitat,b007,d002,40,w007_hab.wav
+w008,herbivore,b008,d003,40,w008_her.wav
+w009,hibernation,b009,d004,40,w009_hib.wav
+w010,insect,b010,,40,w010_ins.wav
+w011,invertebrate,b011,,40,w011_inv.wav
+w012,mammal,b012,,40,w012_mam.wav
+w013,migration,b013,d005,40,w013_mig.wav
+w014,mimicry,b014,,40,w014_mim.wav
+w015,mineral,b015,d006,40,w015_min.wav
+w016,mutualism,b016,d007,40,w016_mut.wav
+w017,"nonrenewable resource",b017,,40,w017_non.wav
+w018,omnivore,b018,d008,40,w018_omn.wav
+w019,parasitism,b019,d009,40,w019_par.wav
+w020,"physical adaptation",b020,,40,w020_phy.wav
+w021,predator,b021,,40,w021_pre.wav
+w022,prey,b022,,40,w022_pre.wav
+w023,"renewable resource",b023,,40,w023_ren.wav
+w024,reptile,b024,d010,40,w024_rep.wav
+w025,root,b025,d011,40,w025_roo.wav
+w026,stem,b026,d012,40,w026_ste.wav
+w027,vertebrate,b027,d013,40,w027_ver.wav
+w028,attraction,b028,d014,50,w028_att.wav
+w029,battery,b029,d015,50,w029_bat.wav
+w030,bulb,b030,d016,50,w030_bul.wav
+w031,circuit,b031,,50,w031_cir.wav
+w032,"closed circuit",b032,d017,50,w032_clo.wav
+w033,compass,b033,d018,50,w033_com.wav
+w034,conductor,b034,,50,w034_con.wav
+w035,diode,b035,,50,w035_dio.wav
+w036,"electric current",b036,,50,w036_ele.wav
+w037,electromagnet,b037,,50,w037_ele.wav
+w038,filament,b038,d019,50,w038_fil.wav
+w039,insulator,b039,,50,w039_ins.wav
+w040,load,b040,,50,w040_loa.wav
+w041,magnet,b041,,50,w041_mag.wav
+w042,"magnetic field",b042,,50,w042_mag.wav
+w043,"magnetic pole",b043,,50,w043_mag.wav
+w044,"open circuit",b044,,50,w044_ope.wav
+w045,"parallel circuit",b045,d020,50,w045_par.wav
+w046,"permanent magnet",b046,d021,50,w046_per.wav
+w047,repulsion,b047,d022,50,w047_rep.wav
+w048,"series circuit",b048,d023,50,w048_ser.wav
+w049,"short circuit",b049,,50,w049_sho.wav
+w050,socket,b050,,50,w050_soc.wav
+w051,source,b051,d024,50,w051_sou.wav
+w052,switch,b052,d025,50,w052_swi.wav
+w053,telegraph,b053,d026,50,w053_tel.wav
+w054,"temporary magnet",b054,,50,w054_tem.wav
+w055,avalanche,b055,,62,w055_ava.wav
+w056,canyon,b056,d027,62,w056_can.wav
+w057,dam,b057,,62,w057_dam.wav
+w058,deposition,b058,,62,w058_dep.wav
+w059,drought,b059,d028,62,w059_dro.wav
+w060,earthquake,b060,,62,w060_ear.wav
+w061,erosion,b061,d029,62,w061_ero.wav
+w062,eruption,b062,,62,w062_eru.wav
+w063,fault,b063,d030,62,w063_fau.wav
+w064,flood,b064,d031,62,w064_flo.wav
+w065,fossil,b065,d032,62,w065_fos.wav
+w066,hurricane,b066,,62,w066_hur.wav
+w067,"ice core",b067,,62,w067_ice.wav
+w068,landform,b068,,62,w068_lan.wav
+w069,landslide,b069,d033,62,w069_lan.wav
+w070,moraine,b070,d034,62,w070_mor.wav
+w071,"rapid process",b071,,62,w071_rap.wav
+w072,"river bank",b072,d035,62,w072_riv.wav
+w073,"river bed",b073,d036,62,w073_riv.wav
+w074,"sand dune",b074,d037,62,w074_san.wav
+w075,sediment,b075,,62,w075_sed.wav
+w076,"slow process",b076,,62,w076_slo.wav
+w077,"tectonic plate",b077,,62,w077_tec.wav
+w078,tornado,b078,d038,62,w078_tor.wav
+w079,"tree ring",b079,,62,w079_tre.wav
+w080,volcano,b080,,62,w080_vol.wav
+w081,weathering,b081,d039,62,w081_wea.wav
+w082,anemometer,b082,,63,w082_ane.wav
+w083,"atmospheric water",b083,d040,63,w083_atm.wav
+w084,barometer,b084,,63,w084_bar.wav
+w085,climate,b085,,63,w085_cli.wav
+w086,climatologist,b086,,63,w086_cli.wav
+w087,condensation,b087,d041,63,w087_con.wav
+w088,evaporation,b088,d042,63,w088_eva.wav
+w089,front,b089,,63,w089_fro.wav
+w090,glacier,b090,d043,63,w090_gla.wav
+w091,"ground water",b091,d044,63,w091_gro.wav
+w092,humidity,b092,,63,w092_hum.wav
+w093,lake,b093,d045,63,w093_lak.wav
+w094,meteorologist,b094,,63,w094_met.wav
+w095,"polar ice cap",b095,d046,63,w095_pol.wav
+w096,pollution,b096,,63,w096_pol.wav
+w097,precipitation,b097,d047,63,w097_pre.wav
+w098,"rain gauge",b098,,63,w098_rai.wav
+w099,river,b099,d048,63,w099_riv.wav
+w100,run-off,b100,d049,63,w100_run.wav
+w101,"surface water",b101,d050,63,w101_sur.wav
+w102,temperature,b102,,63,w102_tem.wav
+w103,thermometer,b103,d051,63,w103_the.wav
+w104,transpiration,b104,,63,w104_tra.wav
+w105,"water cycle",b105,d052,63,w105_wat.wav
+w106,watershed,b106,,63,w106_wat.wav
+w107,weather,b107,,63,w107_wea.wav
+w108,"wind vane",b108,,63,w108_win.wav
+wt001,car,bt001,,,wt001_car.wav
+wt002,chips,bt002,,,wt002_chi.wav
+wt003,bag,,dt001,,wt003_bag.wav
+wt004,toothbrush,,dt002,,wt004_too.wav

@@ -51,52 +51,40 @@ def create_word_tables():
 
     basedir = os.path.abspath(os.path.dirname(__file__))
     static_dir = "static/scivocab"
-    breadth_df = pd.read_csv(
-        f"{basedir}/../app/static/scivocab/sv_bv1_input.csv"
+    words_df = pd.read_csv(
+        f"{basedir}/../input_tables/words.csv",
     )
 
-    info("Adding breadth ids, target words, and strand information")
-    for row in breadth_df.itertuples():
+    info("Adding words to database.")
+    for row in words_df.itertuples():
         word = Word(
-            id=row.target,
+            id=row.id,
             breadth_id=row.breadth_id,
-            strand=Strand(id=row.strand),
+            depth_id=row.depth_id,
+            target = row.target,
+            strand = Strand(id=row.strand_id),
+            audio_file = f"{row.id}_{row.target[0:3]}.wav"
         )
-        db.session.merge(word)
-        breadth_task_image = BreadthTaskImage(
-            target=row.target,
-            filename=row.file,
-            image_type=BreadthTaskImageType(id = row.img_type),
-            position=int(row.file.split("_")[2][1]),
-        )
-        db.session.merge(breadth_task_image)
 
-    info("Inserting depth ids and audio filenames.")
-    audio_df = pd.read_csv(f"{basedir}/../app/static/scivocab/audio.csv")
-
-    for row in audio_df.itertuples():
-        word = Word.query.filter_by(breadth_id=row.breadth_id).first()
-        word.word_id = row.word_id
-        if isinstance(row.depth_id, str):
-            word.depth_id = row.depth_id
-        word.audio_file = row.file
         db.session.merge(word)
 
-    db.session.commit()
+        if not pd.isna(row.breadth_id):
+            for img_type in ("tw", "fs", "fp", "fx"):
+                breadth_task_image = BreadthTaskImage(
+                    word_id=row.id,
+                    filename=f"{row.breadth_id}_{img_type}.jpg",
+                    image_type=BreadthTaskImageType(id=img_type),
+                )
+                db.session.merge(breadth_task_image)
 
-    info("Inserting depth task image filenames.")
-    for f in glob(f"{basedir}/../app/static/scivocab/sv_dv1/*.jpg"):
-        path = Path(f)
-        filename = path.name
-        stem_parts = path.stem.split("_")
-
-        depth_task_image = DepthTaskImage(
-            target=Word.query.filter_by(depth_id = stem_parts[1]).first().id,
-            filename=filename,
-            position=int(stem_parts[2][1]),
-            image_type=DepthTaskImageType(id = stem_parts[-1])
-        )
-        db.session.merge(depth_task_image)
+        if not pd.isna(row.depth_id):
+            for img_type in ("a", "b", "c", "e"):
+                depth_task_image = DepthTaskImage(
+                    word_id=row.id,
+                    filename=f"{row.depth_id}_{img_type}.jpg",
+                    image_type=DepthTaskImageType(id=img_type),
+                )
+                db.session.merge(depth_task_image)
 
     db.session.commit()
 

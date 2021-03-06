@@ -50,11 +50,10 @@ class Strand(db.Model):
 
 class Word(db.Model):
     id = db.Column(db.String(64), primary_key=True)
-    word_id = db.Column(db.String)
-    breadth_id = db.Column(db.String(64), unique=True)
+    target = db.Column(db.String)
+    breadth_id = db.Column(db.String(64))
 
-    # We will later add depth_id
-    depth_id = db.Column(db.String(64), unique=True)
+    depth_id = db.Column(db.String(64))
     strand_id = db.Column(
         db.Integer, db.ForeignKey("strand.id")
     )
@@ -66,7 +65,7 @@ class BreadthTaskImage(db.Model):
     """A class that stores all the information needed to make one set of images
     associated with a target for the breadth task."""
 
-    target = db.Column(db.String(64), db.ForeignKey("word.id"))
+    word_id = db.Column(db.String(64), db.ForeignKey("word.id"))
     filename = db.Column(db.String(64), primary_key=True)
     image_type_id = db.Column(
         db.String(64),
@@ -76,15 +75,12 @@ class BreadthTaskImage(db.Model):
     image_type = db.relationship(
         "BreadthTaskImageType", backref=db.backref("images"), lazy=True
     )
-    position = db.Column(
-        db.Integer, db.ForeignKey("breadth_task_image_position.id")
-    )
 
 class DepthTaskImage(db.Model):
     """A class that stores all the information needed to make one set of images
     associated with a target for the depth task."""
 
-    target = db.Column(db.String(64), db.ForeignKey("word.id"))
+    word_id = db.Column(db.String(64), db.ForeignKey("word.id"))
     filename = db.Column(db.String(64), primary_key=True)
     image_type_id = db.Column(
         db.String(64),
@@ -93,9 +89,6 @@ class DepthTaskImage(db.Model):
     )
     image_type = db.relationship(
         "DepthTaskImageType", backref=db.backref("images"), lazy=True
-    )
-    position = db.Column(
-        db.Integer, db.ForeignKey("depth_task_image_position.id")
     )
 
 

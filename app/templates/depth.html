@@ -4,8 +4,8 @@
     <div class="col border w-50 p-3 sourceImageContainer ">
         <img id = "position_{{ i }}"
              class="sourceImage img-fluid" 
-             src={{ url_for("static", filename="scivocab/dv_placeholder.gif") }} 
-             draggable="true">
+             src={{ url_for("static", filename="scivocab/images/dv_placeholder.gif") }} 
+             draggable="true" width="300">
     </div>
 {%- endmacro %}
 
@@ -36,6 +36,12 @@
             </div>
         {% endfor %}
     </div>
+
+    <div class="d-flex">
+        <div class="mr-auto p-2"><b>Best</b></div>
+        <div class="p-2"><b>Worst</b></div>
+    </div>
+
     <div class="row justify-content-md-center p-3">
         <div class="col">
             <button type="button" id="nextWordButton"
@@ -44,5 +50,4 @@
             </button>
         </div>
     </div>
-
 {% endblock %}

@@ -6,7 +6,7 @@ from flask import (
     jsonify,
     g,
     current_app,
-    url_for
+    url_for,
 )
 import json
 from app.models import (
@@ -46,6 +46,12 @@ class DepthTaskManager(object):
 
         # Get the strands from the database
         strands = Strand.query.all()
+
+        # training items
+        depth_training_items = Word.query.filter(
+            Word.depth_id.startswith("dt")
+        ).all()
+        randomized_word_list.extend(depth_training_items)
 
         # Currently, we randomize the order of the strands.
         # NOTE: Jessie says that in the future, the order may not be random.
@@ -129,15 +135,17 @@ def nextWord():
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
     if request.args.get("response") is not None:
-        images = [src.split("/")[-1] for src in json.loads(request.args["response"])]
+        images = [
+            src.split("/")[-1] for src in json.loads(request.args["response"])
+        ]
         print(images)
         depth_task_response = DepthTaskResponse(
-            target_word=manager.current_word.id,
+            target_word=manager.current_word.target,
             child_id=current_user.id,
             image_0=images[0],
             image_1=images[1],
             image_2=images[2],
-            image_3=images[3]
+            image_3=images[3],
         )
         db.session.add(depth_task_response)
         db.session.commit()
@@ -158,9 +166,9 @@ def nextWord():
 
     # We gather the filenames for the browser.
     filenames = [
-        request.script_root + "/static/scivocab/sv_dv1/" + img.filename
+        request.script_root + "/static/scivocab/images/depth/" + img.filename
         for img in DepthTaskImage.query.filter_by(
-            target=manager.current_word.id
+            word_id=manager.current_word.id
         ).all()
     ]
 
@@ -168,8 +176,11 @@ def nextWord():
     # target word.
     response = {
         "filenames": filenames,
-        "current_target_word": manager.current_word.id,
-        "audio_file": url_for("static", filename= "scivocab/audio/" + manager.current_word.audio_file),
+        "current_target_word": manager.current_word.target,
+        "audio_file": url_for(
+            "static",
+            filename="scivocab/audio/" + manager.current_word.audio_file,
+        ),
     }
 
     # We convert the dictionary into a JSON message using Flask's 'jsonify'

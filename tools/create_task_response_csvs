@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# This script dumps the responses as two CSV files.
+
+# breadth_task_responses.csv contains the responses from the breadth task.
+sqlite3 -header -csv app/app.db 'select
+        child_id,
+        strand_id,
+        breadth_id,
+        response_type,
+        position,
+        timestamp
+    from breadth_task_response
+    inner join word on breadth_task_response.target_word=word.target;' \
+    > breadth_task_responses.csv
+
+# depth_task_responses.csv contains the responses from the depth task.
+sqlite3 -header -csv app/app.db 'select
+        child_id,
+        strand_id,
+        depth_id,
+        image_0,
+        image_1,
+        image_2,
+        image_3,
+        timestamp
+    from depth_task_response
+    inner join word on depth_task_response.target_word=word.target;' \
+    > depth_task_responses.csv

@@ -43,11 +43,16 @@ class BreadthTaskManager(object):
         # Create an empty list to hold Word objects
         randomized_word_list: list[Word] = []
 
+        # training items
+        breadth_training_items = Word.query.filter(
+            Word.breadth_id.startswith("bt")
+        ).all()
+        randomized_word_list.extend(breadth_training_items)
+
         # Get the strands from the database
         strands = Strand.query.all()
 
         # Currently, we randomize the order of the strands.
-        # NOTE: Jessie says that in the future, the order may not be random.
         shuffle(strands)
 
         # For each strand, we shuffle the words in the strand, and add those
@@ -133,7 +138,7 @@ def nextWord():
     if request.args.get("position") is not None:
         position = int(request.args.get("position").split("_")[1])
         breadth_task_response = BreadthTaskResponse(
-            target_word=manager.current_word.id,
+            target_word=manager.current_word.target,
             response_type=manager.image_types[position],
             child_id=current_user.id,
             position=manager.position_labels[position],
@@ -157,18 +162,24 @@ def nextWord():
 
     # We gather the filenames for the browser.
     filenames = [
-        request.script_root + "/static/scivocab/sv_bv1/" + img.filename
+        request.script_root + "/static/scivocab/images/breadth/" + img.filename
         for img in BreadthTaskImage.query.filter_by(
-            target=manager.current_word.id
+            word_id=manager.current_word.id
         ).all()
     ]
 
     # We construct a JSON-serializable dictionary with the filenames and the
     # target word.
+    if manager.current_word.audio_file is None:
+        audio_file = ""
+    else:
+        audio_file = manager.current_word.audio_file
     response = {
         "filenames": filenames,
-        "current_target_word": manager.current_word.id,
-        "audio_file": url_for("static", filename= "scivocab/audio/" + manager.current_word.audio_file),
+        "current_target_word": manager.current_word.target,
+        "audio_file": url_for(
+            "static", filename="scivocab/audio/" + audio_file
+        ),
     }
 
     # We convert the dictionary into a JSON message using Flask's 'jsonify'
