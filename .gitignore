@@ -18,4 +18,5 @@ app.db
 Icon*
 
 # Ignoring output CSVs
-breadth_task_response.csv
+breadth_task_responses.csv
+depth_task_responses.csv
