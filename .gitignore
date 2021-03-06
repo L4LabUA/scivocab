@@ -16,3 +16,6 @@ app.db
 *.egg-info
 
 Icon*
+
+# Ignoring output CSVs
+breadth_task_response.csv
