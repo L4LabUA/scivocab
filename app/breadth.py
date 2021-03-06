@@ -43,12 +43,12 @@ class BreadthTaskManager(object):
         # Create an empty list to hold Word objects
         randomized_word_list: list[Word] = []
 
-        # Get the strands from the database
-        strands = Strand.query.all()
-        
         #training items
         breadth_training_items = Word.query.filter(Word.breadth_id.startswith('bt')).all()
         randomized_word_list.extend(breadth_training_items)
+
+        # Get the strands from the database
+        strands = Strand.query.all()
 
         # Currently, we randomize the order of the strands.
         shuffle(strands)
