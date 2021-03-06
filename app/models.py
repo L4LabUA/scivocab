@@ -76,9 +76,6 @@ class BreadthTaskImage(db.Model):
     image_type = db.relationship(
         "BreadthTaskImageType", backref=db.backref("images"), lazy=True
     )
-    position = db.Column(
-        db.Integer, db.ForeignKey("breadth_task_image_position.id")
-    )
 
 class DepthTaskImage(db.Model):
     """A class that stores all the information needed to make one set of images
@@ -93,9 +90,6 @@ class DepthTaskImage(db.Model):
     )
     image_type = db.relationship(
         "DepthTaskImageType", backref=db.backref("images"), lazy=True
-    )
-    position = db.Column(
-        db.Integer, db.ForeignKey("depth_task_image_position.id")
     )
 
 
