@@ -162,7 +162,7 @@ def nextWord():
 
     # We gather the filenames for the browser.
     filenames = [
-        request.script_root + "/static/scivocab/sv_dv1/" + img.filename
+        request.script_root + "/static/scivocab/images/depth/" + img.filename
         for img in DepthTaskImage.query.filter_by(
             target=manager.current_word.id
         ).all()
