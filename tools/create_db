@@ -53,7 +53,6 @@ def create_word_tables():
     static_dir = "static/scivocab"
     words_df = pd.read_csv(
         f"{basedir}/../input_tables/words.csv",
-        dtype = {"strand_id": str}
     )
 
     info("Adding words to database.")
@@ -61,13 +60,11 @@ def create_word_tables():
         word = Word(
             id=row.id,
             breadth_id=row.breadth_id,
-            depth_id = row.depth_id,
+            depth_id=row.depth_id,
             target = row.target,
+            strand = Strand(id=row.strand_id),
             audio_file = f"{row.id}_{row.target[0:3]}.wav"
         )
-
-        if not pd.isna(row.strand_id):
-            word.strand_id = int(row.strand_id)
 
         db.session.merge(word)
 
