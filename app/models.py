@@ -52,7 +52,6 @@ class Word(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     word_id = db.Column(db.String)
     breadth_id = db.Column(db.String(64))
-    training_item = db.Column(db.String)
 
     depth_id = db.Column(db.String(64))
     strand_id = db.Column(
