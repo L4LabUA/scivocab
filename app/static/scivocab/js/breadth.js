@@ -4,6 +4,7 @@ function update(data) {
     }
     for (i = 0; i < 4; i++) {
         $("img#position_"+ i.toString()).attr('src' , data.filenames[i]) ;
+        document.getElementById("position_"+i).style.opacity = "1";
     }
     document.getElementById("playButton").onclick = function() {
         new Audio(data.audio_file).play();
@@ -26,12 +27,21 @@ $(() => {
 //declares the varible so it can be used in multiple functions
 
 var clicked_image_id=""; 
-
-
 // sets clicked image id to varible
+// sets all images to 100% and then greys out the clicked image
 $(document).on('click', 'img', function() {
     clicked_image_id = $(this).attr('id');
-    return false;
+    
+    for (i=0; i<4; i++) {
+        if ("position_"+i != clicked_image_id) { 
+            document.getElementById("position_"+i).style.opacity = "0.3";
+        }
+        else {
+            document.getElementById("position_"+i).style.opacity = "1";
+        }
+    }
+     
+   return false;
 });
 
 
@@ -46,8 +56,8 @@ $(document).on('click', '#nextWordButton', function() {
             {position : clicked_image_id},
             update
         );
-    //empty string to reset imgage id
-        clicked_image_id = "";
+    //reset 100% opacity for clicked image and empty string to reset imgage id
+       clicked_image_id = "";
     }   
     return false;
 });
