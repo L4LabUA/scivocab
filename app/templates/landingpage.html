@@ -3,16 +3,76 @@
 {% block content %}
 
     <div class="container-fluid" style="text-align: center">
-        <h1>Welcome!</h1>
-        <a href="{{ url_for('breadth.main') }}" class="btn btn-outline-primary btn-lg">
-            Breadth Task
-        </a>
-        <a href="{{ url_for('depth.main') }}" class="btn btn-outline-primary btn-lg">
-            Depth Task
-        </a>
-        <a href="{{ url_for('definition.main') }}" class="btn btn-outline-primary btn-lg">
-            Definition Task
-        </a>
+        <div class="row">
+            <div class="col">
+                <h1>Welcome!</h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <img src={{ url_for("static", filename="scivocab/women_scientist_images/b1_flossie_wong_staal.jpg") }}  alt="FLossie" class="image">
+                <a href="{{ url_for('breadth.main') }}" class="btn
+                btn-outline-primary btn-lg">Breadth Task
+                </a>
+            </div>
+
+            <div class="col">
+                <img src={{ url_for("static",
+                filename="scivocab/women_scientist_images/d1_annie_easley.jpg")}}  alt="Annie" class="image">
+                <a href="{{ url_for('depth.main') }}" class="btn
+                btn-outline-primary btn-lg">Depth Task</a>
+            </div>
+            
+            <div class="col">
+                <img src={{ url_for("static", filename="scivocab/women_scientist_images/def1_kalpana_chawla.jpg") }}  alt="FLossie" class="image">
+                <a href="{{ url_for('definition.main') }}" class="btn
+                btn-outline-primary btn-lg">Definition Task</a>
+            </div>
+        </div>
     </div>
+
+<style>
+.container {
+  position: relative;
+  width: 50%;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  padding: 5px;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .5s ease;
+  background-color: #005d9c;
+}
+
+.container:hover .overlay {
+  opacity: 1;
+}
+
+.text {
+  color: white;
+  font-size: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+</style>
 
 {% endblock %}
