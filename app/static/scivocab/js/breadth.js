@@ -31,7 +31,6 @@ var clicked_image_id="";
 // sets all images to 100% and then greys out the clicked image
 $(document).on('click', 'img', function() {
     clicked_image_id = $(this).attr('id');
-    
     for (i=0; i<4; i++) {
         if ("position_"+i != clicked_image_id) { 
             document.getElementById("position_"+i).style.opacity = "0.3";
