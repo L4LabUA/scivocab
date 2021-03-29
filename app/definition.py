@@ -144,7 +144,7 @@ def nextWord():
     # We construct a JSON-serializable dictionary with the filenames and the
     # target word.
     response = {
-        "current_target_word": manager.current_word.id,
+        "current_target_word": manager.current_word.target,
         "audio_file": url_for("static", filename= "scivocab/audio/" + manager.current_word.audio_file),
     }
 
