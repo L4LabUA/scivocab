@@ -161,7 +161,12 @@ def nextWord():
         # raised, that means we are at the end of the list, and so we redirect the
         # user to the post-breadth-task page.
         manager.go_to_next_word()
-        if (manager.current_word_index-1) == manager.strand_word_counts_accumulative:
+        print(manager.current_word_index-1)
+        print(manager.current_strand_index)
+        print(manager.strand_word_counts_accumulative)
+
+        if (manager.current_word_index-1) in manager.strand_word_counts_accumulative:
+            print("this is the end of a strand")
             return jsonify({"redirect": "fun_fact/"+str(manager.current_strand_index)})
             # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
             # function here. This is our workaround.
