@@ -45,7 +45,7 @@ class BreadthTaskImagePosition(db.Model):
 
 
 class Strand(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String, primary_key=True)
 
 
 class Word(db.Model):

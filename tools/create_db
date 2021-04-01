@@ -62,7 +62,7 @@ def create_word_tables():
             breadth_id=row.breadth_id,
             depth_id=row.depth_id,
             target = row.target,
-            strand = Strand(id=row.strand_id),
+            strand = Strand(id=str(row.strand_id)),
             audio_file = f"{row.id}_{row.target[0:3]}.wav"
         )
 

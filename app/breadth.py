@@ -1,3 +1,4 @@
+import itertools
 from random import shuffle
 from flask import (
     Blueprint,
@@ -50,22 +51,31 @@ class BreadthTaskManager(object):
         randomized_word_list.extend(breadth_training_items)
 
         # Get the strands from the database
-        strands = Strand.query.all()
+        #excluding training items becuase they have already been added to the list; see above
+        strands = [strand for strand in Strand.query.all() if strand.id != "training"]
 
         # Currently, we randomize the order of the strands.
         shuffle(strands)
-
+        strand_word_counts: list = []
+        
         # For each strand, we shuffle the words in the strand, and add those
         # words to randomized_word_list.
         for strand in strands:
+            strand_word_counts.append(len(strand.words))
             shuffle(strand.words)
             randomized_word_list.extend(strand.words)
+            
+
+        # create the accumulative count vaiable
+        self.strand_word_counts_accumulative = itertools.accumulate(strand_word_counts)
+
 
         # Create a list of image types. We will shuffle this list every time we
         # move to a new word in the task, in order to randomize the positions
         # of the four images for a given word.
         self.image_types = [x.id for x in BreadthTaskImageType.query.all()]
-
+        self.current_word_index = 0
+        self.current_strand_index = 0 
         # We create an iterator out of the list in order to have the Python
         # runtime keep track of our iteration and as an additional safeguard to
         # prevent going backwards in the sequence.
@@ -75,6 +85,7 @@ class BreadthTaskManager(object):
         # We set the 'current_word' property of this instance of the
         # BreadthTaskManager class to the next Word object.
         self.current_word = next(self.randomized_word_iterator)
+        self.current_word_index += 1
         self.position_labels = {
             0: "top_left",
             1: "top_right",
@@ -89,7 +100,7 @@ class BreadthTaskManager(object):
         # Set the current_word attribute of the class instance to the next Word
         # in the iterator.
         self.current_word = next(self.randomized_word_iterator)
-
+        self.current_word_index += 1
         current_user.set_current_word(self.current_word)
 
 
@@ -118,10 +129,10 @@ def main():
     return render_template("breadth.html", title="Breadth Task")
 
 
-@bp.route("/redirect")
+@bp.route("/fun_fact/{image}")
 @login_required
-def redirect_to_end():
-    return render_template("after.html")
+def redirect_to_fun_fact():
+    return render_template("fun_fact.html", image=image)
 
 
 # Each call of nextWord loads a new word, waits for the user to select an
@@ -149,13 +160,11 @@ def nextWord():
         # We attempt to go to the next word. If a StopIteration exception is
         # raised, that means we are at the end of the list, and so we redirect the
         # user to the post-breadth-task page.
-        try:
-            manager.go_to_next_word()
-
-        except StopIteration:
+        manager.go_to_next_word()
+        if (manager.current_word_index-1) == manager.strand_word_counts_accumulative:
+            return jsonify({"redirect": "fun_fact/"+str(manager.current_strand_index)})
             # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
             # function here. This is our workaround.
-            return jsonify({"redirect": "redirect"})
 
     # If the StopIteration exception was not raised, we continue on, telling
     # the browser which images to display, via a JSON message.
@@ -163,8 +172,7 @@ def nextWord():
     # We gather the filenames for the browser.
     filenames = [
         request.script_root + "/static/scivocab/images/breadth/" + img.filename
-        for img in BreadthTaskImage.query.filter_by(
-            word_id=manager.current_word.id
+        for img in BreadthTaskImage.query.filter_by(word_id=manager.current_word.id
         ).all()
     ]
 
