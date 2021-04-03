@@ -161,11 +161,16 @@ def nextWord():
     # the browser which images to display, via a JSON message.
 
     # We gather the filenames for the browser.
-    filenames = [
-        request.script_root + "/static/scivocab/images/breadth/" + img.filename
+    filename_dict = {
+        img.image_type.id: request.script_root
+        + "/static/scivocab/images/breadth/"
+        + img.filename
         for img in BreadthTaskImage.query.filter_by(
             word_id=manager.current_word.id
         ).all()
+    }
+    filenames = [
+        filename_dict[image_type] for image_type in manager.image_types
     ]
 
     # We construct a JSON-serializable dictionary with the filenames and the
