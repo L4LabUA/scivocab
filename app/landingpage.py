@@ -64,9 +64,3 @@ def main():
         login_user(child, remember=True)
         return render_template("landingpage.html")
     return render_template("login.html", title="Login", form=form)
-
-
-@bp.route("/home")
-def landingpage():
-    logout_user()
-    return render_template("landingpage.html")
