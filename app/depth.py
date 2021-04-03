@@ -23,7 +23,7 @@ from logging import info
 
 
 class DepthTaskManager(object):
-    def initialize(self):
+    def __init__(self):
         """The code in this method would normally be in the class's __init__
         method. However, we put the logic in this function instead because we
         need a top-level instance of this class to persist across requests in
@@ -89,31 +89,26 @@ class DepthTaskManager(object):
         # in the iterator.
         self.current_word = next(self.randomized_word_iterator)
 
-        current_user.set_current_word(self.current_word)
-
-
 # We create a Flask blueprint object. Flask blueprints help keep apps modular.
 # So in principle, the same blueprint could be used for multiple apps.
 bp = Blueprint("depth", __name__)
 
 
-# Create a module-level instance of DepthTaskManager, which will be
-# initialized immediately before the first request to the app (see the
-# 'initialize_depth_task_manager' function below.
-manager = DepthTaskManager()
-
-
-@bp.before_app_first_request
-def initialize_depth_task_manager():
-    """Initialize the global DepthTaskManager instance."""
-    with current_app.app_context():
-        manager.initialize()
+# Create a global dictionary of managers, keyed by the current user's ID (i.e.
+# the child ID)
+MANAGERS={}
 
 
 @bp.route("/")
 @login_required
 def main():
     """The main view function for the depth task."""
+
+    # If there isn't a DepthTaskManager for the current user yet, create one
+    # and add it to the MANAGERS dictionary.
+    if MANAGERS.get(current_user.id) is None:
+        MANAGERS[current_user.id] = DepthTaskManager()
+
     return render_template("depth.html", title="Depth Task")
 
 
@@ -131,6 +126,8 @@ def redirect_to_end():
 def nextWord():
     """This endpoint is queried from the frontend to obtain the filenames of
     the images to display for the depth task."""
+
+    manager = MANAGERS[current_user.id]
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
@@ -138,7 +135,6 @@ def nextWord():
         images = [
             src.split("/")[-1] for src in json.loads(request.args["response"])
         ]
-        print(images)
         depth_task_response = DepthTaskResponse(
             target_word=manager.current_word.target,
             child_id=current_user.id,
@@ -164,13 +160,20 @@ def nextWord():
     # If the StopIteration exception was not raised, we continue on, telling
     # the browser which images to display, via a JSON message.
 
+
     # We gather the filenames for the browser.
-    filenames = [
-        request.script_root + "/static/scivocab/images/depth/" + img.filename
+    filename_dict = {
+        img.image_type.id: request.script_root
+        + "/static/scivocab/images/depth/"
+        + img.filename
         for img in DepthTaskImage.query.filter_by(
             word_id=manager.current_word.id
         ).all()
+    }
+    filenames = [
+        filename_dict[image_type] for image_type in manager.image_types
     ]
+
 
     # We construct a JSON-serializable dictionary with the filenames and the
     # target word.

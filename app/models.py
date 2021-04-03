@@ -5,6 +5,7 @@ from flask_login import UserMixin
 # TODO do all the strings need to be 64 characters long? Can we omit the
 # lengths?
 
+
 class Proctor(db.Model):
     id = db.Column(db.String(64), primary_key=True)
 
@@ -14,14 +15,15 @@ class Child(UserMixin, db.Model):
     breadth_task_responses = db.relationship(
         "BreadthTaskResponse", backref="child"
     )
-
-    def set_current_word(self, word: str):
-        """Set the current word that the user is on."""
-        self.__current_word = word
-
-    def get_current_word(self):
-        """Get the current word that the user is on."""
-        return self.__current_word
+    current_breadth_task_word_id = db.Column(
+        db.String(64), db.ForeignKey("word.id")
+    )
+    current_depth_task_word_id = db.Column(
+        db.String(64), db.ForeignKey("word.id")
+    )
+    current_depth_task_word_id = db.Column(
+        db.String(64), db.ForeignKey("word.id")
+    )
 
 
 class Session(db.Model):
@@ -34,11 +36,14 @@ class Session(db.Model):
 class BreadthTaskImageType(db.Model):
     id = db.Column(db.String(64), primary_key=True)
 
+
 class DepthTaskImageType(db.Model):
     id = db.Column(db.String(64), primary_key=True)
 
+
 class DepthTaskImagePosition(db.Model):
     id = db.Column(db.String(64), primary_key=True)
+
 
 class BreadthTaskImagePosition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -54,9 +59,7 @@ class Word(db.Model):
     breadth_id = db.Column(db.String(64))
 
     depth_id = db.Column(db.String(64))
-    strand_id = db.Column(
-        db.Integer, db.ForeignKey("strand.id")
-    )
+    strand_id = db.Column(db.Integer, db.ForeignKey("strand.id"))
     strand = db.relationship("Strand", backref=db.backref("words"), lazy=True)
     audio_file = db.Column(db.String(64), unique=True)
 
@@ -75,6 +78,7 @@ class BreadthTaskImage(db.Model):
     image_type = db.relationship(
         "BreadthTaskImageType", backref=db.backref("images"), lazy=True
     )
+
 
 class DepthTaskImage(db.Model):
     """A class that stores all the information needed to make one set of images
@@ -108,6 +112,7 @@ class BreadthTaskResponse(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now)
     position = db.Column(db.String(64))
 
+
 class DepthTaskResponse(db.Model):
     """A class that represents a single response in the depth task."""
 
@@ -117,14 +122,27 @@ class DepthTaskResponse(db.Model):
 
     child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
     timestamp = db.Column(db.DateTime, default=datetime.now)
-    image_0 = db.Column(db.String(64),
-            db.ForeignKey("depth_task_image.filename"), nullable=False)
-    image_1 = db.Column(db.String(64),
-            db.ForeignKey("depth_task_image.filename"), nullable=False)
-    image_2 = db.Column(db.String(64),
-            db.ForeignKey("depth_task_image.filename"), nullable=False)
-    image_3 = db.Column(db.String(64),
-            db.ForeignKey("depth_task_image.filename"), nullable=False)
+    image_0 = db.Column(
+        db.String(64),
+        db.ForeignKey("depth_task_image.filename"),
+        nullable=False,
+    )
+    image_1 = db.Column(
+        db.String(64),
+        db.ForeignKey("depth_task_image.filename"),
+        nullable=False,
+    )
+    image_2 = db.Column(
+        db.String(64),
+        db.ForeignKey("depth_task_image.filename"),
+        nullable=False,
+    )
+    image_3 = db.Column(
+        db.String(64),
+        db.ForeignKey("depth_task_image.filename"),
+        nullable=False,
+    )
+
 
 class DefinitionTaskResponse(db.Model):
     """A class that represents a single response in the definition task."""
@@ -138,6 +156,7 @@ class DefinitionTaskResponse(db.Model):
 
     # The text of the child's response
     text = db.Column(db.String(300), nullable=False)
+
 
 @login_manager.user_loader
 def load_user(id):
