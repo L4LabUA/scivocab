@@ -26,7 +26,12 @@ $(() => {
 // every time the 'Next' button is clicked.
 $(document).on('click', '#nextWordButton', function() {
     definitionTextArea = document.getElementById("definition");
+    if (definitionTextArea.value == "") {
+        alert("You must enter a definition to proceed.");
+    }
+    else {
     $.getJSON("nextWord", {response : definitionTextArea.value}, update);
     definitionTextArea.value="";
+    }
     return false;
 });
