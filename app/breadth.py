@@ -67,15 +67,18 @@ class BreadthTaskManager(object):
             
 
         # create the accumulative count vaiable
-        self.strand_word_counts_accumulative = itertools.accumulate(strand_word_counts)
+        self.strand_word_counts_accumulative=list(itertools.accumulate(strand_word_counts))
 
 
         # Create a list of image types. We will shuffle this list every time we
         # move to a new word in the task, in order to randomize the positions
         # of the four images for a given word.
         self.image_types = [x.id for x in BreadthTaskImageType.query.all()]
-        self.current_word_index = 0
+        
+        #Setting current_word_index to -1 so that the two training items are NOT counted
+        self.current_word_index = -1 
         self.current_strand_index = 0 
+        
         # We create an iterator out of the list in order to have the Python
         # runtime keep track of our iteration and as an additional safeguard to
         # prevent going backwards in the sequence.
@@ -85,7 +88,6 @@ class BreadthTaskManager(object):
         # We set the 'current_word' property of this instance of the
         # BreadthTaskManager class to the next Word object.
         self.current_word = next(self.randomized_word_iterator)
-        self.current_word_index += 1
         self.position_labels = {
             0: "top_left",
             1: "top_right",
@@ -129,9 +131,10 @@ def main():
     return render_template("breadth.html", title="Breadth Task")
 
 
-@bp.route("/fun_fact/{image}")
+@bp.route("/fun_fact/<fun_fact_index>")
 @login_required
-def redirect_to_fun_fact():
+def redirect_to_fun_fact(fun_fact_index):
+    image = url_for("static", filename=f"scivocab/women_scientist_images/b_flossie{fun_fact_index}.gif")
     return render_template("fun_fact.html", image=image)
 
 
@@ -161,12 +164,9 @@ def nextWord():
         # raised, that means we are at the end of the list, and so we redirect the
         # user to the post-breadth-task page.
         manager.go_to_next_word()
-        print(manager.current_word_index-1)
-        print(manager.current_strand_index)
-        print(manager.strand_word_counts_accumulative)
 
-        if (manager.current_word_index-1) in manager.strand_word_counts_accumulative:
-            print("this is the end of a strand")
+        if manager.current_word_index in manager.strand_word_counts_accumulative:
+            manager.current_strand_index+=1
             return jsonify({"redirect": "fun_fact/"+str(manager.current_strand_index)})
             # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
             # function here. This is our workaround.
