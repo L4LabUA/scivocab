@@ -23,7 +23,7 @@ from logging import info
 
 
 class BreadthTaskManager(object):
-    def initialize(self):
+    def __init__(self):
         """The code in this method would normally be in the class's __init__
         method. However, we put the logic in this function instead because we
         need a top-level instance of this class to persist across requests in
@@ -111,25 +111,21 @@ class BreadthTaskManager(object):
 bp = Blueprint("breadth", __name__)
 
 
-# Create a module-level instance of BreadthTaskManager, which will be
-# initialized immediately before the first request to the app (see the
-# 'initialize_breadth_task_manager' function below.
-manager = BreadthTaskManager()
-
-
-@bp.before_app_first_request
-def initialize_breadth_task_manager():
-    """Initialize the global BreadthTaskManager instance."""
-    with current_app.app_context():
-        manager.initialize()
+# Create a global dictionary of managers, keyed by the current user's ID (i.e.
+# the child ID)
+MANAGERS={}
 
 
 @bp.route("/")
 @login_required
 def main():
     """The main view function for the breadth task."""
-    return render_template("breadth.html", title="Breadth Task")
 
+    # If there isn't a BreadthTaskManager for the current user yet, create one
+    # and add it to the MANAGERS dictionary.
+    if MANAGERS.get(current_user.id) is None:
+        MANAGERS[current_user.id] = BreadthTaskManager()
+    return render_template("breadth.html", title="Breadth Task")
 
 @bp.route("/fun_fact/<fun_fact_index>")
 @login_required
@@ -149,6 +145,7 @@ def nextWord():
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
+    manager = MANAGERS[current_user.id]
     if request.args.get("position") is not None:
         position = int(request.args.get("position").split("_")[1])
         breadth_task_response = BreadthTaskResponse(
@@ -178,7 +175,16 @@ def nextWord():
     filenames = [
         request.script_root + "/static/scivocab/images/breadth/" + img.filename
         for img in BreadthTaskImage.query.filter_by(word_id=manager.current_word.id
+    filename_dict = {
+        img.image_type.id: request.script_root
+        + "/static/scivocab/images/breadth/"
+        + img.filename
+        for img in BreadthTaskImage.query.filter_by(
+            word_id=manager.current_word.id
         ).all()
+    }
+    filenames = [
+        filename_dict[image_type] for image_type in manager.image_types
     ]
 
     # We construct a JSON-serializable dictionary with the filenames and the

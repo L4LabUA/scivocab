@@ -21,7 +21,7 @@ from logging import info
 
 
 class DefinitionTaskManager(object):
-    def initialize(self):
+    def __init__(self):
         """The code in this method would normally be in the class's __init__
         method. However, we put the logic in this function instead because we
         need a top-level instance of this class to persist across requests in
@@ -73,31 +73,25 @@ class DefinitionTaskManager(object):
         # in the iterator.
         self.current_word = next(self.randomized_word_iterator)
 
-        current_user.set_current_word(self.current_word)
-
 
 # We create a Flask blueprint object. Flask blueprints help keep apps modular.
 # So in principle, the same blueprint could be used for multiple apps.
 bp = Blueprint("definition", __name__)
 
 
-# Create a module-level instance of DefinitionTaskManager, which will be
-# initialized immediately before the first request to the app (see the
-# 'initialize_definition_task_manager' function below.
-manager = DefinitionTaskManager()
-
-
-@bp.before_app_first_request
-def initialize_definition_task_manager():
-    """Initialize the global DefinitionTaskManager instance."""
-    with current_app.app_context():
-        manager.initialize()
-
+# Create a global dictionary of managers, keyed by the current user's ID (i.e.
+# the child ID)
+MANAGERS={}
 
 @bp.route("/")
 @login_required
 def main():
     """The main view function for the definition task."""
+
+    # If there isn't a DefinitionTaskManager for the current user yet, create one
+    # and add it to the MANAGERS dictionary.
+    if MANAGERS.get(current_user.id) is None:
+        MANAGERS[current_user.id] = DefinitionTaskManager()
     return render_template("definition.html", title="Definition Task")
 
 
@@ -115,9 +109,14 @@ def redirect_to_end():
 def nextWord():
     """This endpoint is queried from the frontend to obtain the filenames of
     the images to display for the definition task."""
+
+    manager = MANAGERS[current_user.id]
+
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
+
+
     if request.args.get("response") is not None:
         definition_task_response = DefinitionTaskResponse(
             target_word=manager.current_word.id,
@@ -144,7 +143,7 @@ def nextWord():
     # We construct a JSON-serializable dictionary with the filenames and the
     # target word.
     response = {
-        "current_target_word": manager.current_word.id,
+        "current_target_word": manager.current_word.target,
         "audio_file": url_for("static", filename= "scivocab/audio/" + manager.current_word.audio_file),
     }
 

@@ -5,29 +5,34 @@
     <div class="container-fluid" style="text-align: center">
         <div class="row">
             <div class="col">
-                <h1>Welcome!</h1>
+                <p style="font-size:1.5rem;">Select a task below:</p>
             </div>
         </div>
 
         <div class="row">
             <div class="col">
-                <img src={{ url_for("static", filename="scivocab/women_scientist_images/b1_flossie_wong_staal.jpg") }}  alt="FLossie" class="image">
+                <img src={{ url_for("static",
+                filename="scivocab/women_scientist_images/b1_flossie_wong_staal.jpg")
+                }}  alt="Flossie" class="image">
                 <a href="{{ url_for('breadth.main') }}" class="btn
                 btn-outline-primary btn-lg">Breadth Task
                 </a>
             </div>
 
             <div class="col">
-                <img src={{ url_for("static",
-                filename="scivocab/women_scientist_images/d1_annie_easley.jpg")}}  alt="Annie" class="image">
+                <img 
+                    src={{ url_for("static", filename="scivocab/women_scientist_images/d1_annie_easley.jpg")}}
+                    alt="Annie" class="image">
                 <a href="{{ url_for('depth.main') }}" class="btn
                 btn-outline-primary btn-lg">Depth Task</a>
             </div>
             
             <div class="col">
-                <img src={{ url_for("static", filename="scivocab/women_scientist_images/def1_kalpana_chawla.jpg") }}  alt="FLossie" class="image">
+                <img src={{ url_for("static",
+                filename="scivocab/women_scientist_images/def1_kalpana_chawla.jpg")
+                          }}  alt="FLossie" class="image">
                 <a href="{{ url_for('definition.main') }}" class="btn
-                btn-outline-primary btn-lg">Definition Task</a>
+                    btn-outline-primary btn-lg">Definition Task</a>
             </div>
         </div>
     </div>
