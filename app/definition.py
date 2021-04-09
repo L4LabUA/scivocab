@@ -111,9 +111,14 @@ def redirect_to_end():
 def nextWord():
     """This endpoint is queried from the frontend to obtain the filenames of
     the images to display for the definition task."""
+
+    manager = MANAGERS[current_user.id]
+
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
+
+
     if request.args.get("response") is not None:
         definition_task_response = DefinitionTaskResponse(
             target_word=manager.current_word.id,
