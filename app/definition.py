@@ -73,8 +73,6 @@ class DefinitionTaskManager(object):
         # in the iterator.
         self.current_word = next(self.randomized_word_iterator)
 
-        current_user.set_current_word(self.current_word)
-
 
 # We create a Flask blueprint object. Flask blueprints help keep apps modular.
 # So in principle, the same blueprint could be used for multiple apps.
