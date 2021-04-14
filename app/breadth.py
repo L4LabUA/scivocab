@@ -103,7 +103,6 @@ class BreadthTaskManager(object):
         # in the iterator.
         self.current_word = next(self.randomized_word_iterator)
         self.current_word_index += 1
-        current_user.set_current_word(self.current_word)
 
 
 # We create a Flask blueprint object. Flask blueprints help keep apps modular.
@@ -157,24 +156,18 @@ def nextWord():
         db.session.add(breadth_task_response)
         db.session.commit()
 
-        # We attempt to go to the next word. If a StopIteration exception is
-        # raised, that means we are at the end of the list, and so we redirect the
-        # user to the post-breadth-task page.
+        # We attempt to go to the next word.
         manager.go_to_next_word()
 
+        #if the current_word_index is in strand_word_counts_accumulative the we can redirect
         if manager.current_word_index in manager.strand_word_counts_accumulative:
             manager.current_strand_index+=1
             return jsonify({"redirect": "fun_fact/"+str(manager.current_strand_index)})
             # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
             # function here. This is our workaround.
 
-    # If the StopIteration exception was not raised, we continue on, telling
-    # the browser which images to display, via a JSON message.
 
     # We gather the filenames for the browser.
-    filenames = [
-        request.script_root + "/static/scivocab/images/breadth/" + img.filename
-        for img in BreadthTaskImage.query.filter_by(word_id=manager.current_word.id
     filename_dict = {
         img.image_type.id: request.script_root
         + "/static/scivocab/images/breadth/"
