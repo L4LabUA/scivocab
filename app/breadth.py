@@ -132,7 +132,6 @@ def redirect_to_fun_fact(fun_fact_index):
     image = url_for("static", filename=f"scivocab/women_scientist_images/b_flossie{fun_fact_index}.gif")
     return render_template("fun_fact.html", image=image)
 
-
 # Each call of nextWord loads a new word, waits for the user to select an
 # image, and adds the selected word to manager.answers as an instance of the
 # BreadthTaskResponse class.
@@ -158,15 +157,17 @@ def nextWord():
 
         # We attempt to go to the next word.
         manager.go_to_next_word()
-
+     
         #if the current_word_index is in strand_word_counts_accumulative the we can redirect
         if manager.current_word_index in manager.strand_word_counts_accumulative:
             manager.current_strand_index+=1
             return jsonify({"redirect": "fun_fact/"+str(manager.current_strand_index)})
             # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
             # function here. This is our workaround.
+       
 
-
+ 
+     
     # We gather the filenames for the browser.
     filename_dict = {
         img.image_type.id: request.script_root

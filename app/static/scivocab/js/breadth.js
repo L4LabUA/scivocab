@@ -60,3 +60,13 @@ $(document).on('click', '#nextWordButton', function() {
     }   
     return false;
 });
+
+
+$(document).on('click', '#ContinueButton', function() {
+    $.getJSON("nextWord",
+           {},
+           update
+       );
+   return false;
+});
+ 
