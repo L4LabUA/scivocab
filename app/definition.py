@@ -45,6 +45,12 @@ class DefinitionTaskManager(object):
         # Get the strands from the database
         strands = Strand.query.all()
 
+        # training items
+        definition_training_items = Word.query.filter(
+            Word.definition_id.startswith("deft")
+        ).all()
+        randomized_word_list.extend(definition_training_items)
+
         # Currently, we randomize the order of the strands.
         # NOTE: Jessie says that in the future, the order may not be random.
         shuffle(strands)
@@ -126,16 +132,16 @@ def nextWord():
         db.session.add(definition_task_response)
         db.session.commit()
 
-    # We attempt to go to the next word. If a StopIteration exception is
-    # raised, that means we are at the end of the list, and so we redirect the
-    # user to the post-definition-task page.
-    try:
-        manager.go_to_next_word()
+        # We attempt to go to the next word. If a StopIteration exception is
+        # raised, that means we are at the end of the list, and so we redirect the
+        # user to the post-definition-task page.
+        try:
+            manager.go_to_next_word()
 
-    except StopIteration:
-        # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
-        # function here. This is our workaround.
-        return jsonify({"redirect": "redirect"})
+        except StopIteration:
+            # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
+            # function here. This is our workaround.
+            return jsonify({"redirect": "redirect"})
 
     # If the StopIteration exception was not raised, we continue on, telling
     # the browser which images to display, via a JSON message.
