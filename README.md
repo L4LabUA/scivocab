@@ -63,7 +63,13 @@ Run this script to export the data
     ./tools/create_task_response_csvs
 
 This script will create three CSV files, corresponding to the responses for the
-breadth, depth, and definition task responses.
+breadth, depth, and definition task responses, respectively:
+
+- `breadth_task_responses.csv`
+- `depth_task_responses.csv`
+- `definition_task_responses.csv`
+
+The CSVs will be created in the same directory that the script is run.
 
 Contents
 --------
