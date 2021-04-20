@@ -1,9 +1,5 @@
 /* CSS Style file */
 
-.targetImageContainer {
-    min-height: 15%;
-}
-
 #playButton {
     background-repeat: no-repeat;
     width:35px;

@@ -1,12 +1,32 @@
 {% extends "base.html" %}
 
 {% macro sourceImageContainer(i) -%}
-    <div class="col border w-50 p-1 sourceImageContainer ">
-        <img id = "position_{{ i }}"
-             class="sourceImage img-fluid" 
-             src={{ url_for("static", filename="scivocab/images/dv_placeholder.gif") }} 
-             draggable="true" width="300">
+    <td>
+        <a href="#">
+            <div class="sourceImageContainer border">
+            <img id = "position_{{ i }}" 
+                 class = "sourceImage img-fluid"
+                 src={{ url_for("static", filename="scivocab/images/dv_placeholder.gif") }} 
+                 width="300"
+                 draggable="true"
+                 />
+            </div>
+        </a>
+    </td>
+
+{%- endmacro %}
+
+{% macro targetImageContainer(i) -%}
+<td>
+    <div class="border targetImageContainer" 
+            id = "target_position_{{ i }}">
+            <img class="targetImage img-fluid" 
+                id = "target_image_{{ i }}"
+                src={{ url_for("static", filename="scivocab/images/dv_placeholder.gif") }}
+                width="150"
+            />
     </div>
+</td>
 {%- endmacro %}
 
 {% block content %}
@@ -19,23 +39,31 @@
         </div>
     </div>
 
-    <div class="row border">
-        {{ sourceImageContainer(0) }}
-        {{ sourceImageContainer(1) }}
-        <div class="w-100"></div>
-        {{ sourceImageContainer(2) }}
-        {{ sourceImageContainer(3) }}
+<div class="row">
+    <div class="col justify-content-md-center">
+        <table style="margin:auto;">
+            <tr>
+                {{ sourceImageContainer(0) }}
+                {{ sourceImageContainer(1) }}
+            </tr>
+            <tr>
+                {{ sourceImageContainer(2) }}
+                {{ sourceImageContainer(3) }}
+            </tr>
+        </table>
     </div>
+</div>
 
-    <div class="row border">
-        {% for i in range(4) %}
-            <div class="border col p-1 targetImageContainer" 
-                 id = "target_position_{{ i }}">
-                 <img class="targetImage img-fluid" 
-                      id = "target_image_{{ i }}"
-                      src={{ url_for("static", filename="scivocab/images/dv_placeholder.gif") }} />
-            </div>
-        {% endfor %}
+    <div class="row">
+        <div class="col justify-content-md-center">
+            <table style="margin:auto;">
+                <tr>
+                    {% for i in range(4) %}
+                        {{ targetImageContainer(i) }}
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
     </div>
 
     <div class="d-flex">
