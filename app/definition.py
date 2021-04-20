@@ -125,7 +125,7 @@ def nextWord():
 
     if request.args.get("response") is not None:
         definition_task_response = DefinitionTaskResponse(
-            target_word=manager.current_word.id,
+            target_word=manager.current_word.target,
             child_id=current_user.id,
             text=request.args["response"]
         )
