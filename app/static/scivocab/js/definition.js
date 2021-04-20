@@ -30,8 +30,9 @@ $(document).on('click', '#nextWordButton', function() {
         alert("You must enter a definition to proceed.");
     }
     else {
-    $.getJSON("nextWord", {response : definitionTextArea.value}, update);
-    definitionTextArea.value="";
+        $.getJSON("nextWord", {
+            response : definitionTextArea.value}, update);
+            definitionTextArea.value="";
     }
     return false;
 });

@@ -128,6 +128,7 @@ def nextWord():
     the images to display for the depth task."""
 
     manager = MANAGERS[current_user.id]
+
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
@@ -170,6 +171,7 @@ def nextWord():
             word_id=manager.current_word.id
         ).all()
     }
+
     filenames = [
         filename_dict[image_type] for image_type in manager.image_types
     ]
