@@ -27,3 +27,13 @@ sqlite3 -header -csv app/app.db 'select
     from depth_task_response
     inner join word on depth_task_response.target_word=word.target;' \
     > depth_task_responses.csv
+
+# definition_task_responses.csv contains the responses from the definition task.
+sqlite3 -header -csv app/app.db 'select
+        child_id,
+        strand_id,
+        definition_id,
+        timestamp
+    from definition_task_response
+    inner join word on definition_task_response.target_word=word.target;' \
+    > definition_task_responses.csv
