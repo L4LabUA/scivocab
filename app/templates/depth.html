@@ -7,7 +7,6 @@
             <img id = "position_{{ i }}" 
                  class = "sourceImage img-fluid"
                  src={{ url_for("static", filename="scivocab/images/dv_placeholder.gif") }} 
-                 width="100%"
                  draggable="true"
                  />
             </div>
@@ -17,7 +16,7 @@
 {%- endmacro %}
 
 {% macro targetImageContainer(i) -%}
-    <div class="border targetImageContainer p-3" 
+    <div class="border targetImageContainer p-1" 
             id = "target_position_{{ i }}">
             <img class="targetImage img-fluid" 
                 id = "target_image_{{ i }}"
@@ -29,15 +28,16 @@
 {% block content %}
 
 <script src={{ url_for("static", filename="scivocab/js/depth.js") }}></script>
-    <div class="row p-1">
-        <div class="col">
-            <h1 id="header" style="display:inline;"></h1>
-            {% include "playButton.html" %}
-        </div>
-    </div>
 
-<div class="row">
-    <div class="col-10" style="margin: auto;">
+<div class="row" style="width:900; margin: auto">
+    <div class="col-10">
+        <div class="row p-1">
+            <div class="col">
+                <h1 id="header" style="display:inline;"></h1>
+                {% include "playButton.html" %}
+            </div>
+        </div>
+
         <div class="row">
             <div class="col">
                 {{ sourceImageContainer(0) }}
@@ -55,28 +55,29 @@
                 {{ sourceImageContainer(3) }}
             </div>
         </div>
+        <div class="row p-2">
+            <div class="col">
+                <button type="button" id="nextWordButton"
+                                    class="btn btn-primary">
+                    Next
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <div class="col-2" style="margin:auto;">
-        <div class="row p-3">
+        <div class="row p-1">
             <div><b>Best</b></div>
         </div>
         {% for i in range(4) %}
             <div class="row"> {{ targetImageContainer(i) }} </div>
         {% endfor %}
-        <div class="row p-3">
+        <div class="row p-1">
             <div><b>Worst</b></div>
         </div>
     </div>
 </div>
 
-<div class="row p-3">
-    <div class="col">
-        <button type="button" id="nextWordButton"
-                            class="btn btn-primary">
-            Next
-        </button>
-    </div>
-</div>
 
 {% endblock %}
