@@ -2,7 +2,6 @@
 
 {% block content %}
 
-<script src={{ url_for("static", filename="scivocab/js/fun_fact.js") }}></script>
 
 <div class="row">
     <div class="col-sm-3" style="display:inline-block">
@@ -12,12 +11,30 @@
 
 <div class="row justify-content-md-center p-1">
    <div class="col">
-       <button type="button" id="ContinueButton"
-           class="btn btn-primary">
+    {% if task_id %}
+        <a id="breadth" href="{{ url_for('breadth.main') }}" class="btn btn-primary btn-lg">
            Continue
-       </button>
+        </a>
+     {% else %}
+        <a id="depth" href="{{ url_for('depth.main') }}" class="btn btn-primary btn-lg">
+           Continue
+        </a>
+     {% endif %}
+
+   <p id="print"></p>
    </div>
 </div>
 
+<script>
+var a = "{{ task_id }}"
+
+document.getElementById("print").innerHTML = a;
+
+if a == "breadth":
+    task_id = true
+else:
+    task_id = false
+
+</script>
 
  {% endblock  %}
