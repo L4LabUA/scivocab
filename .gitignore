@@ -21,3 +21,5 @@ Icon*
 # Ignoring output CSVs
 breadth_task_responses.csv
 depth_task_responses.csv
+definition_task_responses.csv
+

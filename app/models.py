@@ -2,9 +2,6 @@ from datetime import datetime
 from app import db, login_manager
 from flask_login import UserMixin
 
-# TODO do all the strings need to be 64 characters long? Can we omit the
-# lengths?
-
 
 class Proctor(db.Model):
     id = db.Column(db.String(64), primary_key=True)
@@ -56,9 +53,11 @@ class Strand(db.Model):
 class Word(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     target = db.Column(db.String)
-    breadth_id = db.Column(db.String(64))
 
+    breadth_id = db.Column(db.String(64))
     depth_id = db.Column(db.String(64))
+    definition_id = db.Column(db.String(64))
+
     strand_id = db.Column(db.Integer, db.ForeignKey("strand.id"))
     strand = db.relationship("Strand", backref=db.backref("words"), lazy=True)
     audio_file = db.Column(db.String(64), unique=True)

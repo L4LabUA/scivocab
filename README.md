@@ -6,10 +6,12 @@ This repo contains the code for the Scientific Vocabulary study webapp.
 Installation
 ------------
 
-Install the app by running the following command (this assumes you have Python
-3.6 or higher installed already):
+Install the requirements by running the following command (this assumes you
+have Python 3.6 or higher installed already):
 
     ./tools/install
+
+This command also creates a Python virtual environment called `scivocab_venv``
 
 Creating the database
 ---------------------
@@ -24,7 +26,12 @@ Running the app
 
 ### Development mode
 
-Run the webapp in debug mode by running the following command:
+Activate the `scivocab_venv` virtual environment:
+
+    . scivocab_venv/bin/activate
+    
+After you activate the virtual environment, run the webapp in debug mode by
+running the following command:
 
     ./tools/run_webapp_debug
 
@@ -48,16 +55,34 @@ To bring down the webapp safely, run
 
     docker-compose down
 
+Exporting the data
+------------------
+
+Run this script to export the data
+
+    ./tools/create_task_response_csvs
+
+This script will create three CSV files, corresponding to the responses for the
+breadth, depth, and definition task responses, respectively:
+
+- `breadth_task_responses.csv`
+- `depth_task_responses.csv`
+- `definition_task_responses.csv`
+
+The CSVs will be created in the same directory that the script is run.
+
 Contents
 --------
 
 - `README.md`: This README.
-- `requirements.txt`: The Python packages that the app depends upon.
+- `docker-requirements.txt`: The Python packages that the app depends upon to
+  run using Docker.
 - `Dockerfile`: The recipe for building the Docker container for deploying this
   app on a server.
 - `docker-compose.yml`: A Docker Compose configuration file to help deploy the
   app on a server.
 - `app`: The code for the app, along with the static content and templates.
-  `app/static` contains the images and the spreadsheets with the words and
-  foils.
-- `tools`: Scripts to help automate installing and launching the app.
+  `app/static` contains the images, audio, and Javascript files.
+- `tools`: Scripts to help automate installing and launching the app, creating
+  the database, and exporting data from the database.
+- `input_tables`: This contains raw data for creating `app/app.db`.

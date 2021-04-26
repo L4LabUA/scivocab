@@ -54,6 +54,12 @@ class DefinitionTaskManager(object):
         strands = [strand for strand in Strand.query.all() if strand.id != "training"]
 
 
+        # training items
+        definition_training_items = Word.query.filter(
+            Word.definition_id.startswith("deft")
+        ).all()
+        randomized_word_list.extend(definition_training_items)
+
         # Currently, we randomize the order of the strands.
         # NOTE: Jessie says that in the future, the order may not be random.
         shuffle(strands)
@@ -140,7 +146,7 @@ def nextWord():
 
     if request.args.get("response") is not None:
         definition_task_response = DefinitionTaskResponse(
-            target_word=manager.current_word.id,
+            target_word=manager.current_word.target,
             child_id=current_user.id,
             text=request.args["response"]
         )
@@ -149,7 +155,6 @@ def nextWord():
     
     # We attempt to go to the next word.
         manager.go_to_next_word()
-        print(manager.current_word_index) 
     #if the current_word_index is in strand_word_counts_accumulative the we can redirect
         if manager.current_word_index in manager.strand_word_counts_accumulative:
             manager.current_strand_index+=1
