@@ -132,8 +132,7 @@ def main():
 @login_required
 def redirect_to_fun_fact(fun_fact_index):
     image = url_for("static", filename=f"scivocab/women_scientist_images/d_annie{fun_fact_index}.gif")
-    task_id = "depth"
-    return render_template("fun_fact.html", image=image)
+    return render_template("fun_fact.html", image=image, task_id_depth = "depth")
 
 
 # Each call of nextWord loads a new word, waits for the user to select an

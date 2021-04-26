@@ -11,30 +11,33 @@
 
 <div class="row justify-content-md-center p-1">
    <div class="col">
-    {% if task_id %}
+    {% if task_id_breadth %}
         <a id="breadth" href="{{ url_for('breadth.main') }}" class="btn btn-primary btn-lg">
            Continue
         </a>
-     {% else %}
+    {% elif task_id_depth %}
         <a id="depth" href="{{ url_for('depth.main') }}" class="btn btn-primary btn-lg">
            Continue
         </a>
-     {% endif %}
-
-   <p id="print"></p>
+    {% else %}    
+        <a id="depth" href="{{ url_for('definition.main') }}" class="btn btn-primary btn-lg">
+           Continue
+        </a>
+    {% endif %}
    </div>
 </div>
 
 <script>
-var a = "{{ task_id }}"
+var a = "{{ task_id_breadth }}"
+var b = "{{ task_id_depth }}"
 
-document.getElementById("print").innerHTML = a;
-
-if a == "breadth":
-    task_id = true
-else:
+if a == "breadth" {
+    task_id_breadth = true
+} else if  b == "depth" {
+    task_id_depth = true
+} else {
     task_id = false
-
+}
 </script>
 
- {% endblock  %}
+{% endblock  %}

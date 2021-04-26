@@ -130,7 +130,7 @@ def main():
 @login_required
 def redirect_to_fun_fact(fun_fact_index):
     image = url_for("static", filename=f"scivocab/women_scientist_images/b_flossie{fun_fact_index}.gif")
-    return render_template("fun_fact.html", image=image, task_id = "breadth")
+    return render_template("fun_fact.html", image=image, task_id_breadth = "breadth")
 
 # Each call of nextWord loads a new word, waits for the user to select an
 # image, and adds the selected word to manager.answers as an instance of the
