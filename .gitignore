@@ -5,6 +5,7 @@ __pycache__
 scivocab_venv
 *.swp
 *.swo
+*.swm
 *.swn
 # PyCharm config
 .idea

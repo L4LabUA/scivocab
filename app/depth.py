@@ -1,3 +1,4 @@
+import itertools
 from random import shuffle
 from flask import (
     Blueprint,
@@ -53,25 +54,39 @@ class DepthTaskManager(object):
         ).all()
         randomized_word_list.extend(depth_training_items)
 
+        # Get the strands from the database
+        #excluding training items becuase they have already been added to the list; see above
+        strands = [strand for strand in Strand.query.all() if strand.id != "training"]
+
         # Currently, we randomize the order of the strands.
-        # NOTE: Jessie says that in the future, the order may not be random.
         shuffle(strands)
+        strand_word_counts: list = []
 
         # For each strand, we shuffle the words in the strand, and add those
         # words to randomized_word_list.
         for strand in strands:
+            strand_word_counts.append(len(strand.words))
             words = [
                 word for word in strand.words if word.depth_id is not None
             ]
             shuffle(words)
             randomized_word_list.extend(words)
 
+        # create the accumulative count variable
+        self.strand_word_counts_accumulative=list(itertools.accumulate(strand_word_counts))
+
+
         # Create a list of image types. We will shuffle this list every time we
         # move to a new word in the task, in order to randomize the positions
         # of the four images for a given word.
         self.image_types = [x.id for x in DepthTaskImageType.query.all()]
 
-        # We create an iterator out of the list in order to have the Python
+       
+        #Setting current_word_index to -1 so that the two training items are NOT counted
+        self.current_word_index = -1 
+        self.current_strand_index = 0
+
+       # We create an iterator out of the list in order to have the Python
         # runtime keep track of our iteration and as an additional safeguard to
         # prevent going backwards in the sequence.
         # (https://docs.python.org/3/glossary.html#term-iterator)
@@ -88,6 +103,7 @@ class DepthTaskManager(object):
         # Set the current_word attribute of the class instance to the next Word
         # in the iterator.
         self.current_word = next(self.randomized_word_iterator)
+        self.current_word_index += 1
 
 # We create a Flask blueprint object. Flask blueprints help keep apps modular.
 # So in principle, the same blueprint could be used for multiple apps.
@@ -112,10 +128,11 @@ def main():
     return render_template("depth.html", title="Depth Task")
 
 
-@bp.route("/redirect")
+@bp.route("/fun_fact/<fun_fact_index>")
 @login_required
-def redirect_to_end():
-    return render_template("after.html")
+def redirect_to_fun_fact(fun_fact_index):
+    image = url_for("static", filename=f"scivocab/women_scientist_images/d_annie{fun_fact_index}.gif")
+    return render_template("fun_fact.html", image=image, task_id = "depth")
 
 
 # Each call of nextWord loads a new word, waits for the user to select an
@@ -147,19 +164,16 @@ def nextWord():
         db.session.add(depth_task_response)
         db.session.commit()
 
-        # We attempt to go to the next word. If a StopIteration exception is
-        # raised, that means we are at the end of the list, and so we redirect the
-        # user to the post-depth-task page.
-        try:
-            manager.go_to_next_word()
-
-        except StopIteration:
+        # We attempt to go to the next word.
+        manager.go_to_next_word()
+     
+        #if the current_word_index is in strand_word_counts_accumulative the we can redirect
+        if manager.current_word_index in manager.strand_word_counts_accumulative:
+            manager.current_strand_index+=1
+            return jsonify({"redirect": "fun_fact/"+str(manager.current_strand_index)})
             # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
             # function here. This is our workaround.
-            return jsonify({"redirect": "redirect"})
 
-    # If the StopIteration exception was not raised, we continue on, telling
-    # the browser which images to display, via a JSON message.
 
 
     # We gather the filenames for the browser.
