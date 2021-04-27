@@ -16,84 +16,15 @@ from app.models import (
     DefinitionTaskResponse,
 )
 from app import db
+from app.TaskManager import TaskManager
 from flask_login import login_required, current_user
 import logging
 from logging import info
 
 
-class DefinitionTaskManager(object):
+class DefinitionTaskManager(TaskManager):
     def __init__(self):
-        """The code in this method would normally be in the class's __init__
-        method. However, we put the logic in this function instead because we
-        need a top-level instance of this class to persist across requests in
-        order to keep track of which item (word) a user has reached in the
-        task, in order to prevent page refreshes/logouts from resetting
-        progress.
-
-        The normal method of persisting data across requests with Flask is to
-        use Flask's 'session' object. However, this persistence is implemented
-        by storing data on the user's computer as a cookie, which means that
-        any data that is put into the Flask 'session' object must be
-        JSON-serializable. Unfortunately, SQLAlchemy classes are not trivially
-        serializable. In principle, we could implement custom serialization and
-        deserialization logic, but for expediency's sake, we opt instead to
-        keep the instance of the manager in memory rather than reconstructing
-        it for every request."""
-
-        # Create an empty list to hold Word objects
-        randomized_word_list: list[Word] = []
-
-        # training items
-        definition_training_items = Word.query.filter(
-            Word.breadth_id.startswith("dt")
-        ).all()
-        randomized_word_list.extend(definition_training_items)
-
-        # Get the strands from the database
-        # excluding training items becuase they have already been added to the list; see above
-        strands = [
-            strand for strand in Strand.query.all() if strand.id != "training"
-        ]
-
-        # training items
-        definition_training_items = Word.query.filter(
-            Word.definition_id.startswith("deft")
-        ).all()
-        randomized_word_list.extend(definition_training_items)
-
-        # Currently, we randomize the order of the strands.
-        # NOTE: Jessie says that in the future, the order may not be random.
-        shuffle(strands)
-        strand_word_counts: list = []
-
-        # For each strand, we shuffle the words in the strand, and add those
-        # words to randomized_word_list.
-        for strand in strands:
-            strand_word_counts.append(len(strand.words))
-            words = [
-                word for word in strand.words if word.depth_id is not None
-            ]
-            shuffle(words)
-            randomized_word_list.extend(words)
-
-        # create the accumulative count variable
-        self.strand_word_counts_accumulative = list(
-            itertools.accumulate(strand_word_counts)
-        )
-
-        # Setting current_word_index to -1 so that the two training items are NOT counted
-        self.current_word_index = -1
-        self.current_strand_index = 0
-
-        # We create an iterator out of the list in order to have the Python
-        # runtime keep track of our iteration and as an additional safeguard to
-        # prevent going backwards in the sequence.
-        # (https://docs.python.org/3/glossary.html#term-iterator)
-        self.randomized_word_iterator = iter(randomized_word_list)
-
-        # We set the 'current_word' property of this instance of the
-        # DefinitionTaskManager class to the next Word object.
-        self.current_word = next(self.randomized_word_iterator)
+        super().__init__("definition")
 
     def go_to_next_word(self):
         # Set the current_word attribute of the class instance to the next Word
