@@ -32,15 +32,6 @@ class DepthTaskManager(TaskManager):
         # of the four images for a given word.
         self.image_types = [x.id for x in DepthTaskImageType.query.all()]
 
-    def go_to_next_word(self):
-        # Shuffle the image_types list.
-        shuffle(self.image_types)
-
-        # Set the current_word attribute of the class instance to the next Word
-        # in the iterator.
-        self.current_word = next(self.randomized_word_iterator)
-        self.current_word_index += 1
-
 
 # We create a Flask blueprint object. Flask blueprints help keep apps modular.
 # So in principle, the same blueprint could be used for multiple apps.
