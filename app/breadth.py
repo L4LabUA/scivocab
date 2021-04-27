@@ -137,7 +137,7 @@ def redirect_to_fun_fact(fun_fact_index):
         filename=f"scivocab/women_scientist_images/b_flossie{fun_fact_index}.gif",
     )
     return render_template(
-        "fun_fact.html", image=image, task_id_breadth="breadth"
+        "fun_fact.html", image=image, task_id="breadth"
     )
 
 

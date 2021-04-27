@@ -4,26 +4,16 @@
 
 
 <div class="row">
-    <div class="col-sm-3" style="display:inline-block">
-    <img id = "fun_fact" class = "img-fluid" src="{{ image }}" width="600"/>
+    <div class="col">
+        <img id = "fun_fact" class = "img-fluid" src="{{ image }}" width="600"/>
     </div>
 </div>
 
 <div class="row justify-content-md-center p-1">
    <div class="col">
-    {% if task_id_breadth %}
-        <a id="breadth" href="{{ url_for('breadth.main') }}" class="btn btn-primary btn-lg">
-           Continue
-        </a>
-    {% elif task_id_depth %}
-        <a id="depth" href="{{ url_for('depth.main') }}" class="btn btn-primary btn-lg">
-           Continue
-        </a>
-    {% else %}    
-        <a id="depth" href="{{ url_for('definition.main') }}" class="btn btn-primary btn-lg">
-           Continue
-        </a>
-    {% endif %}
+       <a id="{{task_id}}" href="{{ url_for(task_id +'.main') }}" class="btn btn-primary btn-lg">
+        Continue
+    </a>
    </div>
 </div>
 
