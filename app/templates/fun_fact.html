@@ -3,7 +3,7 @@
 {% block content %}
 
 
-<div class="row">
+<div class="row" style="margin-top: 2rem;">
     <div class="col">
         <img id = "fun_fact" class = "img-fluid" src="{{ image }}" width="600"/>
     </div>
@@ -16,18 +16,5 @@
     </a>
    </div>
 </div>
-
-<script>
-var a = "{{ task_id_breadth }}"
-var b = "{{ task_id_depth }}"
-
-if a == "breadth" {
-    task_id_breadth = true
-} else if  b == "depth" {
-    task_id_depth = true
-} else {
-    task_id = false
-}
-</script>
 
 {% endblock  %}
