@@ -51,7 +51,8 @@ class BreadthTaskManager(object):
         randomized_word_list.extend(breadth_training_items)
 
         # Get the strands from the database
-        # excluding training items becuase they have already been added to the list; see above
+
+        # Excluding training items because they have already been added to the list; see above
         strands = [
             strand for strand in Strand.query.all() if strand.id != "training"
         ]
@@ -59,7 +60,6 @@ class BreadthTaskManager(object):
         # Currently, we randomize the order of the strands.
         shuffle(strands)
         strand_word_counts: list = []
-
         # For each strand, we shuffle the words in the strand, and add those
         # words to randomized_word_list.
         for strand in strands:
@@ -68,18 +68,22 @@ class BreadthTaskManager(object):
             randomized_word_list.extend(strand.words)
 
         # create the accumulative count variable
-        self.strand_word_counts_accumulative = list(
+        print(strand_word_counts)
+        self.cumulative_word_counts = list(
             itertools.accumulate(strand_word_counts)
         )
+        print(self.cumulative_word_counts)
 
         # Create a list of image types. We will shuffle this list every time we
         # move to a new word in the task, in order to randomize the positions
         # of the four images for a given word.
         self.image_types = [x.id for x in BreadthTaskImageType.query.all()]
 
-        # Setting current_word_index to -1 so that the two training items are NOT counted
-        self.current_word_index = -1
-        self.current_strand_index = 0
+        self.current_word_index = -2
+
+        # Which phase are we in - training counts as a phase, as does each
+        # strand.
+        self.current_phase_index = 0
 
         # We create an iterator out of the list in order to have the Python
         # runtime keep track of our iteration and as an additional safeguard to
@@ -136,8 +140,12 @@ def redirect_to_fun_fact(fun_fact_index):
         "static",
         filename=f"scivocab/women_scientist_images/b_flossie{fun_fact_index}.gif",
     )
+
+    is_final = True if int(fun_fact_index)==4 else False
+    print(fun_fact_index, is_final)
+
     return render_template(
-        "fun_fact.html", image=image, task_id="breadth"
+        "fun_fact.html", image=image, task_id="breadth", is_final=is_final
     )
 
 
@@ -164,20 +172,31 @@ def nextWord():
         db.session.add(breadth_task_response)
         db.session.commit()
 
-        # We attempt to go to the next word.
-        manager.go_to_next_word()
+        # We attempt to go to the next word. If a StopIteration exception is
+        # raised, that means we are at the end of the list, and so we redirect the
+        # user to the post-breadth-task page.
+        try:
+            manager.go_to_next_word()
 
-        # if the current_word_index is in strand_word_counts_accumulative the we can redirect
-        if (
-            manager.current_word_index
-            in manager.strand_word_counts_accumulative
-        ):
-            manager.current_strand_index += 1
+            # If the current_word_index is in cumulative_word_counts then we redirect
+            if (
+                manager.current_word_index
+                in manager.cumulative_word_counts
+            ):
+                manager.current_phase_index += 1
+                # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
+                # function here. This is our workaround.
+                return jsonify(
+                    {"redirect": "fun_fact/" + str(manager.current_phase_index)}
+                )
+
+        except StopIteration:
+            manager.current_phase_index += 1
             return jsonify(
-                {"redirect": "fun_fact/" + str(manager.current_strand_index)}
+                {"redirect": "fun_fact/" + str(manager.current_phase_index)}
             )
-            # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
-            # function here. This is our workaround.
+
+
 
     # We gather the filenames for the browser.
     filename_dict = {
@@ -188,6 +207,7 @@ def nextWord():
             word_id=manager.current_word.id
         ).all()
     }
+
     filenames = [
         filename_dict[image_type] for image_type in manager.image_types
     ]
