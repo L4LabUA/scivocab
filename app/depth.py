@@ -77,6 +77,9 @@ def nextWord():
 
     manager = MANAGERS[current_user.id]
 
+    if manager.task_completed:
+        return manager.redirect_to_end()
+
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
@@ -96,8 +99,8 @@ def nextWord():
         db.session.add(depth_task_response)
         db.session.commit()
 
-    res = manager.check_redirect()
-    if res is not None:
-        return res
+        res = manager.check_redirect()
+        if res is not None:
+            return res
 
     return manager.make_response(DepthTaskImage)

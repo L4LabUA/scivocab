@@ -61,18 +61,23 @@ class TaskManager(object):
         # For each strand, we shuffle the words in the strand, and add those
         # words to randomized_word_list.
         for strand in strands:
-            strand.words = strand.words[0:1]
-            strand_word_counts.append(len(strand.words))
-            shuffle(strand.words)
-            randomized_word_list.extend(strand.words)
+            if self.task!="breadth":
+                words = [word for word in strand.words if word.depth_id is not None]
+            else:
+                words = strand.words
+
+            # Uncomment the line below for quicker debugging
+            # words = words[0:1]
+
+            strand_word_counts.append(len(words))
+            shuffle(words)
+            randomized_word_list.extend(words)
 
         # create the accumulative count variable
         self.cumulative_word_counts = list(
             itertools.accumulate(strand_word_counts)
         )
 
-        print("strand word counts", strand_word_counts)
-        print("cumulative word counts", self.cumulative_word_counts)
         self.current_word_index = 0
 
         # Which phase are we in - training counts as a phase, as does each
@@ -101,7 +106,6 @@ class TaskManager(object):
     def check_redirect(self):
         try:
             self.go_to_next_word()
-            print("current word index", self.current_word_index)
             # If the current_word_index is in cumulative_word_counts then we redirect
             if self.current_word_index-2 in self.cumulative_word_counts:
                 self.current_phase_index += 1
@@ -123,20 +127,8 @@ class TaskManager(object):
             {"redirect": "fun_fact/" + str(self.current_phase_index)}
         )
 
-    def make_response(self, image_class):
+    def make_response(self, image_class = None):
         # We gather the filenames for the browser.
-        filename_dict = {
-            img.image_type.id: request.script_root
-            + f"/static/scivocab/images/{self.task}/"
-            + img.filename
-            for img in image_class.query.filter_by(
-                word_id=self.current_word.id
-            ).all()
-        }
-
-        filenames = [
-            filename_dict[image_type] for image_type in self.image_types
-        ]
 
         # We construct a JSON-serializable dictionary with the filenames and the
         # target word.
@@ -146,12 +138,28 @@ class TaskManager(object):
             audio_file = self.current_word.audio_file
 
         response = {
-            "filenames": filenames,
             "current_target_word": self.current_word.target,
             "audio_file": url_for(
                 "static", filename="scivocab/audio/" + audio_file
             ),
         }
+
+        if image_class is not None:
+            filename_dict = {
+                img.image_type.id: request.script_root
+                + f"/static/scivocab/images/{self.task}/"
+                + img.filename
+                for img in image_class.query.filter_by(
+                    word_id=self.current_word.id
+                ).all()
+            }
+
+
+            filenames = [
+                filename_dict[image_type] for image_type in self.image_types
+            ]
+
+            response["filenames"] = filenames
 
         # We convert the dictionary into a JSON message using Flask's 'jsonify'
         # function and return that as a response, which will trigger the webpage to

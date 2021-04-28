@@ -20,6 +20,7 @@ from app.TaskManager import TaskManager
 from flask_login import login_required, current_user
 import logging
 from logging import info
+from app.common import check_managers_dict
 
 
 class DefinitionTaskManager(TaskManager):
@@ -47,11 +48,7 @@ MANAGERS = {}
 @login_required
 def main():
     """The main view function for the definition task."""
-
-    # If there isn't a DefinitionTaskManager for the current user yet, create one
-    # and add it to the MANAGERS dictionary.
-    if MANAGERS.get(current_user.id) is None:
-        MANAGERS[current_user.id] = DefinitionTaskManager()
+    check_managers_dict(MANAGERS, current_user.id, DefinitionTaskManager)
     return render_template("definition.html", title="Definition Task")
 
 
@@ -62,7 +59,8 @@ def redirect_to_fun_fact(fun_fact_index):
         "static",
         filename=f"scivocab/women_scientist_images/def_kalpana{fun_fact_index}.gif",
     )
-    return render_template("fun_fact.html", image=image, task_id="definition")
+    is_final = True if int(fun_fact_index) == 4 else False
+    return render_template("fun_fact.html", image=image, task_id="definition", is_final=is_final)
 
 
 # Each call of nextWord loads a new word, waits for the user to select an
@@ -75,6 +73,8 @@ def nextWord():
     the images to display for the definition task."""
 
     manager = MANAGERS[current_user.id]
+    if manager.task_completed:
+        return manager.redirect_to_end()
 
     # If the request contains position information, it is from an image click
     # rather than a page load/reload, and so we extract the position of the
@@ -89,31 +89,9 @@ def nextWord():
         db.session.add(definition_task_response)
         db.session.commit()
 
-        # We attempt to go to the next word.
-        manager.go_to_next_word()
-        # if the current_word_index is in strand_word_counts_accumulative the we can redirect
-        if (
-            manager.current_word_index
-            in manager.strand_word_counts_accumulative
-        ):
-            manager.current_strand_index += 1
-            return jsonify(
-                {"redirect": "fun_fact/" + str(manager.current_strand_index)}
-            )
-            # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
-            # function here. This is our workaround.
 
-    # We construct a JSON-serializable dictionary with the filenames and the
-    # target word.
-    response = {
-        "current_target_word": manager.current_word.target,
-        "audio_file": url_for(
-            "static",
-            filename="scivocab/audio/" + manager.current_word.audio_file,
-        ),
-    }
+        res = manager.check_redirect()
+        if res is not None:
+            return res
 
-    # We convert the dictionary into a JSON message using Flask's 'jsonify'
-    # function and return that as a response, which will trigger the webpage to
-    # change the images displayed with new ones based on this message.
-    return jsonify(response)
+    return manager.make_response()
