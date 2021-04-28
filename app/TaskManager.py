@@ -38,7 +38,6 @@ class TaskManager(object):
             ).order_by(Word.depth_id).all()
 
         # training items
-        print([x.target for x in training_items])
         randomized_word_list.extend(training_items)
 
         # Get the strands from the database
@@ -58,6 +57,7 @@ class TaskManager(object):
             strand.words = strand.words[0:2]
             strand_word_counts.append(len(strand.words))
             shuffle(strand.words)
+            print([x.target for x in strand.words])
             randomized_word_list.extend(strand.words)
 
         # create the accumulative count variable

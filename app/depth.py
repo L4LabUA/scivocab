@@ -104,7 +104,7 @@ def nextWord():
         ).all()
     }
 
-    print(DepthTaskImage.query.filter_by(word_id=manager.current_word.id))
+    print(DepthTaskImage.query.filter_by(word_id=manager.current_word.id).all())
     print(filename_dict)
     filenames = [
         filename_dict[image_type] for image_type in manager.image_types
