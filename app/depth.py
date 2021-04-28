@@ -22,6 +22,7 @@ from app.TaskManager import TaskManager
 from flask_login import login_required, current_user
 import logging
 from logging import info
+from app.common import check_managers_dict
 
 
 class DepthTaskManager(TaskManager):
@@ -47,12 +48,7 @@ MANAGERS = {}
 @login_required
 def main():
     """The main view function for the depth task."""
-
-    # If there isn't a DepthTaskManager for the current user yet, create one
-    # and add it to the MANAGERS dictionary.
-    if MANAGERS.get(current_user.id) is None:
-        MANAGERS[current_user.id] = DepthTaskManager()
-
+    check_managers_dict(MANAGERS, current_user.id, DepthTaskManager)
     return render_template("depth.html", title="Depth Task")
 
 
@@ -95,21 +91,9 @@ def nextWord():
         db.session.add(depth_task_response)
         db.session.commit()
 
-        # We attempt to go to the next word.
-        manager.go_to_next_word()
+    manager.check_redirect()
 
-        # if the current_word_index is in strand_word_counts_accumulative the we can redirect
-        if (
-            manager.current_word_index
-            in manager.strand_word_counts_accumulative
-        ):
-            manager.current_strand_index += 1
-            return jsonify(
-                {"redirect": "fun_fact/" + str(manager.current_strand_index)}
-            )
-            # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
-            # function here. This is our workaround.
-
+    print(manager.current_word.id)
     # We gather the filenames for the browser.
     filename_dict = {
         img.image_type.id: request.script_root
@@ -120,6 +104,8 @@ def nextWord():
         ).all()
     }
 
+    print(DepthTaskImage.query.filter_by(word_id=manager.current_word.id))
+    print(filename_dict)
     filenames = [
         filename_dict[image_type] for image_type in manager.image_types
     ]

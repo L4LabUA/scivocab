@@ -4,6 +4,8 @@ from app.models import (
     Word,
     Strand,
 )
+from flask import jsonify
+
 class TaskManager(object):
     def __init__(self, task:str):
         """The code in this method would normally be in the class's __init__
@@ -48,9 +50,11 @@ class TaskManager(object):
         # Currently, we randomize the order of the strands.
         shuffle(strands)
         strand_word_counts: list = []
+
         # For each strand, we shuffle the words in the strand, and add those
         # words to randomized_word_list.
         for strand in strands:
+            strand.words = strand.words[0:2]
             strand_word_counts.append(len(strand.words))
             shuffle(strand.words)
             randomized_word_list.extend(strand.words)
@@ -85,3 +89,28 @@ class TaskManager(object):
         # in the iterator.
         self.current_word = next(self.randomized_word_iterator)
         self.current_word_index += 1
+
+    # We attempt to go to the next word. If a StopIteration exception is
+    # raised, that means we are at the end of the list, and so we redirect the
+    # user to the post-breadth-task page.
+    def check_redirect(self):
+        try:
+            self.go_to_next_word()
+
+            # If the current_word_index is in cumulative_word_counts then we redirect
+            if (
+                self.current_word_index
+                in self.cumulative_word_counts
+            ):
+                self.current_phase_index += 1
+                # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
+                # function here. This is our workaround.
+                return jsonify(
+                    {"redirect": "fun_fact/" + str(self.current_phase_index)}
+                )
+
+        except StopIteration:
+            self.current_phase_index += 1
+            return jsonify(
+                {"redirect": "fun_fact/" + str(self.current_phase_index)}
+            )

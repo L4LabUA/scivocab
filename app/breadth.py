@@ -19,6 +19,7 @@ from flask_login import login_required, current_user
 import logging
 from logging import info
 from app.TaskManager import TaskManager
+from app.common import check_managers_dict
 
 
 class BreadthTaskManager(TaskManager):
@@ -55,11 +56,7 @@ MANAGERS = {}
 @login_required
 def main():
     """The main view function for the breadth task."""
-
-    # If there isn't a BreadthTaskManager for the current user yet, create one
-    # and add it to the MANAGERS dictionary.
-    if MANAGERS.get(current_user.id) is None:
-        MANAGERS[current_user.id] = BreadthTaskManager()
+    check_managers_dict(MANAGERS, current_user.id, BreadthTaskManager)
     return render_template("breadth.html", title="Breadth Task")
 
 
@@ -72,7 +69,6 @@ def redirect_to_fun_fact(fun_fact_index):
     )
 
     is_final = True if int(fun_fact_index)==4 else False
-    print(fun_fact_index, is_final)
 
     return render_template(
         "fun_fact.html", image=image, task_id="breadth", is_final=is_final
@@ -91,6 +87,7 @@ def nextWord():
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
     manager = MANAGERS[current_user.id]
+
     if request.args.get("position") is not None:
         position = int(request.args.get("position").split("_")[1])
         breadth_task_response = BreadthTaskResponse(
@@ -102,31 +99,7 @@ def nextWord():
         db.session.add(breadth_task_response)
         db.session.commit()
 
-        # We attempt to go to the next word. If a StopIteration exception is
-        # raised, that means we are at the end of the list, and so we redirect the
-        # user to the post-breadth-task page.
-        try:
-            manager.go_to_next_word()
-
-            # If the current_word_index is in cumulative_word_counts then we redirect
-            if (
-                manager.current_word_index
-                in manager.cumulative_word_counts
-            ):
-                manager.current_phase_index += 1
-                # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
-                # function here. This is our workaround.
-                return jsonify(
-                    {"redirect": "fun_fact/" + str(manager.current_phase_index)}
-                )
-
-        except StopIteration:
-            manager.current_phase_index += 1
-            return jsonify(
-                {"redirect": "fun_fact/" + str(manager.current_phase_index)}
-            )
-
-
+    manager.check_redirect()
 
     # We gather the filenames for the browser.
     filename_dict = {
