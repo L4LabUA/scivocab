@@ -38,6 +38,7 @@ class TaskManager(object):
             ).order_by(Word.depth_id).all()
 
         # training items
+        print([x.target for x in training_items])
         randomized_word_list.extend(training_items)
 
         # Get the strands from the database
@@ -77,9 +78,6 @@ class TaskManager(object):
         # (https://docs.python.org/3/glossary.html#term-iterator)
         self.randomized_word_iterator = iter(randomized_word_list)
 
-        # We set the 'current_word' property of this instance of the
-        # TaskManager class to the next Word object.
-        self.current_word = next(self.randomized_word_iterator)
 
     def go_to_next_word(self):
         # Shuffle the image_types list.
