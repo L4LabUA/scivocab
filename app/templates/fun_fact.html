@@ -3,7 +3,7 @@
 {% block content %}
 
 
-<div class="row">
+<div class="row" style="margin-top: 2rem;">
     <div class="col">
         <img id = "fun_fact" class = "img-fluid" src="{{ image }}" width="600"/>
     </div>
@@ -11,23 +11,21 @@
 
 <div class="row justify-content-md-center p-1">
    <div class="col">
+       {% if not is_final %}
        <a id="{{task_id}}" href="{{ url_for(task_id +'.main') }}" class="btn btn-primary btn-lg">
-        Continue
-    </a>
+            Continue
+       </a>
+       {%else%}
+       <div class="row" style="font-size:2rem;"><div class="col">You're all done!</div></div>
+       <div class="row">
+           <div class="col">
+            <a id="{{task_id}}" href="{{ url_for('routes.index') }}" class="btn btn-primary btn-lg">
+                    Return to landing page
+            </a>
+           </div>
+       </div>
+       {% endif %}
    </div>
 </div>
-
-<script>
-var a = "{{ task_id_breadth }}"
-var b = "{{ task_id_depth }}"
-
-if a == "breadth" {
-    task_id_breadth = true
-} else if  b == "depth" {
-    task_id_depth = true
-} else {
-    task_id = false
-}
-</script>
 
 {% endblock  %}

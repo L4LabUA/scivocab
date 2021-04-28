@@ -55,18 +55,9 @@ $(document).on('click', '#nextWordButton', function() {
             {position : clicked_image_id},
             update
         );
-    //reset 100% opacity for clicked image and empty string to reset imgage id
+        // Reset 100% opacity for clicked image and empty string to reset
+        // clicked_image_id
        clicked_image_id = "";
     }   
     return false;
 });
-
-
-$(document).on('click', '#ContinueButton', function() {
-    $.getJSON("nextWord",
-           {},
-           update
-       );
-   return false;
-});
- 
