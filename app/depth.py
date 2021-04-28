@@ -84,6 +84,7 @@ def nextWord():
         images = [
             src.split("/")[-1] for src in json.loads(request.args["response"])
         ]
+        print(json.loads(request.args["response"]))
         depth_task_response = DepthTaskResponse(
             target_word=manager.current_word.target,
             child_id=current_user.id,
@@ -96,7 +97,6 @@ def nextWord():
         db.session.commit()
 
     res = manager.check_redirect()
-    print("res")
     if res is not None:
         return res
 

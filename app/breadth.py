@@ -87,7 +87,8 @@ def nextWord():
     # rather than a page load/reload, and so we extract the position of the
     # image that was clicked.
     manager = MANAGERS[current_user.id]
-
+    if manager.task_completed:
+        return manager.redirect_to_end()
     if request.args.get("position") is not None:
         position = int(request.args.get("position").split("_")[1])
         breadth_task_response = BreadthTaskResponse(
@@ -99,8 +100,9 @@ def nextWord():
         db.session.add(breadth_task_response)
         db.session.commit()
 
-    res = manager.check_redirect()
-    if res is not None:
-        return res
+        res = manager.check_redirect()
+        if res is not None:
+            return res
+
 
     return manager.make_response(BreadthTaskImage)

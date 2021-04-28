@@ -27,6 +27,7 @@ class TaskManager(object):
         it for every request."""
 
         self.task = task
+        self.task_completed=False
         # Create an empty list to hold Word objects
         randomized_word_list: list[Word] = []
 
@@ -60,7 +61,7 @@ class TaskManager(object):
         # For each strand, we shuffle the words in the strand, and add those
         # words to randomized_word_list.
         for strand in strands:
-            strand.words = strand.words[0:2]
+            strand.words = strand.words[0:1]
             strand_word_counts.append(len(strand.words))
             shuffle(strand.words)
             randomized_word_list.extend(strand.words)
@@ -111,14 +112,16 @@ class TaskManager(object):
                     {"redirect": "fun_fact/" + str(self.current_phase_index)}
                 )
 
-            print(self.current_word.target)
 
         except StopIteration:
-            print("StopIteration")
+            self.task_completed=True
             self.current_phase_index = 4
-            return jsonify(
-                {"redirect": "fun_fact/" + str(self.current_phase_index)}
-            )
+            return self.redirect_to_end()
+
+    def redirect_to_end(self):
+        return jsonify(
+            {"redirect": "fun_fact/" + str(self.current_phase_index)}
+        )
 
     def make_response(self, image_class):
         # We gather the filenames for the browser.
