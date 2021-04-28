@@ -59,7 +59,11 @@ def redirect_to_fun_fact(fun_fact_index):
         "static",
         filename=f"scivocab/women_scientist_images/d_annie{fun_fact_index}.gif",
     )
-    return render_template("fun_fact.html", image=image, task_id="depth")
+    is_final = True if int(fun_fact_index) == 4 else False
+
+    return render_template(
+        "fun_fact.html", image=image, task_id="depth", is_final=is_final
+    )
 
 
 # Each call of nextWord loads a new word, waits for the user to select an
@@ -91,37 +95,9 @@ def nextWord():
         db.session.add(depth_task_response)
         db.session.commit()
 
-    manager.check_redirect()
+    res = manager.check_redirect()
+    print("res")
+    if res is not None:
+        return res
 
-    print(manager.current_word.id)
-    # We gather the filenames for the browser.
-    filename_dict = {
-        img.image_type.id: request.script_root
-        + "/static/scivocab/images/depth/"
-        + img.filename
-        for img in DepthTaskImage.query.filter_by(
-            word_id=manager.current_word.id
-        ).all()
-    }
-
-    print(DepthTaskImage.query.filter_by(word_id=manager.current_word.id).all())
-    print(filename_dict)
-    filenames = [
-        filename_dict[image_type] for image_type in manager.image_types
-    ]
-
-    # We construct a JSON-serializable dictionary with the filenames and the
-    # target word.
-    response = {
-        "filenames": filenames,
-        "current_target_word": manager.current_word.target,
-        "audio_file": url_for(
-            "static",
-            filename="scivocab/audio/" + manager.current_word.audio_file,
-        ),
-    }
-
-    # We convert the dictionary into a JSON message using Flask's 'jsonify'
-    # function and return that as a response, which will trigger the webpage to
-    # change the images displayed with new ones based on this message.
-    return jsonify(response)
+    return manager.make_response(DepthTaskImage)

@@ -99,37 +99,8 @@ def nextWord():
         db.session.add(breadth_task_response)
         db.session.commit()
 
-    manager.check_redirect()
+    res = manager.check_redirect()
+    if res is not None:
+        return res
 
-    # We gather the filenames for the browser.
-    filename_dict = {
-        img.image_type.id: request.script_root
-        + "/static/scivocab/images/breadth/"
-        + img.filename
-        for img in BreadthTaskImage.query.filter_by(
-            word_id=manager.current_word.id
-        ).all()
-    }
-
-    filenames = [
-        filename_dict[image_type] for image_type in manager.image_types
-    ]
-
-    # We construct a JSON-serializable dictionary with the filenames and the
-    # target word.
-    if manager.current_word.audio_file is None:
-        audio_file = ""
-    else:
-        audio_file = manager.current_word.audio_file
-    response = {
-        "filenames": filenames,
-        "current_target_word": manager.current_word.target,
-        "audio_file": url_for(
-            "static", filename="scivocab/audio/" + audio_file
-        ),
-    }
-
-    # We convert the dictionary into a JSON message using Flask's 'jsonify'
-    # function and return that as a response, which will trigger the webpage to
-    # change the images displayed with new ones based on this message.
-    return jsonify(response)
+    return manager.make_response(BreadthTaskImage)
