@@ -15,6 +15,9 @@ pushd $ROOT > /dev/null
     sudo rm -rf /var/www/html/static/scivocab
     sudo cp -r app/static/scivocab /var/www/html/static/scivocab
 
+    # Bring down the Docker container
+    docker-compose down
+
     # Build and run the Docker container
     docker-compose up --build -d
 popd
