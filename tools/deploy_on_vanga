@@ -12,7 +12,8 @@ export ROOT
 
 pushd $ROOT > /dev/null
     # Copy the static files to a publicly accessible location
-    sudo cp -r app/static /var/www/html
+    sudo rm -rf /var/www/html/static/scivocab
+    sudo cp -r app/static/scivocab /var/www/html/static/scivocab
 
     # Build and run the Docker container
     docker-compose up --build -d
