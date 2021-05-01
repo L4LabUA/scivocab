@@ -1,8 +1,18 @@
 /* CSS Style file */
+/* #AB0520 is the University of Arizona maroon-ish color */
 
 #playButton {
     background-repeat: no-repeat;
     width:35px;
     height:35px;
     background-size: 35px 35px;
+}
+
+.dragging {
+    border: 4px dashed #AB0520;
+}
+
+.navbar {
+    height: 40px;
+    background-color: #AB0520;
 }

@@ -27,7 +27,7 @@ class TaskManager(object):
         it for every request."""
 
         self.task = task
-        self.task_completed=False
+        self.task_completed = False
         # Create an empty list to hold Word objects
         randomized_word_list: list[Word] = []
 
@@ -61,10 +61,11 @@ class TaskManager(object):
         # For each strand, we shuffle the words in the strand, and add those
         # words to randomized_word_list.
         for strand in strands:
-            if self.task!="breadth":
-                words = [word for word in strand.words if word.depth_id is not None]
-            else:
-                words = strand.words
+            words = [
+                word
+                for word in strand.words
+                if getattr(word, f"{self.task}_id") is not None
+            ]
 
             # Uncomment the line below for quicker debugging
             # words = words[0:1]
@@ -107,7 +108,7 @@ class TaskManager(object):
         try:
             self.go_to_next_word()
             # If the current_word_index is in cumulative_word_counts then we redirect
-            if self.current_word_index-2 in self.cumulative_word_counts:
+            if self.current_word_index - 2 in self.cumulative_word_counts:
                 self.current_phase_index += 1
 
                 # Since we use Ajax and jQuery, we cannot use the usual Flask redirect
@@ -116,9 +117,8 @@ class TaskManager(object):
                     {"redirect": "fun_fact/" + str(self.current_phase_index)}
                 )
 
-
         except StopIteration:
-            self.task_completed=True
+            self.task_completed = True
             self.current_phase_index = 4
             return self.redirect_to_end()
 
@@ -127,7 +127,7 @@ class TaskManager(object):
             {"redirect": "fun_fact/" + str(self.current_phase_index)}
         )
 
-    def make_response(self, image_class = None):
+    def make_response(self, image_class=None):
         # We gather the filenames for the browser.
 
         # We construct a JSON-serializable dictionary with the filenames and the
@@ -153,7 +153,6 @@ class TaskManager(object):
                     word_id=self.current_word.id
                 ).all()
             }
-
 
             filenames = [
                 filename_dict[image_type] for image_type in self.image_types

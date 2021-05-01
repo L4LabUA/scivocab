@@ -1,113 +1,113 @@
-id,target,breadth_id,depth_id,strand_id
-w001,arachnid,b001,,40
-w002,camouflage,b002,,40
-w003,carnivore,b003,,40
-w004,endangered,b004,,40
-w005,exoskeleton,b005,d001,40
-w006,extinct,b006,,40
-w007,habitat,b007,d002,40
-w008,herbivore,b008,d003,40
-w009,hibernation,b009,d004,40
-w010,insect,b010,,40
-w011,invertebrate,b011,,40
-w012,mammal,b012,,40
-w013,migration,b013,d005,40
-w014,mimicry,b014,,40
-w015,mineral,b015,d006,40
-w016,mutualism,b016,d007,40
-w017,"nonrenewable resource",b017,,40
-w018,omnivore,b018,d008,40
-w019,parasitism,b019,d009,40
-w020,"physical adaptation",b020,,40
-w021,predator,b021,,40
-w022,prey,b022,,40
-w023,"renewable resource",b023,,40
-w024,reptile,b024,d010,40
-w025,root,b025,d011,40
-w026,stem,b026,d012,40
-w027,vertebrate,b027,d013,40
-w028,attraction,b028,d014,50
-w029,battery,b029,d015,50
-w030,bulb,b030,d016,50
-w031,circuit,b031,,50
-w032,"closed circuit",b032,d017,50
-w033,compass,b033,d018,50
-w034,conductor,b034,,50
-w035,diode,b035,,50
-w036,"electric current",b036,,50
-w037,electromagnet,b037,,50
-w038,filament,b038,d019,50
-w039,insulator,b039,,50
-w040,load,b040,,50
-w041,magnet,b041,,50
-w042,"magnetic field",b042,,50
-w043,"magnetic pole",b043,,50
-w044,"open circuit",b044,,50
-w045,"parallel circuit",b045,d020,50
-w046,"permanent magnet",b046,d021,50
-w047,repulsion,b047,d022,50
-w048,"series circuit",b048,d023,50
-w049,"short circuit",b049,,50
-w050,socket,b050,,50
-w051,source,b051,d024,50
-w052,switch,b052,d025,50
-w053,telegraph,b053,d026,50
-w054,"temporary magnet",b054,,50
-w055,avalanche,b055,,62
-w056,canyon,b056,d027,62
-w057,dam,b057,,62
-w058,deposition,b058,,62
-w059,drought,b059,d028,62
-w060,earthquake,b060,,62
-w061,erosion,b061,d029,62
-w062,eruption,b062,,62
-w063,fault,b063,d030,62
-w064,flood,b064,d031,62
-w065,fossil,b065,d032,62
-w066,hurricane,b066,,62
-w067,"ice core",b067,,62
-w068,landform,b068,,62
-w069,landslide,b069,d033,62
-w070,moraine,b070,d034,62
-w071,"rapid process",b071,,62
-w072,"river bank",b072,d035,62
-w073,"river bed",b073,d036,62
-w074,"sand dune",b074,d037,62
-w075,sediment,b075,,62
-w076,"slow process",b076,,62
-w077,"tectonic plate",b077,,62
-w078,tornado,b078,d038,62
-w079,"tree ring",b079,,62
-w080,volcano,b080,,62
-w081,weathering,b081,d039,62
-w082,anemometer,b082,,63
-w083,"atmospheric water",b083,d040,63
-w084,barometer,b084,,63
-w085,climate,b085,,63
-w086,climatologist,b086,,63
-w087,condensation,b087,d041,63
-w088,evaporation,b088,d042,63
-w089,front,b089,,63
-w090,glacier,b090,d043,63
-w091,"ground water",b091,d044,63
-w092,humidity,b092,,63
-w093,lake,b093,d045,63
-w094,meteorologist,b094,,63
-w095,"polar ice cap",b095,d046,63
-w096,pollution,b096,,63
-w097,precipitation,b097,d047,63
-w098,"rain gauge",b098,,63
-w099,river,b099,d048,63
-w100,run-off,b100,d049,63
-w101,"surface water",b101,d050,63
-w102,temperature,b102,,63
-w103,thermometer,b103,d051,63
-w104,transpiration,b104,,63
-w105,"water cycle",b105,d052,63
-w106,watershed,b106,,63
-w107,weather,b107,,63
-w108,"wind vane",b108,,63
-wt001,chips,bt001,,training
-wt002,car,bt002,,training
-wt003,bag,,dt001,training
-wt004,toothbrush,,dt002,training
+id,target,breadth_id,depth_id,definition_id,strand_id
+w001,arachnid,b001,,,40
+w002,camouflage,b002,,,40
+w003,carnivore,b003,,,40
+w004,endangered,b004,,,40
+w005,exoskeleton,b005,d001,def001,40
+w006,extinct,b006,,,40
+w007,habitat,b007,d002,,40
+w008,herbivore,b008,d003,,40
+w009,hibernation,b009,d004,def004,40
+w010,insect,b010,,,40
+w011,invertebrate,b011,,,40
+w012,mammal,b012,,,40
+w013,migration,b013,d005,,40
+w014,mimicry,b014,,,40
+w015,mineral,b015,d006,,40
+w016,mutualism,b016,d007,def007,40
+w017,"nonrenewable resource",b017,,,40
+w018,omnivore,b018,d008,def008,40
+w019,parasitism,b019,d009,,40
+w020,"physical adaptation",b020,,,40
+w021,predator,b021,,,40
+w022,prey,b022,,,40
+w023,"renewable resource",b023,,,40
+w024,reptile,b024,d010,def010,40
+w025,root,b025,,,40
+w026,stem,b026,d012,,40
+w027,vertebrate,b027,d013,,40
+w028,attraction,b028,d014,,50
+w029,battery,b029,,,50
+w030,bulb,b030,d016,,50
+w031,circuit,b031,,,50
+w032,"closed circuit",b032,d017,def017,50
+w033,compass,b033,d018,def018,50
+w034,conductor,b034,,,50
+w035,diode,b035,,,50
+w036,"electric current",b036,,,50
+w037,electromagnet,b037,,,50
+w038,filament,b038,d019,,50
+w039,insulator,b039,,,50
+w040,load,b040,,,50
+w041,magnet,b041,,,50
+w042,"magnetic field",b042,,,50
+w043,"magnetic pole",b043,,,50
+w044,"open circuit",b044,,,50
+w045,"parallel circuit",b045,d020,,50
+w046,"permanent magnet",b046,d021,,50
+w047,repulsion,b047,d022,def022,50
+w048,"series circuit",b048,d023,def023,50
+w049,"short circuit",b049,,,50
+w050,socket,b050,,,50
+w051,source,b051,d024,def024,50
+w052,switch,b052,d025,,50
+w053,telegraph,b053,d026,,50
+w054,"temporary magnet",b054,,,50
+w055,avalanche,b055,,,62
+w056,canyon,b056,d027,,62
+w057,dam,b057,,,62
+w058,deposition,b058,,,62
+w059,drought,b059,d028,def028,62
+w060,earthquake,b060,,,62
+w061,erosion,b061,d029,def029,62
+w062,eruption,b062,,,62
+w063,fault,b063,d030,def030,62
+w064,flood,b064,d031,,62
+w065,fossil,b065,d032,def032,62
+w066,hurricane,b066,,,62
+w067,"ice core",b067,,,62
+w068,landform,b068,,,62
+w069,landslide,b069,,,62
+w070,moraine,b070,d034,,62
+w071,"rapid process",b071,,,62
+w072,"river bank",b072,d035,,62
+w073,"river bed",b073,d036,,62
+w074,"sand dune",b074,d037,,62
+w075,sediment,b075,,,62
+w076,"slow process",b076,,,62
+w077,"tectonic plate",b077,,,62
+w078,tornado,b078,d038,def038,62
+w079,"tree ring",b079,,,62
+w080,volcano,b080,,,62
+w081,weathering,b081,d039,,62
+w082,anemometer,b082,,,63
+w083,"atmospheric water",b083,d040,def040,63
+w084,barometer,b084,,,63
+w085,climate,b085,,,63
+w086,climatologist,b086,,,63
+w087,condensation,b087,d041,def041,63
+w088,evaporation,b088,,,63
+w089,front,b089,,,63
+w090,glacier,b090,d043,def043,63
+w091,"ground water",b091,d044,,63
+w092,humidity,b092,,,63
+w093,lake,b093,d045,,63
+w094,meteorologist,b094,,,63
+w095,"polar ice cap",b095,d046,def046,63
+w096,pollution,b096,,,63
+w097,precipitation,b097,d047,,63
+w098,"rain gauge",b098,,,63
+w099,river,b099,d048,,63
+w100,run-off,b100,,,63
+w101,"surface water",b101,d050,,63
+w102,temperature,b102,,,63
+w103,thermometer,b103,d051,,63
+w104,transpiration,b104,d053,def053,63
+w105,"water cycle",b105,d052,,63
+w106,watershed,b106,,,63
+w107,weather,b107,,,63
+w108,"wind vane",b108,,,63
+wt001,chips,bt001,,,training
+wt002,car,bt002,,,training
+wt003,bag,,dt001,,training
+wt004,toothbrush,,dt002,,training

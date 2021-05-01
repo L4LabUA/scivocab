@@ -50,6 +50,16 @@ function dragstart_handler(ev) {
     ev.dataTransfer.dropEffect = "move";
 }
 
+function dragenter_handler(ev) {
+    ev.preventDefault();
+    ev.target.classList.add("dragging");
+}
+
+function dragleave_handler(ev) {
+    ev.preventDefault();
+    ev.target.classList.remove("dragging");
+}
+
 function dragover_handler(ev) {
     ev.preventDefault();
     ev.dataTransfer.dropEffect = "move";
@@ -87,6 +97,8 @@ $(() => {
 $(() => {
     const elements = document.getElementsByClassName("targetImageContainer");
     Array.from(elements).forEach(e => {
+        e.addEventListener("dragenter", dragenter_handler, false); 
+        e.addEventListener("dragleave", dragleave_handler, false); 
         e.addEventListener("dragstart", dragstart_handler, false);
         e.addEventListener("dragover", dragover_handler, false);
         e.addEventListener("drop", drop_handler, false);
