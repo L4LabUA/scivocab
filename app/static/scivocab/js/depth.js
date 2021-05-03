@@ -36,7 +36,10 @@ $(document).on('click', '#nextWordButton', function() {
         $.getJSON("nextWord", {response : JSON.stringify(srcs)}, update);
 
         // Clear the target image containers.
-        Array.from(elements).forEach(e => { e.src = "/static/scivocab/images/dv_placeholder.gif"; });
+        Array.from(elements).forEach(e => {
+            e.src = "/static/scivocab/images/dv_placeholder.gif";
+            e.classList.remove("dragging");
+        });
     }
 
     return false;
