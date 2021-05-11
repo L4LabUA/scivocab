@@ -80,6 +80,22 @@ if __name__ == "__main__":
     dfs = construct_dfs()
     postprocess_depth_df(dfs["depth"])
     dfs["depth"]["score"] = calculate_depth_item_score(dfs["depth"])
-    print(dfs["depth"])
-# dfs["depth"]["score"] = get_depth_image_rank(dfs, 0)
-# print(dfs["depth"]["score"])
+    for child_id, df in dfs["depth"].groupby(["child_id"]):
+        results_df = pd.DataFrame()
+        print("")
+        print(f"Child ID: {child_id}")
+        df = df[df["strand_id"] != "training"]
+        for index, code in zip((0, 1, 2, 3), ("a", "b", "c", "e")):
+            filtered = df[f"image_{index}"] == code
+            results_df.append(
+                {
+                    child_id: {
+                        "fraction of {code} correct": filtered.sum()
+                        / filtered.count()
+                    }
+                },
+                ignore_index=True
+            )
+        print(results_df)
+
+    # print(dfs["depth"])
