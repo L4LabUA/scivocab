@@ -34,7 +34,6 @@ def create_app():
     # https://gist.github.com/asyd/a7aadcf07a66035ac15d284aef10d458
     if 'sqlite' in scivocab_app.config['SQLALCHEMY_DATABASE_URI']:
         def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
-            print("HELLO")
             dbapi_con.execute('pragma foreign_keys=ON')
 
         with scivocab_app.app_context():

@@ -10,9 +10,9 @@ from flask import (
 )
 from app.models import (
     Strand,
-    BreadthTaskResponse,
-    BreadthTaskImage,
-    BreadthTaskImageType,
+    BreadthResponse,
+    BreadthImage,
+    BreadthImageType,
 )
 from app import db
 from flask_login import login_required, current_user
@@ -22,13 +22,13 @@ from app.TaskManager import TaskManager
 from app.common import check_managers_dict
 
 
-class BreadthTaskManager(TaskManager):
+class BreadthManager(TaskManager):
     def __init__(self):
         super().__init__("breadth")
         # Create a list of image types. We will shuffle this list every time we
         # move to a new word in the task, in order to randomize the positions
         # of the four images for a given word.
-        self.image_types = [x.id for x in BreadthTaskImageType.query.all()]
+        self.image_types = [x.id for x in BreadthImageType.query.all()]
         self.position_labels = {
             0: "top_left",
             1: "top_right",
@@ -39,7 +39,7 @@ class BreadthTaskManager(TaskManager):
         # Create a list of image types. We will shuffle this list every time we
         # move to a new word in the task, in order to randomize the positions
         # of the four images for a given word.
-        self.image_types = [x.id for x in BreadthTaskImageType.query.all()]
+        self.image_types = [x.id for x in BreadthImageType.query.all()]
 
 
 # We create a Flask blueprint object. Flask blueprints help keep apps modular.
@@ -56,7 +56,7 @@ MANAGERS = {}
 @login_required
 def main():
     """The main view function for the breadth task."""
-    check_managers_dict(MANAGERS, current_user.id, BreadthTaskManager)
+    check_managers_dict(MANAGERS, current_user.id, BreadthManager)
     return render_template("breadth.html", title="Breadth Task")
 
 
@@ -77,7 +77,7 @@ def redirect_to_fun_fact(fun_fact_index):
 
 # Each call of nextWord loads a new word, waits for the user to select an
 # image, and adds the selected word to manager.answers as an instance of the
-# BreadthTaskResponse class.
+# BreadthResponse class.
 @bp.route("/nextWord", methods=["GET", "POST"])
 @login_required
 def nextWord():
@@ -91,8 +91,8 @@ def nextWord():
         return manager.redirect_to_end()
     if request.args.get("position") is not None:
         position = int(request.args.get("position").split("_")[1])
-        breadth_task_response = BreadthTaskResponse(
-            target_word=manager.current_word.target,
+        breadth_task_response = BreadthResponse(
+            word_id=manager.current_word.id,
             response_type=manager.image_types[position],
             child_id=current_user.id,
             position=manager.position_labels[position],
@@ -105,4 +105,4 @@ def nextWord():
             return res
 
 
-    return manager.make_response(BreadthTaskImage)
+    return manager.make_response(BreadthImage)

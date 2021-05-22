@@ -13,7 +13,7 @@ import json
 from app.models import (
     Word,
     Strand,
-    DefinitionTaskResponse,
+    DefinitionResponse,
 )
 from app import db
 from app.TaskManager import TaskManager
@@ -23,7 +23,7 @@ from logging import info
 from app.common import check_managers_dict
 
 
-class DefinitionTaskManager(TaskManager):
+class DefinitionManager(TaskManager):
     def __init__(self):
         super().__init__("definition")
 
@@ -48,7 +48,7 @@ MANAGERS = {}
 @login_required
 def main():
     """The main view function for the definition task."""
-    check_managers_dict(MANAGERS, current_user.id, DefinitionTaskManager)
+    check_managers_dict(MANAGERS, current_user.id, DefinitionManager)
     return render_template("definition.html", title="Definition Task")
 
 
@@ -65,7 +65,7 @@ def redirect_to_fun_fact(fun_fact_index):
 
 # Each call of nextWord loads a new word, waits for the user to select an
 # image, and adds the selected word to manager.answers as an instance of the
-# DefinitionTaskResponse class.
+# DefinitionResponse class.
 @bp.route("/nextWord", methods=["GET", "POST"])
 @login_required
 def nextWord():
@@ -81,8 +81,8 @@ def nextWord():
     # image that was clicked.
 
     if request.args.get("response") is not None:
-        definition_task_response = DefinitionTaskResponse(
-            target_word=manager.current_word.target,
+        definition_task_response = DefinitionResponse(
+            word_id=manager.current_word.id,
             child_id=current_user.id,
             text=request.args["response"],
         )
