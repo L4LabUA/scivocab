@@ -32,6 +32,17 @@ def create_word_tables():
     current_app.config.from_object(Config)
     current_app.app_context().push()
     db.init_app(current_app)
+
+    # Ensure foreign key constraint for SQLite3 (snippet taken from 
+    # https://gist.github.com/asyd/a7aadcf07a66035ac15d284aef10d458
+    if 'sqlite' in current_app.config['SQLALCHEMY_DATABASE_URI']:
+        def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
+            dbapi_con.execute('pragma foreign_keys=ON')
+
+        with current_app.app_context():
+            from sqlalchemy import event
+            event.listen(db.engine, 'connect', _fk_pragma_on_connect)
+
     db_filepath = current_app.config["SQLITE3_DB_PATH"]
 
     if Path(db_filepath).exists():
