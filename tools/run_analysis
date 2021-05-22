@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+
+import pandas as pd
+from typing import List, Dict
+from sqlalchemy import create_engine
+
+# Connect to the database
+engine = create_engine("sqlite:///app.db")
+
+
+def construct_dfs():
+    # Create a dictionary of dfs
+    dfs: Dict[str, pd.DataFrame] = {}
+
+    # Populate the dictionary with the dfs
+    dfs["breadth"] = pd.read_sql(
+        """select
+            child_id,
+            strand_id,
+            breadth_id,
+            response_type,
+            position,
+            timestamp
+        from breadth_task_response
+        inner join word on breadth_task_response.target_word=word.target;""",
+        engine,
+    )
+
+    dfs["depth"] = pd.read_sql(
+        """select
+            child_id,
+            strand_id,
+            depth_id,
+            image_0,
+            image_1,
+            image_2,
+            image_3,
+            timestamp
+        from depth_task_response
+        inner join word on depth_task_response.target_word=word.target;""",
+        engine,
+    )
+
+    dfs["definition"] = pd.read_sql(
+        """select
+            child_id,
+            strand_id,
+            definition_id,
+            text,
+            timestamp
+        from definition_task_response
+        inner join word on definition_task_response.target_word=word.target;""",
+        engine,
+    )
+
+    return dfs
+
+
+def postprocess_depth_df(df):
+    for i in range(4):
+        df[f"image_{i}"] = (
+            df[f"image_{i}"].str.split("_").str[1].str.split(".").str[0]
+        )
+
+
+# Augment the definition dataframe
+def calculate_depth_item_score(df) -> str:
+    return (
+        sum(
+            [
+                df[f"image_{index}"] == code
+                for index, code in zip((0, 1, 2, 3), ("a", "b", "c", "e"))
+            ]
+        )
+        / 4
+    )
+
+
+if __name__ == "__main__":
+    dfs = construct_dfs()
+    postprocess_depth_df(dfs["depth"])
+    dfs["depth"]["score"] = calculate_depth_item_score(dfs["depth"])
+    for child_id, df in dfs["depth"].groupby(["child_id"]):
+        results_df = pd.DataFrame()
+        print("")
+        print(f"Child ID: {child_id}")
+        df = df[df["strand_id"] != "training"]
+        for index, code in zip((0, 1, 2, 3), ("a", "b", "c", "e")):
+            filtered = df[f"image_{index}"] == code
+            results_df.append(
+                {
+                    child_id: {
+                        "fraction of {code} correct": filtered.sum()
+                        / filtered.count()
+                    }
+                },
+                ignore_index=True
+            )
+        print(results_df)
+
+    # print(dfs["depth"])

@@ -9,40 +9,43 @@ class Proctor(db.Model):
 
 class Child(UserMixin, db.Model):
     id = db.Column(db.String(64), primary_key=True)
-    breadth_task_responses = db.relationship(
-        "BreadthTaskResponse", backref="child"
+    sessions = db.relationship(
+        "Session", backref="child", passive_deletes=True
     )
-    current_breadth_task_word_id = db.Column(
-        db.String(64), db.ForeignKey("word.id")
+    breadth_responses = db.relationship(
+        "BreadthResponse", backref="child", passive_deletes=True
     )
-    current_depth_task_word_id = db.Column(
-        db.String(64), db.ForeignKey("word.id")
+    depth_responses = db.relationship(
+        "DepthResponse", backref="child", passive_deletes=True
     )
-    current_depth_task_word_id = db.Column(
-        db.String(64), db.ForeignKey("word.id")
+    definition_responses = db.relationship(
+        "DefinitionResponse", backref="child", passive_deletes=True
     )
 
 
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     start_timestamp = db.Column(db.DateTime, default=datetime.now)
-    child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
+    child_id = db.Column(
+        db.String(64),
+        db.ForeignKey("child.id", ondelete="CASCADE"),
+    )
     proctor_id = db.Column(db.String(64), db.ForeignKey("proctor.id"))
 
 
-class BreadthTaskImageType(db.Model):
+class BreadthImageType(db.Model):
     id = db.Column(db.String(64), primary_key=True)
 
 
-class DepthTaskImageType(db.Model):
+class DepthImageType(db.Model):
     id = db.Column(db.String(64), primary_key=True)
 
 
-class DepthTaskImagePosition(db.Model):
+class DepthImagePosition(db.Model):
     id = db.Column(db.String(64), primary_key=True)
 
 
-class BreadthTaskImagePosition(db.Model):
+class BreadthImagePosition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
 
@@ -63,7 +66,7 @@ class Word(db.Model):
     audio_file = db.Column(db.String(64), unique=True)
 
 
-class BreadthTaskImage(db.Model):
+class BreadthImage(db.Model):
     """A class that stores all the information needed to make one set of images
     associated with a target for the breadth task."""
 
@@ -71,15 +74,15 @@ class BreadthTaskImage(db.Model):
     filename = db.Column(db.String(64), primary_key=True)
     image_type_id = db.Column(
         db.String(64),
-        db.ForeignKey("breadth_task_image_type.id"),
+        db.ForeignKey("breadth_image_type.id"),
         nullable=False,
     )
     image_type = db.relationship(
-        "BreadthTaskImageType", backref=db.backref("images"), lazy=True
+        "BreadthImageType", backref=db.backref("images"), lazy=True
     )
 
 
-class DepthTaskImage(db.Model):
+class DepthImage(db.Model):
     """A class that stores all the information needed to make one set of images
     associated with a target for the depth task."""
 
@@ -87,70 +90,79 @@ class DepthTaskImage(db.Model):
     filename = db.Column(db.String(64), primary_key=True)
     image_type_id = db.Column(
         db.String(64),
-        db.ForeignKey("depth_task_image_type.id"),
+        db.ForeignKey("depth_image_type.id"),
         nullable=False,
     )
     image_type = db.relationship(
-        "DepthTaskImageType", backref=db.backref("images"), lazy=True
+        "DepthImageType", backref=db.backref("images"), lazy=True
     )
 
 
-class BreadthTaskResponse(db.Model):
+class BreadthResponse(db.Model):
     """A class that represents a single response in the breadth task."""
 
     id = db.Column(db.Integer, primary_key=True)
 
-    target_word = db.Column(db.String(64), db.ForeignKey("word.id"))
+    word_id = db.Column(db.String(64), db.ForeignKey("word.id"))
 
     # The type of response the subject selected
     response_type = db.Column(
-        db.String(64), db.ForeignKey("breadth_task_image_type.id")
+        db.String(64), db.ForeignKey("breadth_image_type.id")
     )
 
-    child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
+    child_id = db.Column(
+        db.String(64),
+        db.ForeignKey("child.id", ondelete="CASCADE"),
+    )
     timestamp = db.Column(db.DateTime, default=datetime.now)
     position = db.Column(db.String(64))
 
 
-class DepthTaskResponse(db.Model):
+class DepthResponse(db.Model):
     """A class that represents a single response in the depth task."""
 
     id = db.Column(db.Integer, primary_key=True)
 
-    target_word = db.Column(db.String(64), db.ForeignKey("word.id"))
+    word_id = db.Column(db.String(64), db.ForeignKey("word.id"))
 
-    child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
+    child_id = db.Column(
+        db.String(64),
+        db.ForeignKey("child.id", ondelete="CASCADE"),
+    )
     timestamp = db.Column(db.DateTime, default=datetime.now)
     image_0 = db.Column(
         db.String(64),
-        db.ForeignKey("depth_task_image.filename"),
+        db.ForeignKey("depth_image.filename"),
         nullable=False,
     )
     image_1 = db.Column(
         db.String(64),
-        db.ForeignKey("depth_task_image.filename"),
+        db.ForeignKey("depth_image.filename"),
         nullable=False,
     )
     image_2 = db.Column(
         db.String(64),
-        db.ForeignKey("depth_task_image.filename"),
+        db.ForeignKey("depth_image.filename"),
         nullable=False,
     )
     image_3 = db.Column(
         db.String(64),
-        db.ForeignKey("depth_task_image.filename"),
+        db.ForeignKey("depth_image.filename"),
         nullable=False,
     )
 
 
-class DefinitionTaskResponse(db.Model):
+class DefinitionResponse(db.Model):
     """A class that represents a single response in the definition task."""
 
     id = db.Column(db.Integer, primary_key=True)
 
-    target_word = db.Column(db.String(64), db.ForeignKey("word.id"))
+    word_id = db.Column(db.String(64), db.ForeignKey("word.id"))
 
-    child_id = db.Column(db.String(64), db.ForeignKey("child.id"))
+    child_id = db.Column(
+        db.String(64),
+        db.ForeignKey("child.id", ondelete="CASCADE"),
+    )
     timestamp = db.Column(db.DateTime, default=datetime.now)
 
     # The text of the child's response

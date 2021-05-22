@@ -13,9 +13,9 @@ import json
 from app.models import (
     Word,
     Strand,
-    DepthTaskResponse,
-    DepthTaskImage,
-    DepthTaskImageType,
+    DepthResponse,
+    DepthImage,
+    DepthImageType,
 )
 from app import db
 from app.TaskManager import TaskManager
@@ -25,13 +25,13 @@ from logging import info
 from app.common import check_managers_dict
 
 
-class DepthTaskManager(TaskManager):
+class DepthManager(TaskManager):
     def __init__(self):
         super().__init__("depth")
         # Create a list of image types. We will shuffle this list every time we
         # move to a new word in the task, in order to randomize the positions
         # of the four images for a given word.
-        self.image_types = [x.id for x in DepthTaskImageType.query.all()]
+        self.image_types = [x.id for x in DepthImageType.query.all()]
 
 
 # We create a Flask blueprint object. Flask blueprints help keep apps modular.
@@ -48,7 +48,7 @@ MANAGERS = {}
 @login_required
 def main():
     """The main view function for the depth task."""
-    check_managers_dict(MANAGERS, current_user.id, DepthTaskManager)
+    check_managers_dict(MANAGERS, current_user.id, DepthManager)
     return render_template("depth.html", title="Depth Task")
 
 
@@ -68,7 +68,7 @@ def redirect_to_fun_fact(fun_fact_index):
 
 # Each call of nextWord loads a new word, waits for the user to select an
 # image, and adds the selected word to manager.answers as an instance of the
-# DepthTaskResponse class.
+# DepthResponse class.
 @bp.route("/nextWord", methods=["GET", "POST"])
 @login_required
 def nextWord():
@@ -88,8 +88,8 @@ def nextWord():
             src.split("/")[-1] for src in json.loads(request.args["response"])
         ]
         print(json.loads(request.args["response"]))
-        depth_task_response = DepthTaskResponse(
-            target_word=manager.current_word.target,
+        depth_task_response = DepthResponse(
+            word_id=manager.current_word.id,
             child_id=current_user.id,
             image_0=images[0],
             image_1=images[1],
@@ -103,4 +103,4 @@ def nextWord():
         if res is not None:
             return res
 
-    return manager.make_response(DepthTaskImage)
+    return manager.make_response(DepthImage)

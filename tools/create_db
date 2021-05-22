@@ -8,10 +8,10 @@ import sys
 from app.models import (
     Word,
     Strand,
-    BreadthTaskImage,
-    BreadthTaskImageType,
-    DepthTaskImage,
-    DepthTaskImageType,
+    BreadthImage,
+    BreadthImageType,
+    DepthImage,
+    DepthImageType,
 )
 from flask_sqlalchemy import SQLAlchemy
 from app import create_app, db
@@ -32,6 +32,19 @@ def create_word_tables():
     current_app.config.from_object(Config)
     current_app.app_context().push()
     db.init_app(current_app)
+
+    # Ensure foreign key constraint for SQLite3 (snippet taken from
+    # https://gist.github.com/asyd/a7aadcf07a66035ac15d284aef10d458
+    if "sqlite" in current_app.config["SQLALCHEMY_DATABASE_URI"]:
+
+        def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
+            dbapi_con.execute("pragma foreign_keys=ON")
+
+        with current_app.app_context():
+            from sqlalchemy import event
+
+            event.listen(db.engine, "connect", _fk_pragma_on_connect)
+
     db_filepath = current_app.config["SQLITE3_DB_PATH"]
 
     if Path(db_filepath).exists():
@@ -61,31 +74,31 @@ def create_word_tables():
             id=row.id,
             breadth_id=row.breadth_id,
             depth_id=row.depth_id,
-            definition_id = row.definition_id,
-            target = row.target,
-            strand = Strand(id=str(row.strand_id)),
-            audio_file = f"{row.id}_{row.target[0:3]}.wav"
+            definition_id=row.definition_id,
+            target=row.target,
+            strand=Strand(id=str(row.strand_id)),
+            audio_file=f"{row.id}_{row.target[0:3]}.wav",
         )
 
         db.session.merge(word)
 
         if not pd.isna(row.breadth_id):
             for img_type in ("tw", "fs", "fp", "fx"):
-                breadth_task_image = BreadthTaskImage(
+                breadth_image = BreadthImage(
                     word_id=row.id,
                     filename=f"{row.breadth_id}_{img_type}.jpg",
-                    image_type=BreadthTaskImageType(id=img_type),
+                    image_type=BreadthImageType(id=img_type),
                 )
-                db.session.merge(breadth_task_image)
+                db.session.merge(breadth_image)
 
         if not pd.isna(row.depth_id):
             for img_type in ("a", "b", "c", "e"):
-                depth_task_image = DepthTaskImage(
+                depth_image = DepthImage(
                     word_id=row.id,
                     filename=f"{row.depth_id}_{img_type}.jpg",
-                    image_type=DepthTaskImageType(id=img_type),
+                    image_type=DepthImageType(id=img_type),
                 )
-                db.session.merge(depth_task_image)
+                db.session.merge(depth_image)
 
     db.session.commit()
 

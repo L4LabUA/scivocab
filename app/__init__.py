@@ -30,6 +30,17 @@ def create_app():
     # Connect the database to the app
     db.init_app(scivocab_app)
 
+    # Ensure foreign key constraint for SQLite3 (snippet taken from 
+    # https://gist.github.com/asyd/a7aadcf07a66035ac15d284aef10d458
+    if 'sqlite' in scivocab_app.config['SQLALCHEMY_DATABASE_URI']:
+        def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
+            dbapi_con.execute('pragma foreign_keys=ON')
+
+        with scivocab_app.app_context():
+            from sqlalchemy import event
+            event.listen(db.engine, 'connect', _fk_pragma_on_connect)
+
+
     # Connect the login manager to the app
     login_manager.init_app(scivocab_app)
 
