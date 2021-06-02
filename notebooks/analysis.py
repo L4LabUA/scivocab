@@ -30,7 +30,7 @@ def construct_dfs() -> Dict:
             position,
             timestamp
         from breadth_response
-        inner join word on 
+        inner join word on
         breadth_response.word_id=word.id;""",
         engine,
         parse_dates=["timestamp"],
@@ -49,7 +49,7 @@ def construct_dfs() -> Dict:
             image_3,
             timestamp
         from depth_response
-        inner join word on 
+        inner join word on
         depth_response.word_id=word.id;""",
         engine,
         parse_dates=["timestamp"],
@@ -124,7 +124,6 @@ dfs["depth"]["score"] = calculate_depth_item_score(dfs["depth"])
 
 # Make the fractions dataframe
 fractions_df = make_depth_fractions_df(dfs)
-
 fractions_df.to_csv("Depth_Fraction_df.csv", sep="\t")
 
 
@@ -154,7 +153,6 @@ for i, task in enumerate(("breadth", "depth", "definition")):
     axes[i].set_title(task.capitalize())
 
 plt.tight_layout()
-
 plt.savefig("Histogram_of_response_times.pdf")
 
 
@@ -182,6 +180,4 @@ for i, task in enumerate(tasks):
     axes[i].set_title(task.capitalize())
 
 plt.tight_layout()
-
-
 plt.savefig("Bar_Graph_Total_Times.pdf")
