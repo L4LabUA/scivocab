@@ -2,22 +2,12 @@
 # coding: utf-8
 
 # First, get database from server.
-# 
-# 1. Make a copy of the old app.db if you want.
-# 2. Double click on clickable script copy_scivocab_db_from_server (in this folder) - that will download the database to your computer.
-# 3. Run the commands below. 
-
-# In[14]:
-
 
 import pandas as pd
 from typing import List, Dict
 from sqlalchemy import create_engine
 
 import matplotlib.pyplot as plt
-
-# Increase the maximum number of rows displayed to 999
-pd.options.display.max_rows=999
 
 # Connect to the database
 engine = create_engine("sqlite:///app.db")
@@ -121,35 +111,10 @@ def make_depth_fractions_df(dfs):
     return result_df
 
 
-# In[15]:
-
-
 dfs = construct_dfs()
 postprocess_depth_df(dfs["depth"])
 dfs["depth"]["score"] = calculate_depth_item_score(dfs["depth"])
 
-
-# In[16]:
-
-
-# Show the breadth task responses
-dfs["breadth"]
-
-# In[17]:
-
-
-# Show the depth task responses
-dfs["depth"]
-
-
-# In[18]:
-
-
-# Show the definition task responses
-dfs["definition"]
-
-
-# In[19]:
 
 
 # Make the fractions dataframe
@@ -157,18 +122,11 @@ fractions_df=make_depth_fractions_df(dfs)
 
 fractions_df.to_csv("Depth_Fraction_df.csv", sep="\t")
 
-# Show the fractions dataframe
-fractions_df
-
-
-# In[20]:
-
 
 # Set plot style
 plt.style.use("ggplot")
 
 
-# In[29]:
 
 
 # Histograms of response times by task and item
@@ -189,7 +147,6 @@ plt.tight_layout()
 
 plt.savefig("Histogram_of_response_times.pdf")
 
-# In[27]:
 
 
 # Bar plots of total times taken for tasks
@@ -214,31 +171,26 @@ for i, task in enumerate(tasks):
 plt.tight_layout()
 
 
-# In[ ]:
 
 plt.savefig("Bar_Graph_Total_Times.pdf")
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
 
 
-# In[ ]:
 
 
 
