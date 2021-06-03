@@ -131,7 +131,8 @@ def make_fractions_df(dfs):
 
 def make_response_times_histo(dfs):
     # Histograms of response times by task and item
-    # Note: This does not take into account the time spent in the fun facts (which is low, but still)
+    # Note: This does not take into account the time spent in the fun facts
+    # (which is low, but still)
     fig, axes = plt.subplots(1, 3, figsize=(12, 4))
     for i, task in enumerate(("breadth", "depth", "definition")):
         response_times = [
@@ -180,7 +181,7 @@ def make_total_times_bar_plot(dfs):
     plt.savefig("Bar_Graph_Total_Times.pdf")
 
 
-def make_exploratory_plot(dfs):
+def make_total_score_plot(dfs):
     df = pd.read_excel(
         "definition_task_response_coded_final.xlsx", engine="openpyxl"
     )
@@ -247,8 +248,43 @@ def make_exploratory_plot(dfs):
     plt.savefig("total_scores.pdf")
 
 
+def make_score_dist_plot(dfs):
+    fig, axes = plt.subplots(1, 2, figsize=(8, 4))
+
+    # Depth task
+    score_count_pairs = [
+        (score, len(group)) for score, group in dfs["depth"].groupby("score")
+    ]
+
+    scores, counts = zip(*score_count_pairs)
+    index = np.arange(len(scores))
+    axes[0].bar(index, counts, tick_label=scores)
+    axes[0].set_title("Depth")
+    axes[0].set_xlabel("Score")
+    axes[0].set_ylabel("Number of responses")
+
+    # Definition task
+    df = pd.read_excel(
+        "definition_task_response_coded_final.xlsx", engine="openpyxl"
+    )
+
+    score_count_pairs = [
+        (score, len(group)) for score, group in df.groupby("final score")
+    ]
+    scores, counts = zip(*score_count_pairs)
+    index = np.arange(len(scores))
+    axes[1].bar(index, counts, tick_label=scores)
+    axes[1].set_title("Definition")
+    axes[1].set_xlabel("Score")
+    axes[1].set_ylabel("Number of responses")
+
+    plt.tight_layout()
+    plt.savefig("response_score_distribution.pdf")
+
+
 if __name__ == "__main__":
     dfs = construct_dfs()
     # make_response_times_histo(dfs)
     # make_total_times_bar_plot(dfs)
-    make_exploratory_plot(dfs)
+    # make_total_score_plot(dfs)
+    make_score_dist_plot(dfs)
