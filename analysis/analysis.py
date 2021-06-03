@@ -29,6 +29,7 @@ def calculate_depth_item_score(df):
         / 4
     )
 
+
 def postprocess_depth_df(df) -> None:
     """Replace d..._X.jpg with X in the image_N columns"""
     for i in range(4):
@@ -98,8 +99,6 @@ def construct_dfs() -> Dict:
     postprocess_depth_df(dfs["depth"])
     dfs["breadth"]["score"] = dfs["breadth"]["response_type"] == "tw"
     return dfs
-
-
 
 
 def make_depth_fractions_df(dfs):
@@ -195,7 +194,11 @@ def make_exploratory_plot(dfs):
         total_scores.append(responses["score"].sum())
 
     index = np.arange(len(child_ids))
-    axes[0].bar(index, total_scores, tick_label=child_ids)
+    color = [
+        "RoyalBlue" if child_id.startswith("9") else "firebrick"
+        for child_id in child_ids
+    ]
+    axes[0].bar(index, total_scores, tick_label=child_ids, color=color)
     axes[0].set_title("Breadth")
     axes[0].set_ylim(0, 108)
     axes[0].set_xlabel("Child ID")
@@ -209,7 +212,13 @@ def make_exploratory_plot(dfs):
         total_scores.append(responses["score"].sum())
 
     index = np.arange(len(child_ids))
-    axes[1].bar(index, total_scores, tick_label=child_ids)
+
+    # Color the adults blue
+    color = [
+        "RoyalBlue" if child_id.startswith("9") else "firebrick"
+        for child_id in child_ids
+    ]
+    axes[1].bar(index, total_scores, tick_label=child_ids, color=color)
     axes[1].set_title("Depth")
     axes[1].set_ylim(0, 48)
     axes[1].set_ylabel("Score")
@@ -224,8 +233,11 @@ def make_exploratory_plot(dfs):
 
     index = np.arange(len(child_ids))
 
-
-    axes[2].bar(index, total_scores, tick_label=child_ids)
+    color = [
+        "RoyalBlue" if str(child_id).startswith("9") else "firebrick"
+        for child_id in child_ids
+    ]
+    axes[2].bar(index, total_scores, tick_label=child_ids, color=color)
     axes[2].set_xlabel("Child ID")
     axes[2].set_title("Definition")
     axes[2].set_ylim(0, 60)
