@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# First, get database from server.
-
 import numpy as np
 import pandas as pd
 from typing import List, Dict
