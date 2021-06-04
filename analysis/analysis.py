@@ -244,3 +244,4 @@ if __name__ == "__main__":
     make_total_times_bar_plot(dfs)
     make_total_score_plot(dfs)
     make_score_dist_plot(dfs)
+    make_fractions_df(dfs)
