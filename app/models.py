@@ -168,6 +168,9 @@ class DefinitionResponse(db.Model):
     # The text of the child's response
     text = db.Column(db.String(300), nullable=False)
 
+    # Scores can be 0, 1, 2, 3, or 4
+    score = db.Column(db.Integer)
+
 
 @login_manager.user_loader
 def load_user(id):
