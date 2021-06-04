@@ -173,7 +173,11 @@ def make_total_times_bar_plot(dfs):
             timedeltas.append(timedelta)
             child_ids.append(child_id)
         index = np.arange(len(timedeltas))
-        axes[i].bar(index, timedeltas, tick_label=child_ids)
+        color = [
+            "RoyalBlue" if child_id.startswith("9") else "firebrick"
+            for child_id in child_ids
+        ]
+        axes[i].bar(index, timedeltas, color=color, tick_label=child_ids)
         axes[i].set_xlabel("Child ID")
         axes[i].set_title(task.capitalize())
 
@@ -183,7 +187,7 @@ def make_total_times_bar_plot(dfs):
 
 def make_total_score_plot(dfs):
     df = pd.read_excel(
-        "definition_task_response_coded_final.xlsx", engine="openpyxl"
+        "definition_responses_coded_final.xlsx", engine="openpyxl"
     )
     fig, axes = plt.subplots(1, 3, figsize=(12, 4))
 
@@ -228,7 +232,7 @@ def make_total_score_plot(dfs):
     total_scores = []
     child_ids = []
     for child_id, responses in df.groupby("child_id"):
-        total_score = responses["final score"].sum()
+        total_score = responses["score"].sum()
         child_ids.append(child_id)
         total_scores.append(total_score)
 
@@ -265,11 +269,11 @@ def make_score_dist_plot(dfs):
 
     # Definition task
     df = pd.read_excel(
-        "definition_task_response_coded_final.xlsx", engine="openpyxl"
+        "definition_responses_coded_final.xlsx", engine="openpyxl"
     )
 
     score_count_pairs = [
-        (score, len(group)) for score, group in df.groupby("final score")
+        (score, len(group)) for score, group in df.groupby("score")
     ]
     scores, counts = zip(*score_count_pairs)
     index = np.arange(len(scores))
@@ -284,7 +288,7 @@ def make_score_dist_plot(dfs):
 
 if __name__ == "__main__":
     dfs = construct_dfs()
-    # make_response_times_histo(dfs)
-    # make_total_times_bar_plot(dfs)
-    # make_total_score_plot(dfs)
+    make_response_times_histo(dfs)
+    make_total_times_bar_plot(dfs)
+    make_total_score_plot(dfs)
     make_score_dist_plot(dfs)
