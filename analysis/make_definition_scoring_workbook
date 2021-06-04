@@ -6,7 +6,10 @@ from sqlalchemy import create_engine
 
 if __name__ == "__main__":
     # Connect to the database
-    engine = create_engine(sys.argv[2])
+    print(sys.argv)
+    uri = "sqlite:///"+sys.argv[1]
+    print(uri)
+    engine = create_engine(uri)
     df = pd.read_sql(
         """select
             child_id,
@@ -24,4 +27,4 @@ if __name__ == "__main__":
         parse_dates=["timestamp"],
     )
 
-    df.to_excel(sys.argv[1], engine="openpyxl")
+    df.to_excel(sys.argv[2], engine="openpyxl")
