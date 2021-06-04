@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+
+"""This script adds the definition scores to the database"""
+
+import os
+import sys
+from app.models import DefinitionResponse
+
+from flask_sqlalchemy import SQLAlchemy
+from app import create_app, db
+from sqlalchemy import create_engine
+import pandas as pd
+from app.config import Config
+import click
+from pathlib import Path
+from glob import glob
+import logging
+from logging import info
+from pathlib import Path
+
+
+def add_definition_scores():
+    engine = create_engine(Config.SQLALCHEMY_DATABASE_URI, echo=False)
+    current_app = create_app()
+    current_app.config.from_object(Config)
+    current_app.app_context().push()
+    db.init_app(current_app)
+
+    # Ensure foreign key constraint for SQLite3 (snippet taken from
+    # https://gist.github.com/asyd/a7aadcf07a66035ac15d284aef10d458
+    if "sqlite" in current_app.config["SQLALCHEMY_DATABASE_URI"]:
+
+        def _fk_pragma_on_connect(dbapi_con, con_record):  # noqa
+            dbapi_con.execute("pragma foreign_keys=ON")
+
+        with current_app.app_context():
+            from sqlalchemy import event
+
+            event.listen(db.engine, "connect", _fk_pragma_on_connect)
+
+    df = pd.read_excel(
+        "definition_responses_coded_final.xlsx",
+        engine="openpyxl",
+        dtype={"score": str},
+    )
+
+    info("Adding scores to database.")
+    for row in df.itertuples():
+        response = DefinitionResponse.query.filter_by(
+            child_id=row.child_id, word_id=row.word_id
+        ).first()
+        response.score=int(replacement_dict[row.score])
+        db.session.merge(response)
+    db.session.commit()
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    add_definition_scores()
