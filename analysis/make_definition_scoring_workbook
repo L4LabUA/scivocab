@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 
 if __name__ == "__main__":
     # Connect to the database
-    engine = create_engine("sqlite:///app.db")
+    engine = create_engine(sys.argv[2])
     df = pd.read_sql(
         """select
             child_id,
@@ -15,6 +15,7 @@ if __name__ == "__main__":
             strand_id,
             word.target as target_word,
             text,
+            score,
             timestamp
         from definition_response
         inner join word on
@@ -23,4 +24,4 @@ if __name__ == "__main__":
         parse_dates=["timestamp"],
     )
 
-    df.to_excel(sys.argv[1])
+    df.to_excel(sys.argv[1], engine="openpyxl")
