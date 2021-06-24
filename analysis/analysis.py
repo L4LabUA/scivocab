@@ -119,7 +119,7 @@ def make_depth_fractions_df(dfs):
             )
         records.append(record)
 
-    result_df = pd.DataFrame(records)
+    result_df = pd.DataFrame(records).round(decimals=2)
     return result_df
 
 
@@ -180,6 +180,7 @@ def make_total_times_bar_plot(dfs):
         axes[i].bar(index, timedeltas, color=color, tick_label=child_ids)
         axes[i].set_xlabel("Child ID")
         axes[i].set_title(task.capitalize())
+        axes[i].set_xticklabels(child_ids, rotation=45)
 
     plt.tight_layout()
     plt.savefig("Bar_Graph_Total_Times.pdf")
@@ -208,6 +209,7 @@ def make_total_score_plot(dfs):
         axes[i].set_ylim(0, max_scores[task])
         axes[i].set_xlabel("Child ID")
         axes[i].set_ylabel("Score")
+        axes[i].set_xticklabels(child_ids, rotation=45)
 
     plt.tight_layout()
     plt.savefig("total_scores.pdf")
