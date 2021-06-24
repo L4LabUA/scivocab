@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+
+# Create an Excel workbook containing the definition task responses and scores
+
+import pandas as pd
+from sqlalchemy import create_engine
+
+# Connect to the database
+engine = create_engine("sqlite:///../app/app.db")
+
+df = pd.read_sql(
+    """select
+        child_id,
+        word.id as word_id,
+        definition_id,
+        strand_id,
+        word.target as target_word,
+        text,
+        timestamp,
+        score
+    from definition_response
+    inner join word on
+    definition_response.word_id=word.id;""",
+    engine,
+    parse_dates=["timestamp"],
+)
+
+df.to_excel("definition_responses.xlsx")

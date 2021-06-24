@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# First, get database from server.
-
 import numpy as np
 import pandas as pd
 from typing import List, Dict
@@ -11,7 +9,7 @@ from sqlalchemy import create_engine
 import matplotlib.pyplot as plt
 
 # Connect to the database
-engine = create_engine("sqlite:///app.db")
+engine = create_engine("sqlite:///../app/app.db")
 
 # Set plot style
 plt.style.use("ggplot")
@@ -88,6 +86,7 @@ def construct_dfs() -> Dict:
             strand_id,
             word.target as target_word,
             text,
+            score,
             timestamp
         from definition_response
         inner join word on
@@ -98,6 +97,7 @@ def construct_dfs() -> Dict:
 
     postprocess_depth_df(dfs["depth"])
     dfs["breadth"]["score"] = dfs["breadth"]["response_type"] == "tw"
+
     return dfs
 
 
@@ -119,7 +119,7 @@ def make_depth_fractions_df(dfs):
             )
         records.append(record)
 
-    result_df = pd.DataFrame(records)
+    result_df = pd.DataFrame(records).round(decimals=2)
     return result_df
 
 
@@ -180,74 +180,37 @@ def make_total_times_bar_plot(dfs):
         axes[i].bar(index, timedeltas, color=color, tick_label=child_ids)
         axes[i].set_xlabel("Child ID")
         axes[i].set_title(task.capitalize())
+        axes[i].set_xticklabels(child_ids, rotation=45)
 
     plt.tight_layout()
     plt.savefig("Bar_Graph_Total_Times.pdf")
 
 
 def make_total_score_plot(dfs):
-    df = pd.read_excel(
-        "definition_responses_coded_final.xlsx", engine="openpyxl"
-    )
     fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+    max_scores = {"breadth": 108, "depth": 48, "definition": 80}
 
-    total_scores = []
-    child_ids = []
+    for i, task in enumerate(("breadth", "depth", "definition")):
+        total_scores = []
+        child_ids = []
+        for child_id, responses in dfs[task].dropna().groupby("child_id"):
+            if child_id == "1003" and task == "definition":
+                print(responses)
+            child_ids.append(child_id)
+            total_scores.append(responses["score"].sum())
 
-    for child_id, responses in dfs["breadth"].groupby("child_id"):
-        child_ids.append(child_id)
-        total_scores.append(responses["score"].sum())
+        index = np.arange(len(child_ids))
+        color = [
+            "RoyalBlue" if child_id.startswith("9") else "firebrick"
+            for child_id in child_ids
+        ]
+        axes[i].bar(index, total_scores, tick_label=child_ids, color=color)
+        axes[i].set_title(task.capitalize())
+        axes[i].set_ylim(0, max_scores[task])
+        axes[i].set_xlabel("Child ID")
+        axes[i].set_ylabel("Score")
+        axes[i].set_xticklabels(child_ids, rotation=45)
 
-    index = np.arange(len(child_ids))
-    color = [
-        "RoyalBlue" if child_id.startswith("9") else "firebrick"
-        for child_id in child_ids
-    ]
-    axes[0].bar(index, total_scores, tick_label=child_ids, color=color)
-    axes[0].set_title("Breadth")
-    axes[0].set_ylim(0, 108)
-    axes[0].set_xlabel("Child ID")
-    axes[0].set_ylabel("Score")
-
-    total_scores = []
-    child_ids = []
-
-    for child_id, responses in dfs["depth"].groupby("child_id"):
-        child_ids.append(child_id)
-        total_scores.append(responses["score"].sum())
-
-    index = np.arange(len(child_ids))
-
-    # Color the adults blue
-    color = [
-        "RoyalBlue" if child_id.startswith("9") else "firebrick"
-        for child_id in child_ids
-    ]
-    axes[1].bar(index, total_scores, tick_label=child_ids, color=color)
-    axes[1].set_title("Depth")
-    axes[1].set_ylim(0, 48)
-    axes[1].set_ylabel("Score")
-    axes[1].set_xlabel("Child ID")
-
-    total_scores = []
-    child_ids = []
-    for child_id, responses in df.groupby("child_id"):
-        total_score = responses["score"].sum()
-        child_ids.append(child_id)
-        total_scores.append(total_score)
-
-    index = np.arange(len(child_ids))
-
-    color = [
-        "RoyalBlue" if str(child_id).startswith("9") else "firebrick"
-        for child_id in child_ids
-    ]
-    axes[2].bar(index, total_scores, tick_label=child_ids, color=color)
-    axes[2].set_xlabel("Child ID")
-    axes[2].set_title("Definition")
-    axes[2].set_ylim(0, 60)
-    axes[2].set_xlabel("Child ID")
-    axes[2].set_ylabel("Score")
     plt.tight_layout()
     plt.savefig("total_scores.pdf")
 
@@ -255,32 +218,23 @@ def make_total_score_plot(dfs):
 def make_score_dist_plot(dfs):
     fig, axes = plt.subplots(1, 2, figsize=(8, 4))
 
+    tick_labels = {"depth": (0, 0.25, 0.5, 1), "definition": (0, 1, 2, 3, 4)}
     # Depth task
-    score_count_pairs = [
-        (score, len(group)) for score, group in dfs["depth"].groupby("score")
-    ]
+    for i, task in enumerate(("depth", "definition")):
+        score_count_pairs = [
+            (score, len(group))
+            for score, group in dfs[task][
+                dfs[task]["child_id"] != "1003"
+            ].groupby("score")
+        ]
 
-    scores, counts = zip(*score_count_pairs)
-    index = np.arange(len(scores))
-    axes[0].bar(index, counts, tick_label=scores)
-    axes[0].set_title("Depth")
-    axes[0].set_xlabel("Score")
-    axes[0].set_ylabel("Number of responses")
-
-    # Definition task
-    df = pd.read_excel(
-        "definition_responses_coded_final.xlsx", engine="openpyxl"
-    )
-
-    score_count_pairs = [
-        (score, len(group)) for score, group in df.groupby("score")
-    ]
-    scores, counts = zip(*score_count_pairs)
-    index = np.arange(len(scores))
-    axes[1].bar(index, counts, tick_label=scores)
-    axes[1].set_title("Definition")
-    axes[1].set_xlabel("Score")
-    axes[1].set_ylabel("Number of responses")
+        scores, counts = zip(*score_count_pairs)
+        index = np.arange(len(scores))
+        axes[i].bar(index, counts, tick_label=tick_labels[task])
+        axes[i].set_title(task.capitalize())
+        axes[i].set_label("Score")
+        axes[i].set_xlabel("Score")
+        axes[i].set_ylabel("Number of responses")
 
     plt.tight_layout()
     plt.savefig("response_score_distribution.pdf")
@@ -292,3 +246,4 @@ if __name__ == "__main__":
     make_total_times_bar_plot(dfs)
     make_total_score_plot(dfs)
     make_score_dist_plot(dfs)
+    make_fractions_df(dfs)
