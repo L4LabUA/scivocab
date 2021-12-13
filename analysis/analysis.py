@@ -54,7 +54,9 @@ def construct_dfs() -> Dict:
             timestamp
         from breadth_response
         inner join word on
-        breadth_response.word_id=word.id;""",
+        breadth_response.word_id=word.id
+        where not child_id like '8%'
+        and not child_id like '9%'""",
         engine,
         parse_dates=["timestamp"],
     )
@@ -73,7 +75,9 @@ def construct_dfs() -> Dict:
             timestamp
         from depth_response
         inner join word on
-        depth_response.word_id=word.id;""",
+        depth_response.word_id=word.id
+        where not child_id like '8%'
+        and not child_id like '9%'""",
         engine,
         parse_dates=["timestamp"],
     )
@@ -90,7 +94,9 @@ def construct_dfs() -> Dict:
             timestamp
         from definition_response
         inner join word on
-        definition_response.word_id=word.id;""",
+        definition_response.word_id=word.id
+        where not child_id like '8%'
+        and not child_id like '9%'""",
         engine,
         parse_dates=["timestamp"],
     )
@@ -154,11 +160,11 @@ def make_response_times_histo(dfs):
     plt.savefig("Histogram_of_response_times.pdf")
 
 
-def make_total_times_bar_plot(dfs):
+def make_total_times_histogram(dfs):
     # Bar plots of total times taken for tasks
     fig, axes = plt.subplots(1, 3, figsize=(12, 4), sharey=True)
     tasks = ("breadth", "depth", "definition")
-    axes[0].set_ylabel("Task duration (m)")
+    axes[0].set_ylabel("Number of children")
 
     for i, task in enumerate(tasks):
         timedeltas = []
@@ -172,69 +178,56 @@ def make_total_times_bar_plot(dfs):
             ) / 60
             timedeltas.append(timedelta)
             child_ids.append(child_id)
-        index = np.arange(len(timedeltas))
-        color = [
-            "RoyalBlue" if child_id.startswith("9") else "firebrick"
-            for child_id in child_ids
-        ]
-        axes[i].bar(index, timedeltas, color=color, tick_label=child_ids)
-        axes[i].set_xlabel("Child ID")
+
+        axes[i].hist(timedeltas)
+        axes[i].set_xlabel("Task duration (minutes)")
         axes[i].set_title(task.capitalize())
-        axes[i].set_xticklabels(child_ids, rotation=45)
+        axes[i].set_yticks([int(x) for x in np.arange(0,25,5)])
 
     plt.tight_layout()
-    plt.savefig("Bar_Graph_Total_Times.pdf")
+    plt.savefig("total_times_histogram.pdf")
 
 
 def make_total_score_plot(dfs):
-    fig, axes = plt.subplots(1, 3, figsize=(12, 4))
-    max_scores = {"breadth": 108, "depth": 48, "definition": 80}
+    fig, axes = plt.subplots(1, 2, figsize=(8, 4))
+    max_scores = {"breadth": 108, "depth": 48}
 
-    for i, task in enumerate(("breadth", "depth", "definition")):
+    for i, task in enumerate(("breadth", "depth")):
         total_scores = []
         child_ids = []
         for child_id, responses in dfs[task].dropna().groupby("child_id"):
-            if child_id == "1003" and task == "definition":
-                print(responses)
             child_ids.append(child_id)
             total_scores.append(responses["score"].sum())
 
-        index = np.arange(len(child_ids))
-        color = [
-            "RoyalBlue" if child_id.startswith("9") else "firebrick"
-            for child_id in child_ids
-        ]
-        axes[i].bar(index, total_scores, tick_label=child_ids, color=color)
+        axes[i].hist(total_scores)
         axes[i].set_title(task.capitalize())
-        axes[i].set_ylim(0, max_scores[task])
-        axes[i].set_xlabel("Child ID")
-        axes[i].set_ylabel("Score")
-        axes[i].set_xticklabels(child_ids, rotation=45)
+        axes[i].set_xlabel("Score")
+        axes[i].set_ylabel("Number of children")
 
     plt.tight_layout()
     plt.savefig("total_scores.pdf")
 
 
 def make_score_dist_plot(dfs):
-    fig, axes = plt.subplots(1, 2, figsize=(8, 4))
+    fig, axes = plt.subplots(1, 1, figsize=(4, 4))
 
-    tick_labels = {"depth": (0, 0.25, 0.5, 1), "definition": (0, 1, 2, 3, 4)}
+    tick_labels = {"depth": (0, 0.25, 0.5, 1)}
     # Depth task
-    for i, task in enumerate(("depth", "definition")):
-        score_count_pairs = [
-            (score, len(group))
-            for score, group in dfs[task][
-                dfs[task]["child_id"] != "1003"
-            ].groupby("score")
-        ]
+    task="depth"
+    score_count_pairs = [
+        (score, len(group))
+        for score, group in dfs[task][
+            dfs[task]["child_id"] != "1003"
+        ].groupby("score")
+    ]
 
-        scores, counts = zip(*score_count_pairs)
-        index = np.arange(len(scores))
-        axes[i].bar(index, counts, tick_label=tick_labels[task])
-        axes[i].set_title(task.capitalize())
-        axes[i].set_label("Score")
-        axes[i].set_xlabel("Score")
-        axes[i].set_ylabel("Number of responses")
+    scores, counts = zip(*score_count_pairs)
+    index = np.arange(len(scores))
+    axes.bar(index, counts, tick_label=tick_labels[task])
+    axes.set_title(task.capitalize())
+    axes.set_label("Score")
+    axes.set_xlabel("Score")
+    axes.set_ylabel("Number of responses")
 
     plt.tight_layout()
     plt.savefig("response_score_distribution.pdf")
@@ -242,8 +235,8 @@ def make_score_dist_plot(dfs):
 
 if __name__ == "__main__":
     dfs = construct_dfs()
-    make_response_times_histo(dfs)
-    make_total_times_bar_plot(dfs)
-    make_total_score_plot(dfs)
-    make_score_dist_plot(dfs)
-    make_fractions_df(dfs)
+    # make_response_times_histo(dfs)
+    make_total_times_histogram(dfs)
+    # make_total_score_plot(dfs)
+    # make_score_dist_plot(dfs)
+    # make_fractions_df(dfs)
