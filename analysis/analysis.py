@@ -189,8 +189,9 @@ def make_total_times_histogram(dfs):
 
 
 def make_total_score_plot(dfs):
-    fig, axes = plt.subplots(1, 2, figsize=(8, 4))
+    fig, axes = plt.subplots(1, 2, figsize=(8, 4),sharey=True)
     max_scores = {"breadth": 108, "depth": 48}
+    axes[0].set_ylabel("Number of children")
 
     for i, task in enumerate(("breadth", "depth")):
         total_scores = []
@@ -202,7 +203,6 @@ def make_total_score_plot(dfs):
         axes[i].hist(total_scores)
         axes[i].set_title(task.capitalize())
         axes[i].set_xlabel("Score")
-        axes[i].set_ylabel("Number of children")
 
     plt.tight_layout()
     plt.savefig("total_scores.pdf")
@@ -236,7 +236,7 @@ def make_score_dist_plot(dfs):
 if __name__ == "__main__":
     dfs = construct_dfs()
     # make_response_times_histo(dfs)
-    make_total_times_histogram(dfs)
-    # make_total_score_plot(dfs)
+    # make_total_times_histogram(dfs)
+    make_total_score_plot(dfs)
     # make_score_dist_plot(dfs)
     # make_fractions_df(dfs)
