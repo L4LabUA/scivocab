@@ -20,7 +20,7 @@ setup(
     install_requires=[
         "flask",
         "xlrd",
-        "numpy==1.18.0",
+        "numpy==1.22.0",
         "pandas",
         "openpyxl",
         "Flask-WTF",
