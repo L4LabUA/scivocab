@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from typing import List, Dict
 from sqlalchemy import create_engine
+import statistics
 
 import matplotlib.pyplot as plt
 
@@ -124,15 +125,15 @@ def make_depth_fractions_df(dfs):
 
 
 def make_fractions_df(dfs):
-    # Make the fractions dataframe
+    """Make the fractions dataframe"""
     fractions_df = make_depth_fractions_df(dfs)
     fractions_df.to_csv("Depth_Fraction_df.csv", sep="\t")
 
 
 def make_response_times_histo(dfs):
-    # Histograms of response times by task and item
-    # Note: This does not take into account the time spent in the fun facts
-    # (which is low, but still)
+    """Histograms of response times by task and item
+    Note: This does not take into account the time spent in the fun facts
+    (which is low, but still)"""
     fig, axes = plt.subplots(1, 3, figsize=(12, 4))
     for i, task in enumerate(("breadth", "depth", "definition")):
         response_times = [
@@ -240,6 +241,18 @@ def make_score_dist_plot(dfs):
     plt.savefig("response_score_distribution.pdf")
 
 
+def calculate_average_times(dfs):
+    """Calculate average time taken per task, with standard deviation."""
+    for task in ("breadth", "depth", "definition"):
+        deltas = [
+            group["timestamp"].max() - group["timestamp"].min()
+            for child_id, group in dfs[task].groupby("child_id")
+        ]
+        df = pd.DataFrame(deltas)
+        print(f"Mean and standard deviation for time taken for {task} task: "
+                f"{df.mean().loc[0]} +- {df.std().loc[0]}")
+
+
 if __name__ == "__main__":
     dfs = construct_dfs()
     make_response_times_histo(dfs)
@@ -247,3 +260,4 @@ if __name__ == "__main__":
     make_total_score_plot(dfs)
     make_score_dist_plot(dfs)
     make_fractions_df(dfs)
+    calculate_average_times(dfs)
