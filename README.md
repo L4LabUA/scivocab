@@ -1,7 +1,7 @@
-Scivocab
+SciVocab
 ========
 
-This repo contains the code for the Scientific Vocabulary study webapp.
+This repo contains the code for the Scientific Vocabulary study webapp (SciVocab).
 
 Installation
 ------------
